@@ -97,15 +97,26 @@ section { padding: 52px 0 8px; }
 h2 { font-size: clamp(20px, 3.4vw, 26px); margin: 0 0 20px; display: flex; align-items: center; gap: 14px; }
 h2 .rule { display: inline-block; width: 28px; height: 3px; background: var(--amber); border-radius: 2px; flex: none; }
 
-/* ---------- Hero ---------- */
-.hero { padding-top: clamp(32px, 7vw, 72px); }
+/* ---------- Hero：桌面左文右机 ---------- */
+.hero {
+  padding-top: clamp(28px, 6vw, 64px);
+  display: grid; gap: 32px; align-items: start;
+}
+@media (min-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 48px; }
+}
+.hero-shot { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.hero-shot .ph-wrap { max-width: 260px; transform: rotate(-1.2deg); }
+.hero-shot .ph-wrap:hover { transform: rotate(0deg); transition: transform .2s ease; }
+.hero-cap { font-size: 12px; color: var(--ink-soft); }
+
 .eyebrow { margin: 0 0 14px; font-size: 13px; letter-spacing: .16em; color: var(--olive); }
-h1 { font-size: clamp(29px, 6vw, 50px); line-height: 1.22; margin: 0 0 18px; letter-spacing: -.01em; }
+h1 { font-size: clamp(29px, 5.4vw, 46px); line-height: 1.22; margin: 0 0 18px; letter-spacing: -.01em; }
 h1 .sci { color: var(--moss); }
 .lede { max-width: 40em; color: var(--ink-soft); font-size: clamp(15px, 2.2vw, 18px); margin: 0 0 28px; }
 .lede-sm { color: var(--ink-soft); max-width: 44em; }
 
-.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.cta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .btn-primary {
   display: inline-flex; align-items: baseline; gap: 8px;
   background: var(--moss); color: #FFFDF8; text-decoration: none;
@@ -113,8 +124,100 @@ h1 .sci { color: var(--moss); }
   box-shadow: var(--shadow); transition: transform .15s ease, filter .15s ease;
 }
 .btn-primary:hover { transform: translateY(-1px); filter: brightness(1.08); color: #FFFDF8; }
+.btn-mirror {
+  display: inline-flex; align-items: baseline; gap: 8px; text-decoration: none;
+  border: 1px solid var(--moss); color: var(--moss); border-radius: 14px;
+  padding: 14px 22px; font-size: 16px; font-weight: 700;
+}
+.btn-mirror span { font-size: 12.5px; font-weight: 400; color: var(--ink-soft); }
+.btn-mirror:hover { background: var(--sage); }
+.btn-mirror[aria-disabled="true"] {
+  opacity: .5; pointer-events: none; border-style: dashed;
+}
 .btn-ghost { color: var(--moss); text-decoration: none; font-weight: 600; padding: 14px 8px; border-bottom: 2px solid var(--amber); }
 .cta-hint { color: var(--ink-soft); font-size: 13.5px; margin: 14px 0 0; }
+
+/* ---------- 规格条 ---------- */
+.specbar {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1px; margin: 40px 0 0; background: var(--line);
+  border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+}
+.specbar > div { background: var(--card); padding: 14px 16px; text-align: center; }
+.specbar b { display: block; font-size: 24px; font-weight: 800; color: var(--moss); line-height: 1.3; }
+.specbar span { font-size: 12.5px; color: var(--ink-soft); }
+
+/* ---------- 通用卡 / 两栏 ---------- */
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); }
+.card-h { margin: 0 0 12px; font-size: 16px; color: var(--moss); }
+.two-col { display: grid; gap: 18px; }
+@media (min-width: 760px) { .two-col { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- 安装步骤 ---------- */
+.steps { margin: 0; padding-left: 0; list-style: none; counter-reset: step; }
+.steps li { counter-increment: step; position: relative; padding: 0 0 18px 50px; }
+.steps li:last-child { padding-bottom: 0; }
+.steps li::before {
+  content: counter(step); position: absolute; left: 0; top: 1px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--sage); color: var(--olive);
+  display: grid; place-items: center; font-weight: 700; font-size: 14px;
+  border: 1px solid var(--line);
+}
+.steps strong { color: var(--moss); }
+
+.kv { margin: 0; }
+.kv > div { display: flex; justify-content: space-between; gap: 14px; padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.kv > div:last-child { border-bottom: 0; }
+.kv dt { color: var(--ink-soft); flex: none; }
+.kv dd { margin: 0; font-weight: 600; text-align: right; }
+
+/* ---------- FAQ ---------- */
+.qa {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 14px 18px; margin-bottom: 10px; box-shadow: var(--shadow);
+}
+.qa summary {
+  cursor: pointer; font-weight: 700; color: var(--moss); list-style: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  touch-action: manipulation;
+}
+.qa summary::-webkit-details-marker { display: none; }
+.qa summary::after { content: "＋"; color: var(--amber); font-size: 18px; flex: none; }
+.qa[open] summary::after { content: "－"; }
+.qa p { margin: 10px 0 0; color: var(--ink-soft); font-size: 14.5px; }
+
+/* ---------- 版本记录 ---------- */
+.releases { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; background: var(--card); }
+.rel-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  padding: 13px 18px; border-bottom: 1px solid var(--line);
+}
+.rel-row:last-child { border-bottom: 0; }
+.rel-row strong { display: block; font-size: 15px; }
+.rel-meta { font-size: 13px; color: var(--ink-soft); }
+.rel-dl { text-decoration: none; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.rel-dl::after { content: " ↗"; }
+.releases .aside { border: 0; padding: 14px 18px; margin: 0; }
+
+code {
+  font-family: var(--mono); font-size: 12.5px;
+  background: var(--sage); color: var(--ink); padding: 2px 7px; border-radius: 6px; word-break: break-all;
+}
+code.fp { display: inline-block; margin-top: 4px; font-size: 11.5px; }
+
+/* ---------- 页脚 ---------- */
+footer {
+  border-top: 1px solid var(--line); padding: 26px clamp(16px, 5vw, 48px) 40px;
+  text-align: center; color: var(--ink-soft); font-size: 13.5px;
+}
+footer p { margin: 6px 0; }
+footer .fine { font-size: 12.5px; opacity: .8; }
+
+.aside {
+  color: var(--ink-soft); font-size: 14px;
+  border-left: 3px solid var(--line); padding-left: 14px; margin: 14px 0 0;
+}
 
 .meta {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));

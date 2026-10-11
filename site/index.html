@@ -13,7 +13,13 @@
 <meta property="og:title" content="拾鸟 WhatsBird · 离线拍照认鸟">
 <meta property="og:description" content="举起手机对准鸟，App 告诉你它是什么。识别全程离线，照片与观测记录只留在本机。">
 <meta property="og:type" content="website">
-<meta property="og:image" content="https://kidnappe.github.io/WhatsBird/icon-512.png">
+<meta property="og:image" content="https://kidnappe.github.io/WhatsBird/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="拾鸟 WhatsBird · 离线拍照认鸟">
+<meta name="twitter:description" content="举起手机对准鸟，App 告诉你它是什么。识别全程离线，无账号、无云端上传、无广告。">
+<meta name="twitter:image" content="https://kidnappe.github.io/WhatsBird/og.png">
 </head>
 <body>
 
@@ -29,36 +35,53 @@
 
 <main id="top">
 
-  <!-- ============ 下载 ============ -->
+  <!-- ============ 首屏 ============ -->
   <section class="hero">
-    <p class="eyebrow">Android · 识别全程离线 · 无账号 · 无广告</p>
-    <h1>举起手机对准鸟<br><span class="sci">WhatsBird</span> 告诉你它是什么</h1>
-    <p class="lede">
-      相机实时帧分析，端侧 AI 当场报出中文名、学名与置信度，并按所在地区和季节重排候选。
-      照片和观测记录<strong>只写本机</strong>——飞行模式下也能用。
-    </p>
+    <div class="hero-text">
+      <p class="eyebrow">Android · 识别全程离线 · 无账号 · 无广告</p>
+      <h1>举起手机对准鸟<br><span class="sci">WhatsBird</span> 告诉你它是什么</h1>
+      <p class="lede">
+        相机实时帧分析，端侧 AI 当场报出中文名、学名与置信度，并按所在地区和季节重排候选。
+        照片和观测记录<strong>只写本机</strong>——飞行模式下也能用。
+      </p>
 
-    <div class="cta">
-      <a id="dlBtn" class="btn-primary" href="https://github.com/kidnappe/WhatsBird/releases/download/v1.0/WhatsBird-v1.0-arm64-v8a.apk">
-        下载 APK<span id="dlSize">· 118.9 MB</span>
-      </a>
-      <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
+      <div class="cta">
+        <a id="dlBtn" class="btn-primary" href="https://github.com/kidnappe/WhatsBird/releases/download/v1.0/WhatsBird-v1.0-arm64-v8a.apk">
+          下载 APK<span id="dlSize">· 读取中</span>
+        </a>
+        <a id="dlMirror" class="btn-mirror" aria-disabled="true" data-href="">镜像下载 · 蓝奏云<span>地址待填</span></a>
+        <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
+      </div>
+      <p class="cta-hint">直链 GitHub Release 资产；<span id="dlState">正在核对最新版…</span></p>
+
+      <dl class="meta">
+        <div><dt>版本</dt><dd id="mVer">v1.0</dd></div>
+        <div><dt>体积</dt><dd id="mSize">—</dd></div>
+        <div><dt>系统</dt><dd>Android 8.0+</dd></div>
+        <div><dt>架构</dt><dd>arm64-v8a</dd></div>
+        <div><dt>root</dt><dd>不需要</dd></div>
+        <div><dt>发布时间</dt><dd id="mDate">—</dd></div>
+      </dl>
+
+      <p class="note">
+        ⚠️ 只支持 64 位设备（arm64-v8a）——2016 年以后的手机基本都是。
+        32 位老机与 x86 模拟器请从<a href="https://github.com/kidnappe/WhatsBird#快速开始">源码构建</a>。
+      </p>
     </div>
-    <p class="cta-hint">直链 GitHub Release 资产；<span id="dlState">正在核对最新版…</span></p>
 
-    <dl class="meta">
-      <div><dt>版本</dt><dd id="mVer">v1.0</dd></div>
-      <div><dt>体积</dt><dd id="mSize">118.9 MB</dd></div>
-      <div><dt>系统</dt><dd>Android 8.0+</dd></div>
-      <div><dt>架构</dt><dd>arm64-v8a</dd></div>
-      <div><dt>root</dt><dd>不需要</dd></div>
-      <div><dt>发布时间</dt><dd id="mDate">2026-10-11</dd></div>
-    </dl>
+    <div class="hero-shot">
+      <span class="ph-wrap"><img src="shots/recognition.jpg" alt="拾鸟取景页真机截图" data-full="shots/recognition.jpg" width="560" height="1246"></span>
+      <span class="hero-cap">真机取景页 · 识别在端上跑</span>
+    </div>
+  </section>
 
-    <p class="note">
-      ⚠️ 只支持 64 位设备（arm64-v8a）——2016 年以后的手机基本都是。
-      32 位老机与 x86 模拟器请从<a href="https://github.com/kidnappe/WhatsBird#快速开始">源码构建</a>。
-    </p>
+  <!-- ============ 规格条 ============ -->
+  <section class="specbar" aria-label="规格">
+    <div><b>384</b><span>种图鉴</span></div>
+    <div><b>6</b><span>套区域模型</span></div>
+    <div><b>4 步</b><span>推理链路</span></div>
+    <div><b>0</b><span>账号 / 上传</span></div>
+    <div><b>离线</b><span>全程可用</span></div>
   </section>
 
   <!-- ============ 核心体验 ============ -->
@@ -108,7 +131,107 @@
     </div>
   </section>
 
+  <!-- ============ 安装 ============ -->
+  <section id="install">
+    <h2><span class="rule"></span>怎么装</h2>
+    <div class="two-col">
+      <div class="card">
+        <ol class="steps">
+          <li><strong>下载。</strong>手机浏览器打开本页点上面的按钮；GitHub 下载慢就用蓝奏云镜像。</li>
+          <li><strong>允许安装未知应用。</strong>下载完浏览器会拦一下，点「允许」——
+            授权只给浏览器或文件管理器，不是全系统。</li>
+          <li><strong>安装。</strong>系统安装器点「下一步 → 完成」。无 root，无其他权限申请。</li>
+          <li><strong>打开。</strong>首次只要相机权限。模型权重全在包里，<strong>装完断网也能用</strong>。</li>
+        </ol>
+        <p class="aside">电脑上下载再传到手机也一样：数据线或网盘传过去，用文件管理器点开安装。
+          已经装过旧版的直接装新包即可。</p>
+      </div>
+
+      <div class="card">
+        <h3 class="card-h">升级说明</h3>
+        <dl class="kv">
+          <div><dt>覆盖升级</dt><dd>同一把签名密钥，新包直接盖旧包</dd></div>
+          <div><dt>数据保留</dt><dd>观测记录、图鉴点亮进度、备注全部保留</dd></div>
+          <div><dt>换手机</dt><dd>先在「日志」页导出 CSV，记录只在本机</dd></div>
+          <div><dt>卸载</dt><dd>会连同本机记录一起清掉，卸载前先导出</dd></div>
+        </dl>
+        <p class="aside">这一版把分类器权重压到 fp16，包体从 118.9 MB 降到约 70 MB，
+          精度基本不变——细节见仓库里的瘦身报告。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 常见问题 ============ -->
+  <section id="faq">
+    <h2><span class="rule"></span>常见问题</h2>
+    <details class="qa">
+      <summary>能装 iPhone 吗？</summary>
+      <p>不能。这是 Android 应用，走旁路分发（APK 直链），不经过应用商店。</p>
+    </details>
+    <details class="qa">
+      <summary>识别不准怎么办？</summary>
+      <p>离线小模型认错很正常。取景页可以手动切区域模型、点选主目标；认错了到「日志」页改判，
+        改完图鉴里的点亮状态会跟着更新。</p>
+    </details>
+    <details class="qa">
+      <summary>为什么包这么大？</summary>
+      <p>模型权重全部打包在安装包里，识别全程离线、不下载任何东西。
+        换来的是：装完拔网线也能用，照片一次都不出手机。</p>
+    </details>
+    <details class="qa">
+      <summary>怎么确认下到的是官方的包？</summary>
+      <p>装完可以在系统「应用信息」里看签名证书指纹，应当是下面这一串（长期不变，等于发布者身份证）：
+        <code class="fp" id="certFp">711F0F9398D2803DB4CD8C4800CB7BCB5F3AAFB3DC6F6549F9FBDA448DC68A76</code>。
+        文件本身的 SHA-256 见上面的版本列表。</p>
+    </details>
+    <details class="qa">
+      <summary>要开定位吗？</summary>
+      <p>可关。开着会用地理位置选区域模型并给分类结果加先验权重；关掉就退化成按月份的粗先验。
+        照片和记录始终只在本机。</p>
+    </details>
+  </section>
+
+  <!-- ============ 隐私与许可 ============ -->
+  <section id="trust">
+    <h2><span class="rule"></span>一句话说明白</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3 class="card-h">隐私</h3>
+        <p>照片与观测记录<strong>只写本机</strong>（<code>files/records/</code> + Room），没有上传接口；
+          定位可关闭；地址解析走内置离线区划，不经过任何第三方地理服务；
+          导出的 CSV 由你自己选保存位置，App 不申请存储权限。</p>
+      </div>
+      <div class="card">
+        <h3 class="card-h">许可</h3>
+        <p>源码按 <a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE">Apache-2.0</a>。
+          模型与数据资产有两项例外（<code>protection.json</code> 的 IUCN 字段仅限非商业、
+          <code>admin_county.ndjson</code> 未获明确再分发许可），完整声明见
+          <a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE-MODELS.md">LICENSE-MODELS.md</a>。
+          本页照片来自 iNaturalist 的 CC0 / CC-BY 图库，署名见
+          <a href="https://github.com/kidnappe/WhatsBird/blob/main/site/shots/manifest.json">shots/manifest.json</a>。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 版本记录 ============ -->
+  <section id="history">
+    <h2><span class="rule"></span>版本记录</h2>
+    <div class="releases" id="relList">
+      <p class="aside">正在读取 GitHub Release…</p>
+    </div>
+  </section>
+
 </main>
+
+<footer>
+  <p>
+    <a href="https://github.com/kidnappe/WhatsBird">源码</a> ·
+    <a href="https://github.com/kidnappe/WhatsBird/releases">Releases</a> ·
+    <a href="https://github.com/kidnappe/WhatsBird/issues">反馈问题</a> ·
+    <a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE-MODELS.md">资产授权</a>
+  </p>
+  <p class="fine">拾鸟 WhatsBird · Copyright 2026 The WhatsBird Authors · 源码 Apache-2.0</p>
+</footer>
 
 <dialog id="lightbox">
   <img id="lightboxImg" alt="">
@@ -119,10 +242,24 @@
 (function () {
   "use strict";
   var API = "https://api.github.com/repos/kidnappe/WhatsBird/releases/latest";
+  var LIST = "https://api.github.com/repos/kidnappe/WhatsBird/releases";
   var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* 蓝奏云镜像地址：拿到分享链接后，填进这一行就行，页面上的镜像按钮会自动启用 */
+  var MIRROR_URL = "";
 
   function mb(b) { return (b / 1048576).toFixed(1) + " MB"; }
   function ymd(iso) { var d = new Date(iso); return isNaN(d) ? "—" : d.toISOString().slice(0, 10); }
+
+  /* ---------- 镜像按钮 ---------- */
+  (function () {
+    var el = document.getElementById("dlMirror");
+    if (MIRROR_URL) {
+      el.href = MIRROR_URL;
+      el.removeAttribute("aria-disabled");
+      el.querySelector("span").textContent = "国内直连更快";
+    }
+  })();
 
   /* ---------- 版本信息：运行时取最新 release，取不到退回页面内置值 ---------- */
   fetch(API, { cache: "no-store" })
@@ -142,6 +279,56 @@
     })
     .catch(function () {
       document.getElementById("dlState").textContent = "当前显示的是页面内置的 v1.0；点「全部版本」看实时列表";
+      var s = document.getElementById("dlSize"); if (s) { s.textContent = "· 118.9 MB"; }
+      var m = document.getElementById("mSize"); if (m) { m.textContent = "118.9 MB"; }
+    });
+
+  /* ---------- 版本记录 ---------- */
+  fetch(LIST, { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (list) {
+      var box = document.getElementById("relList");
+      if (!box) { return; }
+      var items = (list || []).filter(function (r) { return !r.draft; }).slice(0, 6);
+      if (!items.length) { return; }
+      box.innerHTML = "";
+      items.forEach(function (r) {
+        var apk = (r.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+        var row = document.createElement("div");
+        row.className = "rel-row";
+        var left = document.createElement("div");
+        var tag = document.createElement("strong");
+        tag.textContent = r.name || r.tag_name;
+        var meta = document.createElement("span");
+        meta.className = "rel-meta";
+        meta.textContent = ymd(r.published_at) +
+          (apk ? " · " + mb(apk.size) + " · 下载 " + apk.download_count + " 次" : " · 无安装包");
+        if (apk && apk.digest) {
+          var dg = document.createElement("code");
+          dg.className = "fp";
+          dg.textContent = apk.digest.replace(/^sha256:/, "");
+          meta.appendChild(document.createElement("br"));
+          meta.appendChild(dg);
+        }
+        left.appendChild(tag);
+        left.appendChild(meta);
+        row.appendChild(left);
+        if (apk) {
+          var a = document.createElement("a");
+          a.href = apk.browser_download_url;
+          a.textContent = "下载";
+          a.className = "rel-dl";
+          row.appendChild(a);
+        }
+        box.appendChild(row);
+      });
+    })
+    .catch(function () {
+      var box = document.getElementById("relList");
+      if (box) {
+        box.innerHTML = '<p class="aside">版本列表读取失败（离线或被限流），' +
+          '请直接看 <a href="' + LIST + '">GitHub Releases</a>。</p>';
+      }
     });
 
   /* ---------- 图片加载效果：纸感骨架 + 淡入 ---------- */
