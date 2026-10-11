@@ -184,6 +184,7 @@ body{
     <button data-tab="cam" class="on">识别</button>
     <button data-tab="log">日志</button>
     <button data-tab="guide">图鉴</button>
+    <button data-tab="detail">图鉴详情</button>
   </div>
   <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
 </div>
@@ -416,7 +417,21 @@ function recordSheet(i){
   <button class="close" data-close>删除这条记录</button>`;
 }
 
-const VIEWS = {cam: camView, log: logView, guide: guideView};
+/* ================= 图鉴详情页（独立页，不走弹层） ================= */
+let detailKey = "hong-er";
+function detailView(){
+  const pick = `<div class="chips" style="margin-bottom:14px">` +
+    Object.keys(SPECIES).map(k=>
+      `<button class="chip ${k===detailKey?'on':''}" data-dk="${k}">${SPECIES[k].zh}</button>`).join("") +
+    `</div>`;
+  const body = speciesSheet(detailKey)
+    .replace(/<button class="close"[^>]*>关闭<\/button>/, "")
+    .replace(/<div class="handle"><\/div>/, "");
+  return `<div class="topbar"><div class="loc">图鉴 · 物种详情</div>
+      <div style="font-size:12px;color:var(--gray)">384 种之一</div></div>${pick}${body}`;
+}
+
+const VIEWS = {cam: camView, log: logView, guide: guideView, detail: detailView};
 let cur = "cam";
 
 function openSheet(html){
@@ -433,6 +448,8 @@ function render(){
     el.addEventListener("click", ()=>openSheet(speciesSheet(el.dataset.k))));
   view.querySelectorAll(".row[data-log]").forEach(el=>
     el.addEventListener("click", ()=>openSheet(recordSheet(+el.dataset.log))));
+  view.querySelectorAll("[data-dk]").forEach(el=>
+    el.addEventListener("click", ()=>{ detailKey = el.dataset.dk; render(); }));
 }
 
 function applyPalette(k){
