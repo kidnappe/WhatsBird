@@ -95,6 +95,10 @@ a:hover { color: var(--moss-bright); }
 .topbar nav .ghost .gh { width: 15px; height: 15px; flex: none; }
 .topbar nav .afdian { border-color: var(--line); color: var(--ink-soft); }
 .topbar nav .afdian:hover { color: var(--moss); }
+/* 爱发电官方图标（取自 static.afdiancdn.com 的 favicon），保持原色不跟随主题 */
+.topbar nav .afdian .afdian-icon {
+  width: 16px; height: 16px; border-radius: 3px; flex: none; display: block;
+}
 
 /* ---------- 版心 ---------- */
 main { max-width: 960px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 32px) 72px; }
