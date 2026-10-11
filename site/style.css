@@ -182,34 +182,36 @@ code {
 .releases .aside { border: 0; padding: 14px 18px; margin: 0; }
 
 /* ---------- 图廊 ---------- */
-.shot-main {
+.triptych {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 18px; margin-top: 22px;
+}
+.triptych figure {
+  margin: 0; background: var(--card); border: 1px solid var(--line);
+  border-radius: 16px; padding: 12px; box-shadow: var(--shadow);
+}
+.triptych img { width: 100%; border-radius: 10px; display: block; cursor: zoom-in; }
+.triptych figcaption { margin-top: 10px; font-size: 13.5px; line-height: 1.7; color: var(--ink-soft); }
+.triptych figcaption b { color: var(--moss); margin-right: 2px; }
+
+.demo-shot {
   display: flex; gap: 22px; align-items: center; flex-wrap: wrap;
   background: var(--card); border: 1px solid var(--line); border-radius: 16px;
-  padding: 18px; box-shadow: var(--shadow); margin-bottom: 26px;
+  padding: 18px; box-shadow: var(--shadow); margin-top: 26px;
 }
-.shot-main img {
-  width: 180px; border-radius: 12px; flex: none; cursor: zoom-in;
-  border: 1px solid var(--line);
+.demo-shot > img {
+  width: min(100%, 460px); border-radius: 12px; flex: none;
+  border: 1px solid var(--line); cursor: zoom-in;
 }
-.shot-main h3 { margin: 0 0 6px; font-size: 16px; color: var(--moss); }
-.shot-main p { margin: 0; font-size: 14.5px; color: var(--ink-soft); max-width: 46em; }
-
-.gallery {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-  gap: 12px; margin-top: 16px;
+.demo-shot > img.tall { width: 168px; }
+.demo-shot > div { flex: 1 1 260px; }
+.demo-shot h3 { margin: 0 0 6px; font-size: 16px; color: var(--moss); }
+.demo-shot p { margin: 0 0 8px; font-size: 14.5px; color: var(--ink-soft); max-width: 44em; }
+.demo-shot p.warn {
+  background: var(--sage); border-left: 3px solid var(--amber);
+  border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: 13.5px;
 }
-.gallery figure {
-  margin: 0; padding: 7px 7px 0; background: var(--card);
-  border: 1px solid var(--line); border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(31, 42, 34, .08);
-  transition: transform .18s ease, box-shadow .18s ease;
-}
-.gallery figure:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-.gallery img {
-  width: 100%; aspect-ratio: 3 / 4; object-fit: cover;
-  border-radius: 7px; display: block; cursor: zoom-in;
-}
-.gallery img[data-full] { cursor: zoom-in; }
+.demo-shot p.aside { border: 0; padding: 0; margin: 0; font-size: 13.5px; }
 
 /* ---------- 大图 ---------- */
 dialog#lightbox {
