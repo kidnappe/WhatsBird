@@ -62,13 +62,9 @@
     </p>
   </section>
 
-  <!-- ============ 核心体验（多图轮换） ============ -->
+  <!-- ============ 核心体验 ============ -->
   <section id="core">
     <h2><span class="rule"></span>核心体验就这几屏</h2>
-    <p class="lede-sm">
-      装完打开就是取景器——没有首页、没有菜单、没有登录。认出来 → 记一笔 → 点亮图鉴，全程离线。
-      下面四张是真机截图（2026-10-12 用 adb 从手机上抓的 v1.0 版），左右滑动或点圆点切换。
-    </p>
 
     <div class="carousel" id="carousel" tabindex="0" aria-roledescription="轮播" aria-label="App 界面截图">
       <div class="track" id="track">
@@ -111,13 +107,6 @@
       <button class="nav-arrow next" id="next" type="button" aria-label="下一屏">›</button>
       <div class="dots" id="dots" role="tablist" aria-label="选择截图"></div>
     </div>
-
-    <p class="aside">
-      截图里照片位放的是开放图库（iNaturalist，CC0 / CC-BY）的替代图，不是本机拍的那几张；
-      学名、保护级别、置信度这些数字没动。两件没在图上的：<strong>非鸟拒识门</strong>——
-      独立的拒识分类器挡住非鸟目标，抑制误检；<strong>离线逆地理</strong>——
-      内置行政区划边界，无网也能把经纬度解析到区县。
-    </p>
   </section>
 
 </main>
@@ -168,11 +157,13 @@
     img.addEventListener("error", function () { markLoaded(img); });
   });
 
-  /* ---------- 多图轮换 ---------- */
+  /* ---------- 多图：桌面四屏并排，手机才轮播 ---------- */
   var track = document.getElementById("track");
   var slides = Array.prototype.slice.call(track.querySelectorAll(".slide"));
   var dotsBox = document.getElementById("dots");
+  var mq = window.matchMedia("(max-width: 900px)");
   var idx = 0, timer = null, INTERVAL = 5200;
+  var carouseling = function () { return mq.matches; };
 
   slides.forEach(function (s, i) {
     var b = document.createElement("button");
@@ -185,19 +176,28 @@
   });
   var dots = Array.prototype.slice.call(dotsBox.children);
 
-  function go(n) {
-    idx = (n + slides.length) % slides.length;
-    track.style.transform = "translateX(" + (-idx * 100) + "%)";
-    dots.forEach(function (d, i) {
-      d.classList.toggle("on", i === idx);
-      d.setAttribute("aria-selected", i === idx ? "true" : "false");
-    });
-    slides.forEach(function (s, i) { s.setAttribute("aria-hidden", i === idx ? "false" : "true"); });
+  function paint() {
+    if (carouseling()) {
+      track.style.transform = "translateX(" + (-idx * 100) + "%)";
+      dots.forEach(function (d, i) {
+        d.classList.toggle("on", i === idx);
+        d.setAttribute("aria-selected", i === idx ? "true" : "false");
+      });
+      slides.forEach(function (s, i) { s.setAttribute("aria-hidden", i === idx ? "false" : "true"); });
+    } else {
+      track.style.transform = "";           // 桌面：交给 CSS grid 并排显示
+      dots.forEach(function (d) { d.classList.remove("on"); d.setAttribute("aria-selected", "false"); });
+      slides.forEach(function (s) { s.setAttribute("aria-hidden", "false"); });
+    }
   }
+  function go(n) { if (!carouseling()) { return; } idx = (n + slides.length) % slides.length; paint(); }
   function next() { go(idx + 1); }
   function prev() { go(idx - 1); }
   function stop() { if (timer) { clearInterval(timer); timer = null; } }
-  function restart() { stop(); if (!REDUCE) { timer = setInterval(next, INTERVAL); } }
+  function restart() {
+    stop();
+    if (carouseling() && !REDUCE) { timer = setInterval(next, INTERVAL); }
+  }
 
   document.getElementById("next").addEventListener("click", function () { next(); restart(); });
   document.getElementById("prev").addEventListener("click", function () { prev(); restart(); });
@@ -226,7 +226,12 @@
     if (document.hidden) { stop(); } else { restart(); }
   });
 
-  go(0);
+  /* 断点切换时（窗口拉宽/缩窄）重画一次 */
+  var onBreak = function () { paint(); restart(); };
+  if (mq.addEventListener) { mq.addEventListener("change", onBreak); }
+  else if (mq.addListener) { mq.addListener(onBreak); }
+
+  paint();
   restart();
 
   /* ---------- 点图看大图（原生 <dialog>，不引第三方库） ---------- */

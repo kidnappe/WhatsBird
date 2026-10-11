@@ -128,23 +128,17 @@ h1 .sci { color: var(--moss); }
   border-left: 3px solid var(--line); padding-left: 14px; margin: 22px 0 0;
 }
 
-/* ---------- 轮播 ---------- */
-.carousel { position: relative; margin-top: 22px; outline: none; }
+/* ---------- 四屏：桌面并排，手机才轮播 ---------- */
+.carousel { position: relative; margin-top: 18px; outline: none; }
 .carousel:focus-visible { box-shadow: 0 0 0 3px var(--amber); border-radius: 20px; }
 .carousel .track {
-  display: flex;
-  transition: transform .55s cubic-bezier(.22, .61, .36, 1);
-  will-change: transform;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
 }
-.carousel .slide {
-  flex: 0 0 100%; margin: 0; padding: 0;
-  display: flex; flex-direction: column; align-items: center;
-}
-.carousel .slide[aria-hidden="true"] { pointer-events: none; }
+.carousel .slide { margin: 0; display: flex; flex-direction: column; align-items: center; }
 
 .ph-wrap {
-  position: relative; display: block; width: min(100%, 420px);
-  border-radius: 20px; overflow: hidden;
+  position: relative; display: block; width: 100%; max-width: 260px;
+  border-radius: 18px; overflow: hidden;
   background: linear-gradient(160deg, var(--sil-a), var(--sil-b));
   border: 1px solid var(--line); box-shadow: var(--shadow);
 }
@@ -167,30 +161,45 @@ h1 .sci { color: var(--moss); }
 .ph-wrap img.is-loaded { opacity: 1; }
 
 .carousel .slide figcaption {
-  margin-top: 18px; max-width: 46em; text-align: center;
-  font-size: 14.5px; line-height: 1.8; color: var(--ink-soft);
+  margin-top: 16px; text-align: center;
+  font-size: 13.5px; line-height: 1.8; color: var(--ink-soft);
 }
 .carousel .slide figcaption b {
-  color: var(--moss); font-size: 16px; margin-right: 2px;
+  color: var(--moss); font-size: 15px; margin-right: 2px;
 }
 
-.nav-arrow {
-  position: absolute; top: 38%; z-index: 2;
-  width: 42px; height: 42px; border-radius: 50%;
-  border: 1px solid var(--line); background: var(--card); color: var(--moss);
-  font-size: 24px; line-height: 1; cursor: pointer;
-  box-shadow: var(--shadow); transition: transform .15s ease, background .15s ease;
-}
-.nav-arrow:hover { transform: scale(1.06); background: var(--sage); }
-.nav-arrow.prev { left: 4px; }
-.nav-arrow.next { right: 4px; }
+/* 桌面端不需要轮播控件 */
+.nav-arrow, .dots { display: none; }
 
-.dots { display: flex; justify-content: center; gap: 9px; margin-top: 20px; }
-.dots .dot {
-  width: 30px; height: 8px; border-radius: 999px; border: 0; cursor: pointer;
-  background: var(--line); transition: background .2s ease, width .2s ease;
+/* ---------- 窄屏：切成轮播 ---------- */
+@media (max-width: 900px) {
+  .carousel .track {
+    display: flex; gap: 0;
+    transition: transform .55s cubic-bezier(.22, .61, .36, 1);
+    will-change: transform;
+  }
+  .carousel .slide { flex: 0 0 100%; }
+  .carousel .slide[aria-hidden="true"] { pointer-events: none; }
+  .ph-wrap { max-width: 340px; }
+
+  .nav-arrow {
+    display: block; position: absolute; top: 34%; z-index: 2;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid var(--line); background: var(--card); color: var(--moss);
+    font-size: 22px; line-height: 1; cursor: pointer;
+    box-shadow: var(--shadow); transition: transform .15s ease, background .15s ease;
+  }
+  .nav-arrow:hover { transform: scale(1.06); background: var(--sage); }
+  .nav-arrow.prev { left: 0; }
+  .nav-arrow.next { right: 0; }
+
+  .dots { display: flex; justify-content: center; gap: 9px; margin-top: 18px; }
+  .dots .dot {
+    width: 30px; height: 8px; border-radius: 999px; border: 0; cursor: pointer;
+    background: var(--line); transition: background .2s ease, width .2s ease;
+  }
+  .dots .dot.on { background: var(--moss); width: 42px; }
 }
-.dots .dot.on { background: var(--moss); width: 42px; }
 
 /* ---------- 大图 ---------- */
 dialog#lightbox { border: 0; padding: 0; background: transparent; max-width: 92vw; max-height: 92vh; }
@@ -220,11 +229,9 @@ dialog#lightbox button {
   .meta { grid-template-columns: repeat(2, 1fr); }
   .meta > div { padding: 11px 13px; }
 
-  .ph-wrap { width: 100%; max-width: 340px; border-radius: 16px; }
+  .ph-wrap { max-width: 340px; border-radius: 16px; }
   .carousel .slide figcaption { font-size: 14px; line-height: 1.75; padding: 0 4px; }
   .nav-arrow { width: 38px; height: 38px; font-size: 21px; }
-  .nav-arrow.prev { left: -2px; }
-  .nav-arrow.next { right: -2px; }
   .dots { margin-top: 16px; }
 }
 
