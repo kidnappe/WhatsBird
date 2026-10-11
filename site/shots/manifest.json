@@ -1,0 +1,236 @@
+{
+  "hong-er": {
+    "key": "hong-er",
+    "sci": "Pycnonotus jocosus",
+    "zh": "红耳鹎",
+    "region": "huanan_sw",
+    "file": "hong-er_08.jpg",
+    "path": "E:\\code\\observebird\\.shots\\inat\\hong-er_08.jpg",
+    "img_wh": [
+      1024,
+      683
+    ],
+    "det_score": 0.8116,
+    "top1_p": 0.9968,
+    "det_box": [
+      391.4,
+      221.1,
+      612.6,
+      453.2
+    ],
+    "top5": [
+      {
+        "sci": "Pycnonotus jocosus",
+        "zh": "红耳鹎",
+        "p": 0.9968
+      },
+      {
+        "sci": "Pycnonotus xanthorrhous",
+        "zh": "黄臀鹎",
+        "p": 0.0019
+      },
+      {
+        "sci": "Pycnonotus sinensis",
+        "zh": "白头鹎",
+        "p": 0.0009
+      },
+      {
+        "sci": "Pterorhinus sannio",
+        "zh": "白颊噪鹛",
+        "p": 0.0001
+      },
+      {
+        "sci": "Chloris sinica",
+        "zh": "金翅雀",
+        "p": 0.0
+      }
+    ],
+    "license": "cc-by",
+    "attribution": "(c) Dan Killam, some rights reserved (CC BY)",
+    "user": "",
+    "source": "https://api.inaturalist.org/observations/8714355",
+    "photo_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/11686313/original.jpeg"
+  },
+  "hongshui": {
+    "key": "hongshui",
+    "sci": "Phoenicurus fuliginosus",
+    "zh": "红尾水鸲",
+    "region": "dongbei",
+    "file": "hongshui_05.jpg",
+    "path": "E:\\code\\observebird\\.shots\\inat\\hongshui_05.jpg",
+    "img_wh": [
+      1024,
+      1024
+    ],
+    "det_score": 0.9751,
+    "top1_p": null,
+    "det_box": [
+      254.0,
+      356.8,
+      497.8,
+      562.3
+    ],
+    "top5": [],
+    "license": "cc-by",
+    "attribution": "",
+    "user": "",
+    "source": "https://www.inaturalist.org/taxa/22964",
+    "photo_url": ""
+  },
+  "huixique": {
+    "key": "huixique",
+    "sci": "Cyanopica cyanus",
+    "zh": "灰喜鹊",
+    "region": "dongbei",
+    "file": "huixique_08.jpg",
+    "path": "E:\\code\\observebird\\.shots\\inat\\huixique_08.jpg",
+    "img_wh": [
+      1024,
+      776
+    ],
+    "det_score": 0.7456,
+    "top1_p": 0.9899,
+    "det_box": [
+      229.9,
+      296.7,
+      636.7,
+      470.0
+    ],
+    "top5": [
+      {
+        "sci": "Cyanopica cyanus",
+        "zh": "灰喜鹊",
+        "p": 0.9899
+      },
+      {
+        "sci": "Poecile montanus",
+        "zh": "褐头山雀",
+        "p": 0.0039
+      },
+      {
+        "sci": "Poecile palustris",
+        "zh": "沼泽山雀",
+        "p": 0.0016
+      },
+      {
+        "sci": "Aegithalos caudatus",
+        "zh": "北长尾山雀",
+        "p": 0.0011
+      },
+      {
+        "sci": "Regulus regulus",
+        "zh": "戴菊",
+        "p": 0.0011
+      }
+    ],
+    "license": "cc-by",
+    "attribution": "(c) Юлия, some rights reserved (CC BY)",
+    "user": "",
+    "source": "https://api.inaturalist.org/observations/61681442",
+    "photo_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/98727328/original.jpeg"
+  },
+  "maque": {
+    "key": "maque",
+    "sci": "Passer montanus",
+    "zh": "麻雀",
+    "region": "dongbei",
+    "file": "maque_03.jpg",
+    "path": "E:\\code\\observebird\\.shots\\inat\\maque_03.jpg",
+    "img_wh": [
+      1024,
+      683
+    ],
+    "det_score": 0.9037,
+    "top1_p": 0.9592,
+    "det_box": [
+      375.6,
+      200.4,
+      650.9,
+      671.3
+    ],
+    "top5": [
+      {
+        "sci": "Passer montanus",
+        "zh": "麻雀",
+        "p": 0.9592
+      },
+      {
+        "sci": "Poecile montanus",
+        "zh": "褐头山雀",
+        "p": 0.0106
+      },
+      {
+        "sci": "Suthora webbiana",
+        "zh": "棕头鸦雀",
+        "p": 0.0048
+      },
+      {
+        "sci": "Thinornis dubius",
+        "zh": "金眶鸻",
+        "p": 0.0044
+      },
+      {
+        "sci": "Picus canus",
+        "zh": "灰头绿啄木鸟",
+        "p": 0.0026
+      }
+    ],
+    "license": "cc-by",
+    "attribution": "(c) Radu Teodoreanu, some rights reserved (CC BY)",
+    "user": "",
+    "source": "https://api.inaturalist.org/observations/334819518",
+    "photo_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/608112780/original.jpg"
+  },
+  "queshu": {
+    "key": "queshu",
+    "sci": "Copsychus saularis",
+    "zh": "鹊鸲",
+    "region": "huadong",
+    "file": "queshu_03.jpg",
+    "path": "E:\\code\\observebird\\.shots\\inat\\queshu_03.jpg",
+    "img_wh": [
+      1024,
+      943
+    ],
+    "det_score": 0.9507,
+    "top1_p": 0.9514,
+    "det_box": [
+      338.5,
+      154.3,
+      735.5,
+      867.1
+    ],
+    "top5": [
+      {
+        "sci": "Copsychus saularis",
+        "zh": "鹊鸲",
+        "p": 0.9514
+      },
+      {
+        "sci": "Parus cinereus",
+        "zh": "大山雀",
+        "p": 0.0286
+      },
+      {
+        "sci": "Motacilla alba",
+        "zh": "白鹡鸰",
+        "p": 0.0052
+      },
+      {
+        "sci": "Phoenicurus auroreus",
+        "zh": "北红尾鸲",
+        "p": 0.0008
+      },
+      {
+        "sci": "Saxicola stejnegeri",
+        "zh": "东亚石䳭",
+        "p": 0.0008
+      }
+    ],
+    "license": "cc-by",
+    "attribution": "(c) carbenoid, some rights reserved (CC BY)",
+    "user": "",
+    "source": "https://api.inaturalist.org/observations/49666787",
+    "photo_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/78846869/original.jpeg"
+  }
+}

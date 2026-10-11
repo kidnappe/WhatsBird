@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拾鸟 WhatsBird · UI 演示</title>
+<!--
+  可点的 UI 演示。版式对着真机（2026-10-12 adb dump 的节点树 + 截图）写，
+  文案与数据取自 app 自己的图鉴 JSON 和这台手机的真实记录。
+
+  与真机的差别，说清楚：
+    - 照片是开放许可的替代图（iNaturalist CC0/CC-BY，见页面底部署名），
+      不是这台手机上拍的那几张；物种名、学名、保护级别、置信度是真的。
+    - 置信度来自仓库里的模型在本机跑出来的 top-1，不是编的。
+
+  设计口径见 docs/design/DESIGN.md；配色五套同 §2.3。
+-->
+<style>
+:root{
+  --paper:#F7F4EC; --card:#FFFFFF; --ink:#1F2A22;
+  --moss:#3A5540; --moss2:#5A7A5F; --sage:#E9F0E6; --olive:#5B6B4F;
+  --amber:#DDA45A; --red:#E2483D; --gray:#8A9187; --line:#E4DFCF;
+  --sil-a:#EFEBDF; --sil-b:#E4DFCF;
+  --shadow:0 12px 28px rgba(62,52,32,.10), 0 2px 6px rgba(62,52,32,.06);
+}
+body.night{
+  --paper:#1B211C; --card:#232A24; --ink:#E8E6DE; --moss:#8FB294; --moss2:#A7C6AB;
+  --sage:#2C352C; --olive:#B9C9AF; --gray:#8F9A90; --line:#343D35;
+  --sil-a:#2A312A; --sil-b:#333C33; --shadow:0 12px 28px rgba(0,0,0,.45);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  display:flex;flex-direction:column;align-items:center;padding:18px 12px 40px;gap:14px;
+  transition:background .25s,color .25s;
+}
+*{transition:background .25s,border-color .25s,color .25s}
+
+/* ---------- 手机框 ---------- */
+.phone{
+  width:390px;max-width:100%;background:var(--paper);border-radius:42px;
+  border:9px solid #10130F;box-shadow:0 26px 54px rgba(30,25,15,.3);overflow:hidden;position:relative;
+}
+.status{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 3px;font-size:12.5px;font-weight:600}
+.scroll{height:690px;overflow:hidden;position:relative}
+.scroll-inner{padding:8px 15px 92px}
+
+/* ---------- 底部导航胶囊 ---------- */
+.nav{
+  position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+  display:flex;gap:2px;padding:5px;border-radius:999px;
+  background:color-mix(in srgb,var(--card) 86%, transparent);
+  border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(8px);
+}
+.nav button{
+  border:0;background:transparent;font:inherit;font-size:13px;color:var(--gray);
+  padding:7px 17px;border-radius:999px;cursor:pointer;
+}
+.nav button.on{background:var(--moss);color:#fff;font-weight:700}
+
+/* ---------- 通用卡 ---------- */
+.card{background:var(--card);border-radius:18px;box-shadow:var(--shadow)}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin:6px 0 12px}
+.loc{font-size:16.5px;font-weight:800;color:var(--moss)}
+.viewtoggle{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.viewtoggle span{padding:5px 9px;font-size:12px;color:var(--gray)}
+.viewtoggle span.on{background:var(--sage);color:var(--moss)}
+.search{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--gray);margin-bottom:12px}
+
+/* ---------- 进度卡 ---------- */
+.progress{padding:14px 16px 13px;margin-bottom:14px}
+.progress .t{display:flex;justify-content:space-between;align-items:baseline}
+.progress h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:7px}
+.tick{width:4px;height:15px;border-radius:2px;background:var(--amber);display:inline-block}
+.progress .pct{font-size:20px;font-weight:800;color:var(--moss)}
+.progress .pct small{font-size:11px;font-weight:400;color:var(--gray);display:block;text-align:right}
+.bar{height:7px;background:var(--sage);border-radius:4px;margin-top:10px;overflow:hidden}
+.bar i{display:block;height:100%;width:1.3%;min-width:6px;border-radius:4px;background:linear-gradient(90deg,var(--moss),var(--moss2))}
+.progress .meta{margin-top:8px;font-size:11.5px;color:var(--gray)}
+.progress .meta b{color:var(--olive)}
+.chips{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.chip{font-size:12.5px;padding:6px 14px;border-radius:999px;background:var(--sage);color:var(--olive);cursor:pointer;border:0;font-family:inherit}
+.chip.on{background:var(--moss);color:#fff;font-weight:700}
+
+/* ---------- 收集墙 ---------- */
+.wall{column-count:2;column-gap:13px;margin-top:4px}
+.pola{break-inside:avoid;background:var(--card);border-radius:16px;padding:9px 9px 11px;
+  box-shadow:var(--shadow);margin-bottom:14px;cursor:pointer;transform:rotate(-1deg);transition:transform .18s}
+.pola:nth-child(even){transform:rotate(1.1deg)}
+.pola:active{transform:scale(.98)}
+.ph{position:relative;border-radius:9px;overflow:hidden;background:var(--sil-a)}
+.ph img{display:block;width:100%;aspect-ratio:1/1;object-fit:cover}
+.ph.sil{aspect-ratio:1/1;background:linear-gradient(160deg,var(--sil-a),var(--sil-b))}
+.pill-unlit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:color-mix(in srgb,var(--paper) 92%, transparent);color:var(--gray);
+  font-size:11px;font-weight:600;padding:4px 11px;border-radius:999px;border:1px solid var(--line)}
+.badge-new{position:absolute;top:7px;right:7px;background:var(--red);color:#fff;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px}
+.count{position:absolute;left:7px;bottom:7px;background:rgba(16,20,15,.72);color:#fff;font-size:10.5px;padding:2.5px 8px;border-radius:999px}
+.cap{margin-top:8px}
+.cap .zh{font-size:14px;font-weight:800}
+.cap .sci{font-family:Georgia,serif;font-style:italic;font-size:11px;color:var(--moss);margin-top:1px}
+.cap .tags{margin-top:5px;display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:10px;padding:2px 7px;border-radius:999px;background:var(--sage);color:var(--olive)}
+.tag.iucn{background:transparent;border:1px solid var(--line);color:var(--gray)}
+.tag.new{background:var(--red);color:#fff}
+
+/* ---------- 日志 ---------- */
+.day{font-size:12px;color:var(--gray);margin:14px 4px 8px;display:flex;align-items:center;gap:7px}
+.day::after{content:"";flex:1;height:1px;background:var(--line)}
+.row{display:flex;gap:11px;align-items:center;padding:10px;margin-bottom:9px}
+.row img{width:52px;height:52px;border-radius:11px;object-fit:cover;flex:none}
+.row .zh{font-size:14px;font-weight:700}
+.row .sci{font-family:Georgia,serif;font-style:italic;font-size:11px;color:var(--moss)}
+.row .meta{font-size:11px;color:var(--gray);margin-top:3px}
+.row .p{font-size:11px;color:var(--olive);background:var(--sage);padding:2px 8px;border-radius:999px;margin-top:4px;display:inline-block}
+
+/* ---------- 取景页 ---------- */
+.cam{position:relative;border-radius:18px;overflow:hidden;background:#14181a;aspect-ratio:3/4;margin:10px 0 12px}
+.cam img{width:100%;height:100%;object-fit:cover;display:block}
+.cam .hud{position:absolute;left:10px;top:10px;right:10px;display:flex;justify-content:space-between;
+  font-size:11px;color:#fff;background:rgba(10,14,12,.45);padding:6px 10px;border-radius:999px}
+.cam .box{position:absolute;border:2px solid #FFD60A;border-radius:6px}
+.cam .box::before,.cam .box::after{content:"";position:absolute;width:22px;height:22px;border:3px solid #FFD60A}
+.cam .box::before{left:-3px;top:-3px;border-right:0;border-bottom:0}
+.cam .box::after{right:-3px;bottom:-3px;border-left:0;border-top:0}
+.cam .tagbox{position:absolute;left:0;top:-30px;background:rgba(0,0,0,.68);color:#fff;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:7px}
+.idcard{padding:14px 16px}
+.idcard .zh{font-size:26px;font-weight:800}
+.idcard .sci{font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--moss);margin-top:2px}
+.idcard .conf{display:flex;align-items:center;gap:10px;margin-top:12px}
+.idcard .bar{flex:1;margin:0}
+.idcard .pct{font-size:13px;font-weight:800;color:var(--moss)}
+.cands{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.cands span{font-size:11px;padding:4px 10px;border-radius:999px;background:var(--sage);color:var(--olive)}
+.cands span:first-child{background:var(--moss);color:#fff;font-weight:700}
+.zoom{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
+.zoom span{font-size:12px;padding:5px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--gray)}
+.zoom span.on{background:var(--moss);color:#fff;border-color:transparent;font-weight:700}
+
+/* ---------- 详情弹层 ---------- */
+.sheet{position:absolute;inset:0;background:rgba(12,16,13,.45);display:none;align-items:flex-end;z-index:5}
+.sheet.on{display:flex}
+.sheet .panel{background:var(--paper);width:100%;border-radius:24px 24px 0 0;padding:8px 16px 20px;
+  max-height:86%;overflow:auto;box-shadow:0 -10px 30px rgba(0,0,0,.25)}
+.handle{width:38px;height:4px;border-radius:2px;background:var(--line);margin:6px auto 12px}
+.hero{border-radius:14px;overflow:hidden;margin-bottom:12px}
+.hero img{width:100%;display:block;aspect-ratio:3/2;object-fit:cover}
+.kv{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
+.kv span{font-size:11.5px;padding:4px 11px;border-radius:999px;background:var(--sage);color:var(--olive)}
+.sec{font-size:13px;font-weight:800;color:var(--moss);margin:14px 0 8px;display:flex;align-items:center;gap:7px}
+.sec::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--amber)}
+.kv2{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line);color:var(--gray)}
+.kv2 b{color:var(--ink);font-weight:600}
+.close{margin-top:14px;width:100%;padding:11px;border-radius:999px;border:0;background:var(--moss);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+
+/* ---------- 演示控制条 ---------- */
+.bar-out{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:420px}
+.bar-out button{font:inherit;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:var(--card);color:var(--olive)}
+.bar-out button.on{background:var(--moss);color:#fff;border-color:transparent;font-weight:700}
+.note{max-width:420px;font-size:12px;line-height:1.7;color:var(--gray);text-align:center}
+.note a{color:var(--moss)}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status"><span>10:42</span><span>Wi-Fi · 78%</span></div>
+  <div class="scroll"><div class="scroll-inner" id="view"></div></div>
+
+  <div class="nav">
+    <button data-tab="cam" class="on">识别</button>
+    <button data-tab="log">日志</button>
+    <button data-tab="guide">图鉴</button>
+    <button data-tab="set">设置</button>
+  </div>
+
+  <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
+</div>
+
+<div class="bar-out">
+  <button data-theme="moss" class="on">苔绿琥珀</button>
+  <button data-theme="walnut">深胡桃铜</button>
+  <button data-theme="mist">晨雾冷杉</button>
+  <button data-theme="indigo">黛蓝山樱</button>
+  <button data-theme="cocoa">草绿可可</button>
+  <button id="night">夜间</button>
+</div>
+
+<p class="note">
+  版式对着真机写的（adb 节点树 + 截图），物种名/学名/保护级别取自 App 自己的图鉴数据，
+  置信度是仓库模型在本机跑出来的 top-1。<br>
+  照片是 iNaturalist 的开放许可替代图（CC0 / CC-BY），
+  <a href="https://www.inaturalist.org" target="_blank" rel="noopener">来源</a>——
+  不是手机里拍的那几张。完整署名见页脚。
+</p>
+
+<script>
+// ---------- 五套配色（DESIGN.md §2.3，键值与 App 内一致） ----------
+const PALETTES = {
+  moss:   {paper:"#F7F4EC", card:"#FFFFFF", ink:"#1F2A22", moss:"#3A5540", moss2:"#5A7A5F", sage:"#E9F0E6", olive:"#5B6B4F", amber:"#DDA45A", line:"#E4DFCF"},
+  walnut: {paper:"#F3EEE6", card:"#FFFFFF", ink:"#241C14", moss:"#5C4630", moss2:"#83623F", sage:"#EFE4CE", olive:"#6E5B41", amber:"#B98A2F", line:"#E2D8C6"},
+  mist:   {paper:"#F2F4F5", card:"#FFFFFF", ink:"#1E2629", moss:"#3E5C6B", moss2:"#5D7F8F", sage:"#E2ECEF", olive:"#4F6B77", amber:"#C2703D", line:"#DCE3E6"},
+  indigo: {paper:"#F5F4F7", card:"#FFFFFF", ink:"#22223A", moss:"#3C3F66", moss2:"#5D6191", sage:"#E7E6F2", olive:"#585A85", amber:"#D98E9E", line:"#E0DEEA"},
+  cocoa:  {paper:"#F3EFE6", card:"#FFFFFF", ink:"#2A2620", moss:"#6E8568", moss2:"#8FA285", sage:"#DDE4D2", olive:"#6F7B5E", amber:"#D9A97C", line:"#DFD8C8"}
+};
+
+// ---------- 数据（学名/中文名/保护级别来自 app 自己的 guide JSON） ----------
+const SPECIES = {
+  "hong-er":  {zh:"红耳鹎",   sci:"Pycnonotus jocosus",   iucn:"无危 LC", prot:"三有", region:"华南", photo:"shots/hong-er.jpg",  det:0.90, p:0.88, n:2},
+  "hongshui": {zh:"红尾水鸲", sci:"Phoenicurus fuliginosus", iucn:"无危 LC", prot:"三有", region:"东北", photo:"shots/hongshui.jpg", det:0.98},
+  "huixique": {zh:"灰喜鹊",   sci:"Cyanopica cyanus",      iucn:"无危 LC", prot:"三有", region:"华北", photo:"shots/huixique.jpg", det:0.95, p:0.99, n:5},
+  "maque":    {zh:"麻雀",     sci:"Passer montanus",      iucn:"无危 LC", prot:"三有", region:"华北", photo:"shots/maque.jpg",    det:0.93, p:0.96, n:1},
+  "queshu":   {zh:"鹊鸲",     sci:"Copsychus saularis",   iucn:"无危 LC", prot:"三有", region:"华东", photo:"shots/queshu.jpg",   det:0.95, p:0.95}
+};
+const UNLIT = [
+  {zh:"紫啸鸫",   sci:"Myophonus caeruleus"},
+  {zh:"白头鹎",   sci:"Pycnonotus sinensis"},
+  {zh:"戴胜",     sci:"Upupa epops"},
+  {zh:"珠颈斑鸠", sci:"Streptopelia chinensis"},
+  {zh:"红胁蓝尾鸲", sci:"Tarsiger cyanurus"}
+];
+const LOGS = [
+  {d:"2026-10-05", t:"15:10", k:"hong-er"},
+  {d:"2026-10-05", t:"14:31", k:"hong-er"},
+  {d:"2026-10-05", t:"11:02", k:"huixique"},
+  {d:"2026-10-04", t:"16:48", k:"maque"},
+  {d:"2026-10-04", t:"09:20", k:"huixique"},
+  {d:"2026-10-03", t:"17:05", k:"huixique"}
+];
+
+const $ = s => document.querySelector(s);
+const view = $("#view");
+
+function conf(i){ return (SPECIES[i].p*100).toFixed(0); }
+
+function camView(){
+  const s = SPECIES["queshu"];
+  return `
+  <div class="topbar">
+    <div class="loc">区域 · 自动</div>
+    <div style="font-size:12px;color:var(--gray)">35.9°C · 2.8fps · 151ms</div>
+  </div>
+  <div class="zoom"><span>0.6</span><span class="on">1.0x</span><span>2.0</span><span>2.6</span></div>
+  <div class="cam">
+    <img src="${s.photo}" alt="鹊鸲">
+    <div class="hud"><span>自动放大</span><span>1/240 · ISO 200</span></div>
+    <div class="box" style="left:24%;top:16%;width:56%;height:62%">
+      <span class="tagbox">${s.zh} ${conf("queshu")}%</span>
+    </div>
+  </div>
+  <div class="card idcard">
+    <div class="zh">${s.zh}</div>
+    <div class="sci">${s.sci}</div>
+    <div class="conf"><div class="bar"><i style="width:${s.p*100}%"></i></div><div class="pct">${conf("queshu")}%</div></div>
+    <div class="cands">
+      <span>${s.zh} ${conf("queshu")}%</span><span>鹊鸲 9%</span><span>白腰文鸟 4%</span>
+      <span>红胁蓝尾鸲 3%</span><span>北红尾鸲 2%</span>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px">
+      <button class="chip" style="flex:1">改判</button>
+      <button class="chip" style="flex:1">加备注</button>
+      <button class="chip on" style="flex:1">记一笔</button>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--gray);margin-top:10px;line-height:1.6">
+    置信度 ${conf("queshu")}% 与检出分 ${s.det.toFixed(2)} 是仓库里的 yolox 640 + 华东区域分类器在这张照片上跑出来的结果。
+  </p>`;
+}
+
+function logView(){
+  let out = `<div class="topbar"><div class="loc">观测记录</div><div style="font-size:12px;color:var(--gray)">共 ${LOGS.length} 条</div></div>`;
+  let day = "";
+  LOGS.forEach(r=>{
+    if (r.d !== day){ day = r.d; out += `<div class="day">${r.d}</div>`; }
+    const s = SPECIES[r.k];
+    out += `<div class="card row">
+      <img src="${s.photo}" alt="${s.zh}">
+      <div style="flex:1">
+        <div class="zh">${s.zh}</div>
+        <div class="sci">${s.sci}</div>
+        <div class="meta">${r.t} · ${s.region}区 · 自动记录</div>
+      </div>
+      <div class="p">${s.iucn}</div>
+    </div>`;
+  });
+  out += `<button class="close">导出 CSV（全部 ${LOGS.length} 条）</button>`;
+  return out;
+}
+
+function guideView(){
+  let cards = Object.keys(SPECIES).map(k=>{
+    const s = SPECIES[k];
+    return `<div class="pola" data-k="${k}">
+      <div class="ph"><img src="${s.photo}" alt="${s.zh}">
+        ${k==="hong-er"?'<span class="badge-new">new</span>':""}
+        ${s.n?`<span class="count">×${s.n}</span>`:""}
+      </div>
+      <div class="cap">
+        <div class="zh">${s.zh}</div>
+        <div class="sci">${s.sci}</div>
+        <div class="tags"><span class="tag iucn">${s.iucn}</span><span class="tag">${s.prot}</span></div>
+      </div>
+    </div>`;
+  }).join("");
+  UNLIT.forEach(u=>{
+    cards += `<div class="pola">
+      <div class="ph sil"><span class="pill-unlit">未点亮</span></div>
+      <div class="cap"><div class="zh" style="color:var(--gray)">${u.zh}</div>
+      <div class="sci" style="color:var(--gray)">${u.sci}</div></div>
+    </div>`;
+  });
+  return `
+  <div class="topbar"><div class="loc">全国图鉴</div>
+    <div class="viewtoggle"><span class="on">▦</span><span>☰</span></div></div>
+  <div class="search">🔍 搜索鸟种（中文名/学名）</div>
+  <div class="card progress">
+    <div class="t"><h2><i class="tick"></i>收集进度</h2><div class="pct">1%<small>完成度</small></div></div>
+    <div class="bar"><i></i></div>
+    <div class="meta">已点亮 <b>${Object.keys(SPECIES).length}</b> / 384 种 · 本周加新 <b>+5</b></div>
+  </div>
+  <div class="chips"><button class="chip on">全部</button><button class="chip">已点亮</button><button class="chip">未见</button></div>
+  <div class="chips" style="flex-wrap:nowrap;overflow:hidden">
+    <button class="chip on" style="padding:5px 11px;font-size:11.5px">全部分布区</button>
+    <button class="chip" style="padding:5px 11px;font-size:11.5px">东北区</button>
+    <button class="chip" style="padding:5px 11px;font-size:11.5px">华北区</button>
+    <button class="chip" style="padding:5px 11px;font-size:11.5px">华东区</button>
+  </div>
+  <div class="wall">${cards}</div>`;
+}
+
+function setView(){
+  return `
+  <div class="topbar"><div class="loc">设置</div></div>
+  <div class="card" style="padding:6px 16px">
+    <div class="kv2"><span>识别区域</span><b>自动（当前：华东）</b></div>
+    <div class="kv2"><span>地理先验重排</span><b>开</b></div>
+    <div class="kv2"><span>非鸟拒识门</span><b>开</b></div>
+    <div class="kv2"><span>相机音频</span><b>关</b></div>
+  </div>
+  <div class="sec">外观 · 配色方案</div>
+  <div class="chips">
+    ${Object.keys(PALETTES).map((k,i)=>`<button class="chip ${i===0?'on':''}" data-pal="${k}">${["苔绿琥珀","深胡桃铜","晨雾冷杉","黛蓝山樱","草绿可可"][i]}</button>`).join("")}
+  </div>
+  <div class="card" style="padding:6px 16px">
+    <div class="kv2"><span>昼夜</span><b id="nightState">跟随系统</b></div>
+    <div class="kv2"><span>模型</span><b>区域 v2 · arm64-v8a</b></div>
+    <div class="kv2"><span>存储</span><b>本机 · 无云端</b></div>
+    <div class="kv2"><span>版本</span><b>1.0（versionCode 1）</b></div>
+  </div>
+  <p style="font-size:11.5px;color:var(--gray);margin-top:12px;line-height:1.7">
+    上面的配色就是 App 设置 → 外观里的五套方案，页面跟着一起换。
+  </p>`;
+}
+
+function detail(k){
+  const s = SPECIES[k];
+  const confRow = s.p ? `
+    <div class="sec">本机识别记录</div>
+    <div class="kv2"><span>检出分（yolox 640）</span><b>${s.det.toFixed(2)}</b></div>
+    <div class="kv2"><span>分类 top-1（${s.region}区模型）</span><b>${s.zh} ${conf(k)}%</b></div>
+    <div class="kv2"><span>记录条数</span><b>${s.n||1} 条</b></div>` : "";
+  return `
+  <div class="handle"></div>
+  <div class="hero"><img src="${s.photo}" alt="${s.zh}"></div>
+  <div style="font-size:23px;font-weight:800">${s.zh}</div>
+  <div class="sci" style="font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--moss)">${s.sci}</div>
+  <div class="kv"><span>${s.iucn}</span><span>${s.prot}保护动物</span><span>识别区：${s.region}</span><span>特有种 否</span></div>
+  <div class="sec">保护状态</div>
+  <div class="kv2"><span>IUCN</span><b>${s.iucn}</b></div>
+  <div class="kv2"><span>保护级别</span><b>${s.prot}保护动物</b></div>
+  ${confRow}
+  <div class="sec">物种档案</div>
+  <div class="kv2"><span>目 / 科</span><b>雀形目</b></div>
+  <div class="kv2"><span>形态测量</span><b>体重 / 体长 / 嘴峰 / 翅长</b></div>
+  <p style="font-size:11.5px;color:var(--gray);margin-top:14px;line-height:1.7">
+    点过的图与 App 内一致：照片墙只放点亮过的框选图。未点亮物种只有剪影和「未点亮」胶囊。
+  </p>
+  <button class="close" onclick="document.getElementById('sheet').classList.remove('on')">关闭</button>`;
+}
+
+const VIEWS = {cam: camView, log: logView, guide: guideView, set: setView};
+let cur = "cam";
+
+function render(){
+  view.innerHTML = VIEWS[cur]();
+  document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on", b.dataset.tab===cur));
+  view.querySelectorAll(".pola[data-k]").forEach(el=>{
+    el.addEventListener("click", ()=>{ $("#panel").innerHTML = detail(el.dataset.k); $("#sheet").classList.add("on"); });
+  });
+  view.querySelectorAll("[data-pal]").forEach(el=>{
+    el.addEventListener("click", ()=>applyPalette(el.dataset.pal));
+  });
+}
+
+function applyPalette(k){
+  const p = PALETTES[k];
+  const r = document.documentElement.style;
+  Object.keys(p).forEach(c=>r.setProperty("--"+c, p[c]));
+  document.querySelectorAll(".bar-out [data-theme]").forEach(b=>b.classList.toggle("on", b.dataset.theme===k));
+  document.querySelectorAll("[data-pal]").forEach(b=>b.classList.toggle("on", b.dataset.pal===k));
+}
+
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click", ()=>{ cur=b.dataset.tab; render(); }));
+document.querySelectorAll(".bar-out [data-theme]").forEach(b=>b.addEventListener("click", ()=>applyPalette(b.dataset.theme)));
+$("#night").addEventListener("click", e=>{
+  document.body.classList.toggle("night");
+  e.target.classList.toggle("on", document.body.classList.contains("night"));
+  e.target.textContent = document.body.classList.contains("night") ? "日间" : "夜间";
+  const ns = document.getElementById("nightState"); if (ns) ns.textContent = document.body.classList.contains("night") ? "强制夜" : "跟随系统";
+});
+$("#sheet").addEventListener("click", e=>{ if (e.target.id==="sheet") e.currentTarget.classList.remove("on"); });
+render();
+</script>
+
+<footer style="max-width:430px;font-size:11px;line-height:1.8;color:var(--gray);text-align:center">
+  照片来自 iNaturalist，按各自 CC0 / CC-BY 许可使用；具体作者与原链接见
+  <a href="https://github.com/kidnappe/WhatsBird/blob/main/site/shots/manifest.json" target="_blank" rel="noopener">shots/manifest.json</a>。
+  数据与模型输出来自本仓库。
+</footer>
+
+</body>
+</html>

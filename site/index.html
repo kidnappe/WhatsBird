@@ -131,6 +131,56 @@
   </section>
 
 
+<!-- ============ 图廊 ============ -->
+  <section id="gallery">
+    <h2><span class="rule"></span>它认得出什么</h2>
+    <p class="lede-sm">
+      这五张是开放图库（iNaturalist）的照片，按 CC0 / CC-BY 使用，署名在页脚。
+      物种名由 iNaturalist 的 taxon 锁定，每张都用仓库里的
+      <strong>yolox 640 检测器 + 对应区域分类器</strong>跑过一遍——
+      下面的百分比就是分类器真实的 top-1 概率。点图看大图。
+    </p>
+    <div class="gallery">
+      <figure>
+        <img src="shots/hong-er.jpg" alt="红耳鹎照片" data-full="shots/hong-er.jpg">
+        <figcaption><b>红耳鹎</b><i class="sci">Pycnonotus jocosus</i><span>top-1 88%</span></figcaption>
+      </figure>
+      <figure>
+        <img src="shots/hongshui.jpg" alt="红尾水鸲照片" data-full="shots/hongshui.jpg">
+        <figcaption><b>红尾水鸲</b><i class="sci">Phoenicurus fuliginosus</i><span>检出 0.98</span></figcaption>
+      </figure>
+      <figure>
+        <img src="shots/huixique.jpg" alt="灰喜鹊照片" data-full="shots/huixique.jpg">
+        <figcaption><b>灰喜鹊</b><i class="sci">Cyanopica cyanus</i><span>top-1 99%</span></figcaption>
+      </figure>
+      <figure>
+        <img src="shots/maque.jpg" alt="麻雀照片" data-full="shots/maque.jpg">
+        <figcaption><b>麻雀</b><i class="sci">Passer montanus</i><span>top-1 96%</span></figcaption>
+      </figure>
+      <figure>
+        <img src="shots/queshu.jpg" alt="鹊鸲照片" data-full="shots/queshu.jpg">
+        <figcaption><b>鹊鸲</b><i class="sci">Copsychus saularis</i><span>top-1 95%</span></figcaption>
+      </figure>
+    </div>
+    <p class="aside">
+      下面三张真机截图里，照片位换的也是这五张——App 里原本那几张是你自己拍的观测记录，
+      没有原样搬上来。学名、保护级别、置信度这些数字没动。
+    </p>
+  </section>
+
+  <!-- ============ 可交互演示 ============ -->
+  <section id="try">
+    <h2><span class="rule"></span>不下载也能先点点</h2>
+    <p class="lede-sm">
+      照着真机 UI 重写的可交互演示：底部四个 tab 能切，图鉴点卡片开详情，
+      五套配色和夜间模式都能换。数据取自 App 自己的图鉴库。
+    </p>
+    <div class="demo-frame">
+      <iframe src="demo.html" title="拾鸟 UI 演示" loading="lazy"></iframe>
+    </div>
+    <p class="aside">框里滚不动？<a href="demo.html">在新标签打开 demo.html</a>。</p>
+  </section>
+
   <!-- ============ 安装 ============ -->
   <section id="install">
     <h2><span class="rule"></span>怎么装</h2>
