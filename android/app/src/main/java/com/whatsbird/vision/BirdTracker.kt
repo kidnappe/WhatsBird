@@ -4,7 +4,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * 轻量 IoU 跟踪器（docs/handoff/detector_b/HANDOFF.md §5 P2，ByteTrack 思路的极简版：无外观特征、无 ReID）。
+ * 轻量 IoU 跟踪器（ByteTrack 思路的极简版：无外观特征、无 ReID）。
  *
  * 职责（替代旧 memoryDet + smooth() 的记忆逻辑）：
  *  ① 框 EMA 平滑（消除检测抖动）
@@ -12,7 +12,7 @@ import kotlin.math.min
  *     重检搜索窗跟着预测位置走，不再守在最后看到的位置
  *  ③ 变焦几何重投影：倍率变化时把轨迹框围绕画面中心按 k=newZoom/oldZoom 缩放，
  *     速度作废——退倍率后记忆框的**位置和大小**都仍然有意义（尺度门的替代实现）
- *  ④ 轨迹合并（v1.1，MULTI_BIRD_DESIGN §九）：两条确认轨迹持续高 IoU 共存 →
+ *  ④ 轨迹合并（v1.1）：两条确认轨迹持续高 IoU 共存 →
  *     判同一只鸟，保留更强一条——治一鸟多框（NMS 漏网双框各自建军 /
  *     丢而复返期新旧轨迹并存）
  *
@@ -135,7 +135,7 @@ class BirdTracker {
             }
             val ca = a.candidates?.firstOrNull()
             val cb = b.candidates?.firstOrNull()
-            // 保险（v1.2 收紧，MULTI_BIRD_DESIGN §九）：只有「双方两验一致 + 双方 top1
+            // 保险（v1.2 收紧）：只有「双方两验一致 + 双方 top1
             // 都过 VETO_PROB」才够格判两只真鸟。野测反例（v6 t=36）：同一只麻雀三个框
             // 三种名（树鹨43/燕雀55/棕头鸦雀49），每个都"两验一致"——远距小鸟的 crop
             // 会稳定地错认，低置信两验没有否决权；否则合并被永久锁死，一鸟多框不治。

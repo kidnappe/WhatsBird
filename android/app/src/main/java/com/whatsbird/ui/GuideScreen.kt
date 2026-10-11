@@ -242,7 +242,7 @@ class GuideViewModel @Inject constructor(
             }
         }
         // 物种性状（详情页「物种档案」卡片）：384 种里覆盖 381 种，缺的 3 种卡片显示「暂缺」。
-        // 与上面几个资产同一次 IO 读取，见 docs/handoff/root/GUIDE-TRAITS.md。
+        // 与上面几个资产同一次 IO 读取。
         val traitsBySci = TraitsCatalog.load(appCtx)
         // 保护状态（详情页「保护状态」卡片 + 卡片页徽章）：380/384。
         // ⚠️ 这一份**取代**上面 iucnBy 的权威地位——guide_*.json 的 iucn 只有 148/384，

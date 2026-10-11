@@ -50,7 +50,7 @@ class RegionClassifierRouter @Inject constructor(
     /** 当前手动指定的区域（null = 自动 GPS 路由）。 */
     fun manualRegion(): String? = manualRegion
 
-    /** 先验重排健康状态（CameraVM 心跳打 prior=on/off 用——降级必须可见，APP-MODELS §5.2）。 */
+    /** 先验重排健康状态（CameraVM 心跳打 prior=on/off 用——降级必须可见）。 */
     fun priorDegradeReason(): String? = priorReranker.degradeReason
 
     /** 手动指定区域；传 null 回到自动 GPS 路由。切换即失效 GPS 缓存。 */
@@ -60,7 +60,7 @@ class RegionClassifierRouter @Inject constructor(
         pickRegion() // 立即刷新 reason，UI 不用等下一帧
     }
 
-    // 区域显示文案（含类数）从 labels 资产行数派生（APP-MODELS §5.3 类数债根治）：
+    // 区域显示文案（含类数）从 labels 资产行数派生，不写死：
     // 换模型类数变了自动跟上，不再手写死数；行数读不到降级为纯区名（ModelRegistry log.w）。
     private val regionLabels: Map<String, String> by lazy {
         ModelRegistry.REGION_NAMES.mapValues { (key, _) ->
@@ -81,7 +81,7 @@ class RegionClassifierRouter @Inject constructor(
             val (region, reason) = when {
                 loc == null -> "cn373" to "无定位信息 → ${label("cn373")}"
                 inBox(loc, ModelRegistry.HUABEI_BBOX) ->
-                    // 华北先判：华北∩东北重叠带 39–43°N×119–120°E（蒙东一角）留华北侧（APP-MODELS §4-C.1）
+                    // 华北先判：华北∩东北重叠带 39–43°N×119–120°E（蒙东一角）留华北侧
                     "huabei" to "GPS 在华北框内 → ${label("huabei")}"
                 inBox(loc, ModelRegistry.DONGBEI_BBOX) ->
                     "dongbei" to "GPS 在东北框内 → ${label("dongbei")}"
@@ -129,7 +129,7 @@ class RegionClassifierRouter @Inject constructor(
                 "dongbei" -> dongbei.get().classify(src)
                 else -> cn373.get().classify(src)
             }
-            // geomodel 先验重排（docs/handoff/root/RERANK-DEVICE.md 方案 A）：查表×月份×最近采样点，
+            // geomodel 先验重排：查表×月份×最近采样点，
             // 只重排不删候选；表缺失/无定位自动降级（月度均值或原样返回）
             priorReranker.rerank(raw, region, locationProvider.lastKnown())
         }

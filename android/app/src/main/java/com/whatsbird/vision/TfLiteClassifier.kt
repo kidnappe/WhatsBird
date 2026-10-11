@@ -37,7 +37,7 @@ class TfLiteClassifier @Inject constructor(
     private val logitsOut = Array(1) { FloatArray(tensorDim) }
 
     init {
-        // 启动自检（APP-MODELS §5.2 把「华中 145」教训机制化）：labels 行数、注册表类数、
+        // 启动自检（把「华中 145」教训机制化）：labels 行数、注册表类数、
         // 张量真实输出维三者不一致 → 打红字。运行期的形状异常会被 Router 的
         // catch(Throwable) 吞成「该区域静默全废」，初始化期是唯一能喊出来的时机——
         // 降级可以，降级必须可见。

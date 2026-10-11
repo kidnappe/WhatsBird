@@ -61,7 +61,7 @@ data class ObserveUiState(
     val fps: Float = 0f,                    // 分析流实际帧率（性能监控叠加层用）
 )
 
-/** 多鸟取景框（MULTI_BIRD_DESIGN §4）：主目标之外的其他轨迹，角标 = 首分类 top1（未过
+/** 多鸟取景框：主目标之外的其他轨迹，角标 = 首分类 top1（未过
  *  MIN_CLASS_PROB 不给名字——低置信显示策略 c）。 */
 data class BoxTag(
     val trackId: Int,
@@ -238,7 +238,7 @@ class CameraViewModel @Inject constructor(
         }
     }
 
-    // 多鸟（docs/handoff/detector_b/MULTI_BIRD_DESIGN.md §5）
+    // 多鸟：主目标轨道的选择状态
     @Volatile private var selectedTrackId: Int? = null
 
     /**
@@ -493,7 +493,7 @@ class CameraViewModel @Inject constructor(
             (identity?.prob ?: 0f) / CONFIDENT_PROB,
             (identity?.hits ?: 0) / MIN_IDENTIFY_HITS.toFloat(),
         ).coerceIn(0f, 1f)
-        // 多鸟框集合（MULTI_BIRD_DESIGN §4 + 幽灵框防线③）：全部过显示门（轨迹均分 ≥
+        // 多鸟框集合（含幽灵框防线③）：全部过显示门（轨迹均分 ≥
         // DISPLAY_MIN_SCORE）才画框，副目标另需确认轨迹。相机逻辑（追焦/自动放大）吃
         // 未过门的 detections，真鸟充能期间分数上来框自然出现。
         val others = tracker.snapshot(now)
@@ -650,7 +650,7 @@ class CameraViewModel @Inject constructor(
         const val MEMORY_HOLD_MS = 1500L     // 检测丢失后记忆框保鲜时长（仅显示）
         const val REDETECT_WINDOW_MS = 15000L // 丢失后重检搜索窗（B §5 P1：5s→15s，治退倍率即清身份）
         const val ZOOM_JOLT_MS = 3000L       // 变焦后位置突变期，重检改走渐进扫描
-        const val CORNER_MAX = 5             // 多鸟同时展示框上限（主目标 1 + 角标 ≤4，MULTI_BIRD_DESIGN §4）
+        const val CORNER_MAX = 5             // 多鸟同时展示框上限（主目标 1 + 角标 ≤4）
         val SCAN_PHASES = arrayOf(           // 渐进扫描轮转相位（regionRescan，regionFrac=0.5）
             0.25f to 0.25f,                  // 中心 2×
             0f to 0f, 0.5f to 0f, 0f to 0.5f, 0.5f to 0.5f, // 2×2 宫格

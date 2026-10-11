@@ -7,12 +7,12 @@ import android.content.Context
  * 5 区域策略（PLAN §七）：GPS 落在某区域 bbox 内 → 区域模型；否则回退全国兜底 v2（384 类）。
  */
 object ModelRegistry {
-    // 检测器双档自动分档（HANDOFF §6.1 分档表：旗舰 RAM≥12G → 640；其余 → 512）：
+    // 检测器双档自动分档（旗舰走 640-best，其余走 512-ep35；阈值见 DETECTOR_TIER_MIN_BYTES 注释）：
     // 512 ep35 int8 已过闸（整体 -1.1pp），small 桶 -2.2pp 为该尺寸量化固有敏感度
-    // （含鸟校准重量化实测无效，见 REJECT-GATE 同期记录），双档上线按此口径接受。
+    // （含鸟校准重量化实测无效），双档上线按此口径接受。
     // selftest_bird.jpg PC 基准：640=0.8776/dets=1，512=0.7663/dets=1（logcat 比对用）。
     //
-    // ⚠️ 2026-10-10 补：上面那两个数是「512 家族 fp32 → int8」的对比（README-B-LOCAL），
+    // ⚠️ 2026-10-10 补：上面那两个数是「512 家族 fp32 → int8」的对比，
     //   **不是「中档 vs 旗舰」**。低内存设备实际拿到的是中档，代价如下
     //   （落盘 data/detector_b/results/rescore_th045_20261009.json，th0.45 行）：
     //     旗舰 int8-640-best   recall 0.492 / tiny 0.254 / small 0.719 / FP 0.952
@@ -20,7 +20,6 @@ object ModelRegistry {
     //     差                   recall −4.9pp / **tiny −7.7pp（相对 −30%）** / small −3.3pp
     //   tiny 正是 10x 小个体麻雀那一档，也正是升分辨率重抓（C）想治的弱项。
     //   分档门槛本身是既定决定，此处只把**代价**记清楚，别再被「−1.1pp」误导成差距很小。
-    //   详见 docs/reports/APP-LAYER-AUDIT-20261010.md §2.3。
     const val DETECTOR_ASSET = "models/yolox_bird_640_best_int8.tflite"
     const val DETECTOR_ASSET_MID = "models/yolox_bird_512_ep35_int8.tflite"
     const val MIN_DET_SCORE = 0.45f
@@ -66,17 +65,17 @@ object ModelRegistry {
     //
     // ⚠️ 2026-10-10 已修正本注释的依据（值一个字未动）：
     //   原注「top1 只有 23~39%」「三区追平整图口径」出自**每区 300 张**的扫描，
-    //   且 23~39% 这个数 HANDOFF-20261009 §8.2 已查明**无出处**（0.15 时代的结果被覆盖）。
+    //   且 23~39% 这个数经项目审计已查明**无出处**（0.15 时代的结果被覆盖）。
     //   全量复测（~3,700/区，frac=2.0 与本值同口径）：
     //     无重排 → ratio 4.0：华北 61.96→63.32 / 华中 59.63→61.04 / 华东 59.15→58.95
     //                     / 华南西南 65.43→67.80 / 东北 60.57→62.19
     //   即**部署口径已追平甚至反超整图**（四区反超、华东 −0.2pp），
     //   且 ratio 6.0 相对 4.0 是 −0.1/−0.5/+0.3/−1.0/−0.8，四区变差且都在噪声内
-    //   → 4.0 已定案，不要再改（HANDOFF-20261009 §8.2）。
+    //   → 4.0 已定案，不要再改。
     //   ⚠️ 本值至今**未在真机回归过**（多鸟邻居串标 / 拒识门 / 显示门三点），
     //   但拒识门那项已用部署口径实测代偿：外扩后真鸟误拒 0.46%，与整图 0.52% 持平，
-    //   见 docs/reports/APP-LAYER-AUDIT-20261010.md §2.2。剩多鸟串标与显示门待真机。
-    // PLAN §8.4「外扩 10-20% 折中」就此作废。残余缺口见 CROP-REGIME.md §5。
+    //   剩多鸟串标与显示门待真机。
+    // PLAN §8.4「外扩 10-20% 折中」就此作废。
     const val BOX_EXPAND_RATIO = 4.0f
     const val BIRD_CLASS_ID = 15 // YOLOX COCO 类表里 bird=15
 
@@ -89,14 +88,13 @@ object ModelRegistry {
     //   ⇒ **外扩没有带来额外误拒，本阈值不需要动**。
     //   残留信号：裁剪短边 <64px 的 4.3% 样本误拒 5.20%（其余 0.21%）。
     //   负样本侧因原始视频不在盘上仍无部署口径数据 ⇒ 将来若要调阈值，须先补那段。
-    //   见 docs/reports/APP-LAYER-AUDIT-20261010.md §2.2。
     const val REJECT_ASSET = "models/birdnet_reject.tflite"
     const val REJECT_LABELS = "models/labels_reject.txt"
     const val REJECT_DIM = 2
     const val REJECT_THRESHOLD = 0.8f
 
     // 全国兜底 v2（384 类 = 五区并集 244 + 缺口补抓 140，2026-10-08 训练；
-    // 验收 docs/reports/交付报告_national_v2_20261008.md：零泄漏同题 top1 60.56%
+    // 验收：零泄漏同题 top1 60.56%
     // vs 旧 cn373 57.71%，gap 桶 +6.2pp）。旧 373 类退役，路由 key 沿用 "cn373"。
     // 旧版"384 维只有 373 有标签"的坑不复存在：v2 输出 384 维与 labels 全对齐。
     const val CN373_ASSET = "models/birdnet_national_v2.tflite"
@@ -104,7 +102,7 @@ object ModelRegistry {
     const val CN373_TENSOR_DIM = 384
     const val CN373_DIM = 384
 
-    // 华北 148 类（rec 补量版，val top-1 60.21%；旧 huabei_mnv4_300 146 类已淘汰，APP-MODELS §1）
+    // 华北 148 类（rec 补量版，val top-1 60.21%；旧 huabei_mnv4_300 146 类已淘汰）
     const val HUABEI_ASSET = "models/birdnet_huabei.tflite"
     const val HUABEI_LABELS = "models/labels_huabei.txt"
     const val HUABEI_DIM = 148
@@ -146,7 +144,7 @@ object ModelRegistry {
     }
 
     // 华东 150 类（huadong_mnv4_300_rec，val top-1 56.12%）：鲁苏皖浙赣闽。
-    // ⚠️ 用 rec 不用 huadong_mnv4_300：那版是 iNat 补量前的 149 类旧表（55.52%，APP-MODELS §1）
+    // ⚠️ 用 rec 不用 huadong_mnv4_300：那版是 iNat 补量前的 149 类旧表（55.52%）
     const val HUADONG_ASSET = "models/birdnet_huadong.tflite"
     const val HUADONG_LABELS = "models/labels_huadong.txt"
     const val HUADONG_DIM = 150
@@ -155,26 +153,26 @@ object ModelRegistry {
 
     // 东北 150 类（dongbei_mnv4_rec 补量版，val top-1 58.82%）。
     // ⚠️ 用户拍板（2026-10-06 晚）：用 rec 尽管比 v1（59.18%）低 0.36 点——此决定推翻
-    // RERANK-DEVICE §5「低于 59.18% 锚回 v1」的指示，后来者别改回去（APP-MODELS §1 东北行）。
+    // 「低于 59.18% 就锚回 v1」的早期指示后来者别改回去（2026-10-06 用户拍板）。
     const val DONGBEI_ASSET = "models/birdnet_dongbei.tflite"
     const val DONGBEI_LABELS = "models/labels_dongbei.txt"
     const val DONGBEI_DIM = 150
     // 东北 bbox：纬 39~55，经 119~135（tools/regions.json）。
-    // 与华北的重叠带 39–43°N×119–120°E（蒙东一角）→ Router 先判华北，该带留华北侧（APP-MODELS §4-C.1）
+    // 与华北的重叠带 39–43°N×119–120°E（蒙东一角）→ Router 先判华北，该带留华北侧
     val DONGBEI_BBOX = doubleArrayOf(39.0, 55.0, 119.0, 135.0)
 
     // 分类软门槛：框到了但分类器 Top-1 低于此值 → 视为"不像鸟"，不显示候选
     const val MIN_CLASS_PROB = 0.15f
 
-    // geomodel 先验查表重排（docs/handoff/root/RERANK-DEVICE.md 方案 A）：assets/prior/<region>.json
-    // 只重排不删候选（软掩码已实测否决，见 RERANK-AB §2）
+    // geomodel 先验查表重排：assets/prior/<region>.json
+    // 只重排不删候选（软掩码已实测否决）
     const val PRIOR_DIR = "prior"
 
     /**
      * 先验权重指数，**逐区**取值。
      *
      * 第一次改（2026-10-09 上午）：原来五区写死 1.0f，但那个值只测过**华北一个区**
-     * （`RERANK-DEVICE.md` 写「0.5~1.0 差距 <0.1」——该差距只对华北成立）。
+     * （早期交接写「0.5~1.0 差距 <0.1」——该差距只对华北成立）。
      * 第二次改（同日下午）：全部按 **rank 方式**重定（见 PRIOR_SCALE），因为
      * 部署口径下 rank 的最优 α 与 prob 不同。
      *
@@ -191,22 +189,17 @@ object ModelRegistry {
      *
      * ⚠️ 2026-10-10 已修正本注释的依据（值一个字没动）：
      *   ① 原表引用的是每区 **300 张**的噪声表（基线比全量高 3.6~6.2pp），
-     *      EVAL-AUDIT-20261009 §5.5 已判定那张表「五区最优增益全部落在噪声内（σ<1.1）」，
+     *      项目审计已判定那张表「五区最优增益全部落在噪声内（σ<1.1）」，
      *      §8 用 ~3,700/区 全量重跑过——现表即全量结果。
      *   ② 原注「华东不可信，维持 1.0」：**前提已作废**。华东验证集当天已按训练切分补记为
-     *      6,905 张 / 150 种、判分 56.16%（EVAL-AUDIT-20261009 §1）。华东现为可复算数据，
+     *      6,905 张 / 150 种、判分 56.16%。华东现为可复算数据，
      *      rank@1.0 确实是该区最优。
      *   ③ 原注「东北未测，0.5 依据整图口径」：**已补测**。
      *      dongbei_mnv4_rec\best_eval_g49_nearest.json（2026-10-09 19:22）整图口径
      *      rank@0.5 = 59.53% 为该区最优；部署口径也已补，上表 63.0% 即其最优档。
      *   ④ 五区取值全部与全量最优一致（华南西南那 0.2pp 差在 ±0.73pp 噪声内），
      *      **本轮复核后代码无需改动**，改的是依据。
-     *   ⚠️ prob 与 rank 的差距逐区 ≤0.5pp < 噪声，故两种都不算错，保持 rank 不动
-     *      （EVAL-AUDIT-20261009 §8.2）。
-     *
-     * 出处：docs/handoff/root/HANDOFF-20261009.md §3.4 / §8.3、
-     *      docs/reports/EVAL-AUDIT-20261009.md §8、
-     *      docs/reports/APP-LAYER-AUDIT-20261010.md §2.1
+     *   ⚠️ prob 与 rank 的差距逐区 ≤0.5pp < 噪声，故两种都不算错，保持 rank 不动。
      */
     private val PRIOR_ALPHA_BY_REGION = mapOf(
         "huabei" to 1.0f,
@@ -232,12 +225,12 @@ object ModelRegistry {
      * 第 1 名永远不被数字大小牵连，α 的含义因此跨区稳定。
      *
      * 代价：rank 下手没那么狠，压不到 prob 的 1e-6 地板
-     *（prob 靠这个拿到过更高峰值，那是 `RERANK-AB` 的结论）。但**部署口径下
+     *（prob 靠这个拿到过更高峰值）。但**部署口径下
      * rank 全面胜出**（§3.3），故默认 rank。要切回旧行为只改这一个常量。
      */
     const val PRIOR_SCALE = "rank"
 
-    // ===== 区域显示文案（APP-MODELS §5.3 类数债根治）=====
+    // ===== 区域显示文案（类数运行时派生，不写死）=====
     // UI 里的「华北 148 类」不再手写死数：类数 = labels 资产行数运行时派生，
     // 换模型类数变了 UI 自动跟上；行数读不到降级为纯区名（log.w 可见，降级必须可见）。
 

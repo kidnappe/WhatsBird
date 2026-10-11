@@ -1,4 +1,4 @@
-#Requires -Version 5.1
+﻿#Requires -Version 5.1
 <#
   release_swap.ps1 — 替换 GitHub Release 上的 APK 资产。
 

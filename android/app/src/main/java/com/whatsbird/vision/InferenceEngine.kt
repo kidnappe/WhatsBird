@@ -21,8 +21,7 @@ data class Detection(
     val bottom: Float,
     val cocoClass: Int = -1,
 ) {
-    /** 目标框外扩（每侧加 宽×ratio/2；ratio=4.0 的依据见 ModelRegistry 注释与
-     *  docs/handoff/root/CROP-REGIME.md）。 */
+    /** 目标框外扩（每侧加 宽×ratio/2；ratio=4.0 的依据见 ModelRegistry 注释）。 */
     fun expand(ratio: Float): Detection {
         val dx = (right - left) * ratio / 2f
         val dy = (bottom - top) * ratio / 2f

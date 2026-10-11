@@ -5,8 +5,11 @@
  *   外观嵌 ThemeSettingsContent（种子色/动态取色）；
  *   识别 = 自动放大持久默认（AppPrefs）+ 区域路由状态（写 Router 单例，识别页即时生效）；
  *   数据 = 占用统计 + CSV 导出（SAF，不申请存储权限）+ 清空（双确认）；
- *   关于 = 版本 / 模型清单（类数运行时派生，APP-MODELS §5.3 口径）/ 许可摘要 / 数据本地声明
- *          / 支持拾鸟（全 App 唯一外链，跳爱发电）。
+ *   关于 = 版本 / 模型清单（类数运行时派生，不写死）/ 许可摘要
+ *          / 发布页与下载（外链 1，跳自家 GitHub Pages）/ 支持拾鸟（外链 2，跳爱发电）
+ *          / 数据本地声明。
+ *   ⚠️ 全 App 只有这两条外链，都排在「数据位置」之前——数据位置是两行长说明，
+ *      外链压在页脚既不好找、又被底部悬浮导航胶囊挡住。
  */
 package com.whatsbird.ui
 
@@ -84,8 +87,19 @@ import kotlinx.coroutines.launch
  * 爱发电赞助页（2026-10-11 定案：docs/legal/LICENSES.md §H 的"免费 App + 纯自愿赞助"安全区）。
  * ⚠️ App 内**只放这一条裸链接**，不展示任何档位名/价格/回报——档位文案只活在爱发电页面上，
  * 否则 App 自身就成了销售界面，性质完全变了。URL 集中在此，换域名只改一处。
+ *
+ * ⚠️ 2026-10-12 起这里不再是"唯一外链"：另加了一条 RELEASE_PAGE_URL（自家发布页）。
+ * 赞助页那条的限制仍然有效——**赞助相关的限制只约束赞助链接这一条**，
+ * 新的发布页外链不受"不写档位/价格"约束，但也别把赞助内容塞进发布页入口。
  */
 private const val AFDIAN_URL = "https://afdian.com/a/zhouxuano6"
+
+/**
+ * 发布页（GitHub Pages）：版本号 / 体积 / SHA-256、下载入口、安装步骤、许可与资产授权都收在这里。
+ * 与 AFDIAN_URL 分开定义——一个指向自家文档，一个指向赞助页，两者的"改动理由"完全不同，
+ * 以后其中一条换地址不该连累另一条。URL 集中在此，换域名只改一处。
+ */
+private const val RELEASE_PAGE_URL = "https://kidnappe.github.io/WhatsBird/"
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
@@ -454,8 +468,20 @@ fun SettingsScreen(
                 )
             }
             RowDivider()
-            // 全 App 唯一外链（2026-10-11 定案）：排在「数据位置」那行**之前**——
+            // 外链共两条，都排在「数据位置」那行**之前**——
             // 数据位置是两行长说明，外链压在页脚既不好找、又会被底部悬浮导航胶囊挡住。
+            ActionRow(
+                label = "发布页与下载",
+                desc = "最新版、体积与 SHA-256 校验值、安装步骤、许可与资产授权都在这里（将打开浏览器）",
+                onClick = {
+                    // 国产 ROM 精简浏览器时真会没有可处理的 Activity，别静默失败。
+                    val ok = runCatching {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(RELEASE_PAGE_URL)))
+                    }.isSuccess
+                    if (!ok) viewModel.notify("没能打开浏览器，可手动访问 $RELEASE_PAGE_URL")
+                },
+            )
+            RowDivider()
             // 只写"跳转爱发电"，不写档位与价格——见 AFDIAN_URL 上方注释。
             ActionRow(
                 label = "支持拾鸟",

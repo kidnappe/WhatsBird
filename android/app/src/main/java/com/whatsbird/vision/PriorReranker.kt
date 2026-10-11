@@ -10,11 +10,11 @@ import javax.inject.Singleton
 import org.json.JSONObject
 
 /**
- * 分区×月份 geomodel 先验查表 + 重排（docs/handoff/root/RERANK-DEVICE.md 方案 A）。
+ * 分区×月份 geomodel 先验查表 + 重排。
  *
  * 表：assets/prior/<key>.json（tools/distill_prior_table.py 产出，49 点网格 × 12 月）。
  * 华北 frozen val 实测：nearest 查表 top-1 +0.80（ONNX 真实坐标上限 +1.19）；
- * 无定位的月度均值 +0.27 保底。知识源质量实测见 docs/handoff/root/RERANK-DEVICE.md §4。
+ * 无定位的月度均值 +0.27 保底。
  *
  * 查询语义：
  *  · month = 设备日期（候鸟物候已在 geomodel 里，随季节自动变化）
@@ -51,7 +51,7 @@ class PriorReranker @Inject constructor(
     }
 
     /** 最近一次查表降级原因（null = 正常）。CameraVM 心跳据此打 prior=off，降级必须可见
-     *  （APP-MODELS §5.2：文件名不匹配静默失效的事故族教训）。 */
+     *  （文件名不匹配静默失效的事故族教训）。 */
     @Volatile var degradeReason: String? = null
         private set
 
@@ -157,7 +157,7 @@ class PriorReranker @Inject constructor(
 
     private fun loadTable(key: String): Table? = try {
         // ⚠️ 资产文件名带蒸馏参数后缀（<key>_geomodel_g49.json）——2026-10-07 修复的 P0：
-        // 此前打开 <key>.json 永远 FileNotFoundException，重排静默失效收益为 0（APP-MODELS §5.1）。
+        // 此前打开 <key>.json 永远 FileNotFoundException，重排静默失效收益为 0。
         // 建议改代码而非改资产名：g49→g64 换代时资产名会变，逻辑跟文件名走更脆。
         val o = JSONObject(
             context.assets.open("${ModelRegistry.PRIOR_DIR}/${key}_geomodel_g49.json")

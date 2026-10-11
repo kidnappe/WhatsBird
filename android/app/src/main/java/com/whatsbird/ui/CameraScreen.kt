@@ -16,8 +16,13 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -81,6 +86,7 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -507,7 +513,7 @@ fun CameraScreen(
         ) {
             AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
 
-            // 检测框叠加层（多鸟，MULTI_BIRD_DESIGN §4）：主目标带识别角标（结果面板同源身份），
+            // 检测框叠加层（多鸟）：主目标带识别角标（结果面板同源身份），
             // 其余轨迹带首分类 top1 小角标。深色晕圈 + 亮色描边双描边：亮天空/干草地上黄框不隐形
             Canvas(modifier = Modifier.fillMaxSize()) {
                 for (b in ui.boxes) {
@@ -711,7 +717,7 @@ private fun Bitmap.rotated(degrees: Int): Bitmap {
 
 private const val TAG = "CameraScreen"
 
-/** 确认式记录弹窗：Top-5 候选点选（数据质量铁律，HANDOFF §3.1）。 */
+/** 确认式记录弹窗：Top-5 候选点选（数据质量铁律）。 */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmRecordSheet(
@@ -848,6 +854,57 @@ private fun GlassChip(
     }
 }
 
+/**
+ * 「找鸟中 / 识别中」指示器：一圈 800ms 匀速旋转的圆环。
+ *
+ * 规格出自 `docs/design/DESIGN.md` §5.2「识别中」一行——原文是**两个故意不同频**的循环
+ * （球 600ms 上下 + 环 800ms 转圈，抄 SwiftUI_Demos 的 `DribbleAnimatedView.swift`，
+ * 「同频会像心电图，不同频才像在干活」）。**2026-10-12 定稿只保留圆环**，球与文字都不动。
+ * 理由是取景页同时跑硬件推理，少一个循环少一份叠加负担（`layer-map.html` ⑨ 的硬约束）。
+ *
+ * ⚠️ 顺带更正一处文档失实：项目内的动效收割清单写着
+ * 「⑨ 已落成 `CameraScreen:813/883`」，但 `git log -S drawArc / repeatable( / InfiniteTransition`
+ * 在本文件全历史零命中——那组动效**从未真正进过代码**，本函数是首次落地。
+ * 参数（800ms / 90° 弧头 / 18dp / 2dp 描边）先做过并排对比 demo 再落地；
+ * 对比页在 `docs/design/preview-paper/`，属设计预览，**不随公开树分发**
+ * （`publish_public.ps1` 会整目录剔除该路径），所以这里只记结论不给链接。
+ *
+ * 实现约束：`drawArc` 只读一个动画角度，不写状态、不触发布局测量，
+ * 因此不进主线程布局路径（同 `PaperShimmer` 的思路）。
+ * 减弱动效开启时**不挂** `rememberInfiniteTransition`，只画静止的环——状态仍表达，但不转。
+ */
+@Composable
+private fun SearchingRing(track: Color, head: Color, modifier: Modifier = Modifier) {
+    val reduce = rememberReduceMotion()
+    val sweepDeg = if (reduce) {
+        0f
+    } else {
+        val loop = rememberInfiniteTransition(label = "searchRing")
+        val v by loop.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 800, easing = LinearEasing),
+                repeatMode = RepeatMode.Restart,
+            ),
+            label = "sweep",
+        )
+        v
+    }
+    Canvas(modifier.size(18.dp)) {
+        val stroke = 2.dp.toPx()
+        val d = size.minDimension
+        val topLeft = Offset(
+            (size.width - d) / 2f + stroke / 2f,
+            (size.height - d) / 2f + stroke / 2f,
+        )
+        val arc = Size(d - stroke, d - stroke)
+        val cap = Stroke(width = stroke, cap = StrokeCap.Round)
+        drawArc(track, 0f, 360f, false, topLeft, arc, style = cap)
+        drawArc(head, sweepDeg, 90f, false, topLeft, arc, style = cap)
+    }
+}
+
 /** 底部识别结果面板：深色玻璃层，状态机驱动切换内容。
  *  高度随内容自适应（不再钉死 206dp，Dynamic Type 大字号下不截字）。 */
 @Composable
@@ -870,17 +927,17 @@ private fun ResultPanel(
     ) {
         when (ui.state) {
             IdState.IDLE -> Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    Modifier
-                        .size(6.dp)
-                        .clip(CircleShape)
-                        .background(t.gray),
-                )
+                // 2026-10-12：原先是静态 6dp 灰点，现换成 800ms 旋转环（见 SearchingRing 注释）
+                SearchingRing(track = t.line, head = t.moss)
                 Spacer(Modifier.width(10.dp))
                 Text("找鸟中…", fontSize = 14.sp, color = t.olive)
             }
             IdState.TRACKING -> Column {
-                Text("识别中…", fontSize = 14.sp, color = t.olive)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SearchingRing(track = t.line, head = t.moss)
+                    Spacer(Modifier.width(10.dp))
+                    Text("识别中…", fontSize = 14.sp, color = t.olive)
+                }
                 Spacer(Modifier.height(10.dp))
                 ResultBar(fraction = ui.charging, fill = t.moss)
             }

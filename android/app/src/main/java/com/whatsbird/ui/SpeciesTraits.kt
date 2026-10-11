@@ -13,8 +13,7 @@ import java.util.Locale
  * `docs/guides/dataset_traits_README.md`，`docs/legal/LICENSES.md` §D。
  *
  * 资产 `assets/guide/traits.json` 由 `tools/guide_traits/build_traits_asset.py` 生成，
- * 按学名索引；384 种图鉴骨架里覆盖 381 种，缺口与异名映射证据见
- * `docs/handoff/root/GUIDE-TRAITS.md` 与 `tools/guide_traits/match_report.csv`。
+ * 按学名索引；384 种图鉴骨架里覆盖 381 种，异名映射的逐条证据见 `tools/guide_traits/match_report.csv`。
  *
  * 口径：
  *  - 数值一律是**文献区间** [min,max]，缺失为 null（不是 0）；

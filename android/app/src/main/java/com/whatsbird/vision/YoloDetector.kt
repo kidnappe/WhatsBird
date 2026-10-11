@@ -13,10 +13,10 @@ import kotlin.math.min
 import kotlin.math.round
 
 /**
- * YOLOX 检测器（路线 B 单类 bird，docs/handoff/detector_b/HANDOFF-DETECTOR-B-INT8-SOLVED.md）。
+ * YOLOX 检测器（路线 B 单类 bird）。
  *
  * 资产 yolox_bird_640_best_int8.tflite：两步法量化（onnx2tf float32 → ai_edge_quantizer int8），
- * 权重+激活全 int8、float32 输入输出；PC 验收 @th0.45 recall -0.2pp（docs 同文 §1）。
+ * 权重+激活全 int8、float32 输入输出；PC 验收 @th0.45 recall -0.2pp。
  * 喂法（⚠️ 与常见 YOLO 口径不同，已实测确认）：
  *   letterbox 灰边 114（右下补齐，非居中）+ BGR 通道序 + 原始 0-255，不归一化。
  * 输出 [1,6,N]（flatbuilder 已转置，与旧 [1,85,N] 同构），通道 = [reg4(xy,wh), obj, cls1]，

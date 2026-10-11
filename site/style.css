@@ -152,12 +152,16 @@ h1 .sci { color: var(--moss); }
   padding: 14px 22px; font-size: 16px; font-weight: 700;
 }
 .btn-mirror span { font-size: 12.5px; font-weight: 400; color: var(--ink-soft); }
+/* 提取码加粗：用户要照着敲，太小太淡容易敲错 */
+.btn-mirror span b { font-weight: 800; color: var(--ink); letter-spacing: .6px; }
 .btn-mirror:hover { background: var(--sage); }
 .btn-mirror[aria-disabled="true"] {
   opacity: .5; pointer-events: none; border-style: dashed;
 }
 .btn-ghost { color: var(--moss); text-decoration: none; font-weight: 600; padding: 14px 8px; border-bottom: 2px solid var(--amber); }
-.cta-hint { color: var(--ink-soft); font-size: 13.5px; margin: 14px 0 0; }
+.cta-hint { color: var(--ink-soft); font-size: 13.5px; margin: 14px 0 0; line-height: 1.85; }
+/* 蓝奏云「电脑模式」提示：这是最容易被当成收费墙误伤用户的一处，单独标色 */
+.cta-hint .hint-warn { color: var(--moss); font-weight: 700; }
 
 /* ---------- 版本信息六宫格 ---------- */
 .meta {

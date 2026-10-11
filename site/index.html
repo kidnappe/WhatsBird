@@ -57,10 +57,10 @@
         <a id="dlBtn" class="btn-primary" href="https://github.com/kidnappe/WhatsBird/releases/download/v1.0/WhatsBird-v1.0-arm64-v8a.apk">
           下载 APK<span id="dlSize">· 读取中</span>
         </a>
-        <a id="dlMirror" class="btn-mirror" aria-disabled="true" data-href="">镜像下载 · 蓝奏云<span>提取码 9c6p</span></a>
+        <a id="dlMirror" class="btn-mirror" aria-disabled="true" data-href="">镜像下载 · 蓝奏云<span>提取码 <b>9c6p</b></span></a>
         <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
       </div>
-      <p class="cta-hint"><a href="https://github.com/kidnappe/WhatsBird/releases/latest">GitHub 直链</a>：版本永远最新，国内下载速度不稳，时快时慢；<a id="mirrorLink" href="https://zhouxuan.lanzoue.com/b0j1szfsh" target="_blank" rel="noopener">蓝奏云镜像</a>：国内直连速度稳、下载快，但要等同步才更新（通常几分钟到一天）。</p>
+      <p class="cta-hint"><a href="https://github.com/kidnappe/WhatsBird/releases/latest">GitHub 直链</a>：版本永远最新，国内下载速度不稳，时快时慢；<a id="mirrorLink" href="https://zhouxuan.lanzoue.com/b0j1szfsh" target="_blank" rel="noopener">蓝奏云镜像</a>：国内直连速度稳、下载快，但要等同步才更新（通常几分钟到一天）。<br><span class="hint-warn">用蓝奏云时如果提示「下载需要会员」</span>——那不是要付费，是手机浏览器打开的是移动版页面，被导向了会员通道。<b>在浏览器菜单里切到「电脑模式 / 请求桌面版网站」再打开一次</b>，就能正常下载。</p></p>
 
       <div class="meta" aria-label="版本信息">
         <div><b id="mVer">v1.0</b><span>版本</span></div>
@@ -126,7 +126,8 @@
     <div class="two-col">
       <div class="card">
         <ol class="steps">
-          <li><strong>下载。</strong>手机浏览器打开本页点上面的按钮；GitHub 下载慢就用蓝奏云镜像。</li>
+          <li><strong>下载。</strong>手机浏览器打开本页点上面的按钮；GitHub 下载慢就用蓝奏云镜像。
+            蓝奏云若提示「下载需要会员」，先在浏览器菜单里切到<b>电脑模式</b>再打开一次。</li>
           <li><strong>允许安装未知应用。</strong>下载完浏览器会拦一下，点「允许」——
             授权只给浏览器或文件管理器，不是全系统。</li>
           <li><strong>安装。</strong>系统安装器点「下一步 → 完成」。无 root，无其他权限申请。</li>
@@ -331,8 +332,9 @@
       if (cached) { return; }              // 已经用缓存铺过了
       document.getElementById("mVer").title =
         "没连上 GitHub，这是页面内置的 v1.0；点「全部版本」看实时列表";
-      var s = document.getElementById("dlSize"); if (s) { s.textContent = "· 118.9 MB"; }
-      var m = document.getElementById("mSize"); if (m) { m.textContent = "118.9 MB"; }
+      // 兜底值：v1.0 瘦身后的真实体积（118.9MB 是瘦身前的旧数，已作废）
+      var s = document.getElementById("dlSize"); if (s) { s.textContent = "· 70.1 MB"; }
+      var m = document.getElementById("mSize"); if (m) { m.textContent = "70.1 MB"; }
     });
 
   /* ---------- 镜像按钮 ---------- */
@@ -341,7 +343,8 @@
     if (MIRROR_URL) {
       el.href = MIRROR_URL;
       el.removeAttribute("aria-disabled");
-      el.querySelector("span").textContent = "提取码 " + MIRROR_CODE;
+      // 用 innerHTML 而不是 textContent：提取码那串要加粗，textContent 会把标签吃掉
+      el.querySelector("span").innerHTML = "提取码 <b>" + MIRROR_CODE + "</b>";
     }
   })();
 

@@ -72,6 +72,21 @@ import com.whatsbird.ui.theme.WhatsBirdTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+/**
+ * 「DataStore 还没读到」的哨兵值。
+ *
+ * ⚠️ 2026-10-12 白屏事故：原先 `collectAsState(initial = null)` 拿 null 当"未就绪"，
+ * 而 `ThemePrefs.paperPalette` 在**用户从没设过配色**时也稳定发 null（键不存在）。
+ * 两者撞在一起 → 渲染守卫 `if (paperKey == null) Box(空)` 永远成立 →
+ * 全新安装进 App 是一整屏纸底色，且因为是 `else if` 短路，连相机权限弹窗都不弹、
+ * 底部导航也不画，用户在 App 内无路可走。
+ *
+ * 现在用哨兵把"未加载"和"已加载但未设置"分开：真实色板 key 只有
+ * moss/walnut/mist/indigo/cocoa（PaperPalettes），不会撞上这个值；
+ * null 保留给后者，`PaperPalettes.byKey(null)` 会正常回退苔绿默认色板。
+ */
+private const val PALETTE_LOADING = "__loading__"
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -82,7 +97,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             // 外观双维：五套纸感色板 × 昼夜（夜间三态：跟随系统/强制/关闭，docs/design/DESIGN.md）
-            val paperKey by themePrefs.paperPalette.collectAsState(initial = null)
+            val paperRaw by themePrefs.paperPalette.collectAsState(initial = PALETTE_LOADING)
+            // 未就绪 vs 已就绪但用户没设过——见 PALETTE_LOADING 的注释。
+            val paletteLoaded = paperRaw != PALETTE_LOADING
+            val paperKey = if (paletteLoaded) paperRaw else null
             val nightPref by themePrefs.nightMode.collectAsState(initial = null)
             val dark = when (nightPref) {
                 "on" -> true
@@ -93,7 +111,7 @@ class MainActivity : ComponentActivity() {
                 palette = com.whatsbird.ui.theme.PaperPalettes.byKey(paperKey),
                 dark = dark,
                 // 2026-10-10：偏好未就绪的那一帧不参与逐色动画（治冷启动主题闪烁）
-                animate = paperKey != null,
+                animate = paletteLoaded,
             ) {
                 val t = com.whatsbird.ui.theme.LocalPaperPalette.current.t
                 // 根 Surface 显式给色：修设置页行文字"继承深色 contentColor 而发淡"的问题
@@ -105,7 +123,10 @@ class MainActivity : ComponentActivity() {
                     // 2026-10-10：外观偏好还在读的时候**不渲染任何内容**。
                     // 原先先用默认色板把整页画出来，等 DataStore 到了再换色板重画，
                     // 用户会看到"默认配色闪一下变自己的配色"。这里只留一层底色。
-                    if (paperKey == null) {
+                    // ⚠️ 2026-10-12：判据从 paperKey == null 改成 !paletteLoaded——
+                    // 键不存在（全新安装）时 paperKey 恒为 null，用旧判据会永远卡在这层空 Box，
+                    // 表现为一整屏纸底色、连相机权限弹窗都不弹，App 内无法自救。见 PALETTE_LOADING。
+                    if (!paletteLoaded) {
                         Box(Modifier.fillMaxSize())
                     } else if (grantedState()) {
                         MainTabs()
