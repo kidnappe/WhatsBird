@@ -127,20 +127,22 @@ h1 .sci { color: var(--moss); }
 .btn-ghost { color: var(--moss); text-decoration: none; font-weight: 600; padding: 14px 8px; border-bottom: 2px solid var(--amber); }
 .cta-hint { color: var(--ink-soft); font-size: 13.5px; margin: 14px 0 0; }
 
-/* ---------- 规格条：恒定六格，手机 3×2 ---------- */
-.specbar {
+/* ---------- 六宫格：版本信息 + 规格条，同一套格子 ---------- */
+.meta, .specbar {
   display: grid; grid-template-columns: repeat(6, 1fr);
-  gap: 1px; margin: 40px 0 0; background: var(--line);
+  gap: 1px; background: var(--line);
   border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
 }
-.specbar > div { background: var(--card); padding: 14px 10px; text-align: center; }
-.specbar b { display: block; font-size: 24px; font-weight: 800; color: var(--moss); line-height: 1.3; }
-.specbar span { font-size: 12.5px; color: var(--ink-soft); }
+.meta { margin: 26px 0 0; }
+.specbar { margin: 40px 0 0; }
+.meta > div, .specbar > div { background: var(--card); padding: 14px 10px; text-align: center; }
+.meta b, .specbar b { display: block; font-size: 18px; font-weight: 800; color: var(--moss); line-height: 1.35; }
+.meta span, .specbar span { font-size: 12.5px; color: var(--ink-soft); }
 @media (max-width: 760px) {
-  .specbar { grid-template-columns: repeat(3, 1fr); }
-  .specbar > div { padding: 12px 6px; }
-  .specbar b { font-size: 21px; }
-  .specbar span { font-size: 11.5px; }
+  .meta, .specbar { grid-template-columns: repeat(3, 1fr); }
+  .meta > div, .specbar > div { padding: 12px 6px; }
+  .meta b, .specbar b { font-size: 16px; }
+  .meta span, .specbar span { font-size: 11.5px; }
 }
 
 /* ---------- 通用卡 / 两栏 ---------- */
@@ -214,15 +216,6 @@ footer .fine { font-size: 12.5px; opacity: .8; }
   color: var(--ink-soft); font-size: 14px;
   border-left: 3px solid var(--line); padding-left: 14px; margin: 14px 0 0;
 }
-
-.meta {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
-  gap: 1px; margin: 30px 0 0; padding: 0;
-  background: var(--line); border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
-}
-.meta > div { background: var(--card); padding: 13px 15px; }
-.meta dt { font-size: 12px; letter-spacing: .1em; color: var(--ink-soft); }
-.meta dd { margin: 2px 0 0; font-weight: 700; font-size: 15px; }
 
 .note {
   margin-top: 20px; padding: 12px 16px; font-size: 14px; color: var(--ink-soft);
@@ -353,10 +346,6 @@ dialog#lightbox button {
 
   .btn-primary { width: 100%; justify-content: center; font-size: 17px; padding: 16px 20px; }
   .btn-ghost { width: 100%; text-align: center; border-bottom: 0; padding: 10px 0; }
-
-  .meta { grid-template-columns: repeat(2, 1fr); }
-  .meta > div { padding: 11px 13px; }
-
   /* 宽度由上面「触屏手机」那段按屏幕高度算，这里不再覆盖 */
   .ph-wrap { border-radius: 16px; }
   .carousel .slide figcaption { font-size: 14px; line-height: 1.75; padding: 0 4px; }
