@@ -29,7 +29,11 @@
     <span>拾鸟 <i class="sci">WhatsBird</i></span>
   </a>
   <nav>
-    <a class="ghost" href="https://github.com/kidnappe/WhatsBird">源码 ↗</a>
+    <a class="ghost afdian" href="https://afdian.com/a/zhouxuano6?utm_source=copylink&utm_medium=link" target="_blank" rel="noopener">爱发电</a>
+    <a class="ghost" href="https://github.com/kidnappe/WhatsBird">
+      <svg class="gh" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.42 7.42 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+      源码
+    </a>
   </nav>
 </header>
 
@@ -38,6 +42,10 @@
   <!-- ============ 首屏 ============ -->
   <section class="hero">
     <div class="hero-text">
+      <div class="hero-brand">
+        <img src="icon-192.png" alt="" width="46" height="46">
+        <span>拾鸟 <i class="sci">WhatsBird</i></span>
+      </div>
       <p class="eyebrow">Android · 识别全程离线 · 无账号 · 无广告</p>
       <h1>举起手机对准鸟<br><span class="sci">WhatsBird</span> 告诉你它是什么</h1>
       <p class="lede">
@@ -52,11 +60,7 @@
         <a id="dlMirror" class="btn-mirror" aria-disabled="true" data-href="">镜像下载 · 蓝奏云<span>地址待填</span></a>
         <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
       </div>
-      <p class="cta-hint">
-        <a href="https://github.com/kidnappe/WhatsBird/releases/latest">GitHub 直链</a>：版本永远最新，缺点是国内速度不稳；
-        <a id="mirrorLink" href="https://zhouxuan.lanzoue.com/b0j1szfsh" target="_blank" rel="noopener">蓝奏云镜像</a>：国内直连快，
-        但更新要等同步，通常几分钟到一天。
-      </p>
+      <p class="cta-hint" id="dlHint">正在核对 GitHub 上的最新版本…</p>
 
       <div class="meta" aria-label="版本信息">
         <div><b id="mVer">v1.0</b><span>版本</span></div>
@@ -67,16 +71,6 @@
         <div><b id="mDate">—</b><span>发布时间</span></div>
       </div>
     </div>
-  </section>
-
-  <!-- ============ 规格条 ============ -->
-  <section class="specbar" aria-label="规格">
-    <div><b>384</b><span>种图鉴</span></div>
-    <div><b>6</b><span>套区域模型</span></div>
-    <div><b>4 步</b><span>推理链路</span></div>
-    <div><b>0</b><span>账号 / 上传</span></div>
-    <div><b>0</b><span>广告 / 推送</span></div>
-    <div><b>离线</b><span>全程可用</span></div>
   </section>
 
   <!-- ============ 核心体验 ============ -->
@@ -216,13 +210,20 @@
 </main>
 
 <footer>
+  <div class="brand-lock">
+    <img src="icon-192.png" alt="拾鸟 WhatsBird 图标" width="64" height="64">
+    <div class="brand-txt">
+      <strong>拾鸟 <i class="sci">WhatsBird</i></strong>
+      <span>拍照认鸟的 Android 应用 · 识别全程离线 · 照片与观测记录只留在本机</span>
+    </div>
+  </div>
   <p>
     <a href="https://github.com/kidnappe/WhatsBird">源码</a> ·
     <a href="https://github.com/kidnappe/WhatsBird/releases">Releases</a> ·
     <a href="https://github.com/kidnappe/WhatsBird/issues">反馈问题</a> ·
     <a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE-MODELS.md">资产授权</a>
   </p>
-  <p class="fine">拾鸟 WhatsBird · Copyright 2026 The WhatsBird Authors · 源码 Apache-2.0</p>
+  <p class="fine">Copyright 2026 The WhatsBird Authors · 源码 Apache-2.0</p>
 </footer>
 
 <dialog id="lightbox">
@@ -244,6 +245,96 @@
   function mb(b) { return (b / 1048576).toFixed(1) + " MB"; }
   function ymd(iso) { var d = new Date(iso); return isNaN(d) ? "—" : d.toISOString().slice(0, 10); }
 
+  /* ---------- 缓存：网络读不到时，沿用上次成功读到的那份 ---------- */
+  var CACHE = "whatsbird:rel:v1";
+  function cacheRead() {
+    try { return JSON.parse(window.localStorage.getItem(CACHE) || "null"); }
+    catch (e) { return null; }
+  }
+  function cacheWrite(rel, list) {
+    try { window.localStorage.setItem(CACHE, JSON.stringify({ rel: rel, list: list || null, at: Date.now() })); }
+    catch (e) { /* 隐私模式 / file:// 下写不了就算了，页面照常退回内置值 */ }
+  }
+
+  function paintRel(r, fromCache) {
+    var apk = (r.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+    if (!apk) { return false; }
+    var btn = document.getElementById("dlBtn");
+    btn.href = apk.browser_download_url;
+    btn.firstChild.nodeValue = "下载 " + r.tag_name + " APK";
+    document.getElementById("dlSize").textContent = "· " + mb(apk.size);
+    document.getElementById("mVer").textContent = r.tag_name;
+    document.getElementById("mSize").textContent = mb(apk.size);
+    document.getElementById("mDate").textContent = ymd(r.published_at);
+    document.getElementById("dlHint").innerHTML = fromCache
+      ? "网络暂时读不到，先用上次记录的 " + r.tag_name + "（" + ymd(r.published_at) + "）。"
+      : "GitHub 直链：版本永远最新，缺点是国内速度不稳；" +
+        '<a id="mirrorLink" href="' + MIRROR_URL + '" target="_blank" rel="noopener">蓝奏云镜像</a>：国内直连快，但更新要等同步。';
+    return true;
+  }
+
+  function paintList(list) {
+    var box = document.getElementById("relList");
+    if (!box || !list || !list.length) { return false; }
+    var items = list.filter(function (r) { return !r.draft; }).slice(0, 6);
+    box.innerHTML = "";
+    items.forEach(function (r) {
+      var apk = (r.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+      var row = document.createElement("div");
+      row.className = "rel-row";
+      var left = document.createElement("div");
+      var tag = document.createElement("strong");
+      tag.textContent = r.name || r.tag_name;
+      var meta = document.createElement("span");
+      meta.className = "rel-meta";
+      meta.textContent = ymd(r.published_at) +
+        (apk ? " · " + mb(apk.size) + " · 下载 " + apk.download_count + " 次" : " · 无安装包");
+      if (apk && apk.digest) {
+        var dg = document.createElement("code");
+        dg.className = "fp";
+        dg.textContent = apk.digest.replace(/^sha256:/, "");
+        meta.appendChild(document.createElement("br"));
+        meta.appendChild(dg);
+      }
+      left.appendChild(tag);
+      left.appendChild(meta);
+      row.appendChild(left);
+      if (apk) {
+        var a = document.createElement("a");
+        a.href = apk.browser_download_url;
+        a.textContent = "下载";
+        a.className = "rel-dl";
+        row.appendChild(a);
+      }
+      box.appendChild(row);
+    });
+    return true;
+  }
+
+  /* 1) 先用缓存铺一遍（网络再慢也不闪空），2) 再用网络结果覆盖 */
+  var cached = cacheRead();
+  if (cached) {
+    paintRel(cached.rel, true);
+    paintList(cached.list);
+  }
+
+  fetch(API, { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (rel) {
+      if (!paintRel(rel, false)) { throw new Error("no apk asset"); }
+      fetch(LIST, { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+        .then(function (list) { paintList(list); cacheWrite(rel, list); })
+        .catch(function () { cacheWrite(rel, null); });
+    })
+    .catch(function () {
+      if (cached) { return; }              // 已经用缓存铺过了
+      document.getElementById("dlHint").textContent =
+        "暂时读不到 GitHub 版本信息，下面是页面内置的 v1.0；点「全部版本」看实时列表。";
+      var s = document.getElementById("dlSize"); if (s) { s.textContent = "· 118.9 MB"; }
+      var m = document.getElementById("mSize"); if (m) { m.textContent = "118.9 MB"; }
+    });
+
   /* ---------- 镜像按钮 ---------- */
   (function () {
     var el = document.getElementById("dlMirror");
@@ -253,76 +344,6 @@
       el.querySelector("span").textContent = "国内直连更快";
     }
   })();
-
-  /* ---------- 版本信息：运行时取最新 release，取不到退回页面内置值 ---------- */
-  fetch(API, { cache: "no-store" })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (rel) {
-      var apk = (rel.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
-      if (!apk) { throw new Error("no apk asset"); }
-      var btn = document.getElementById("dlBtn");
-      btn.href = apk.browser_download_url;
-      btn.firstChild.nodeValue = "下载 " + rel.tag_name + " APK";
-      document.getElementById("dlSize").textContent = "· " + mb(apk.size);
-      document.getElementById("mVer").textContent = rel.tag_name;
-      document.getElementById("mSize").textContent = mb(apk.size);
-      document.getElementById("mDate").textContent = ymd(rel.published_at);
-      document.getElementById("dlState").textContent =
-        "已核对最新版本 " + rel.tag_name + "（" + ymd(rel.published_at) + "）";
-    })
-    .catch(function () {
-      document.getElementById("dlState").textContent = "当前显示的是页面内置的 v1.0；点「全部版本」看实时列表";
-      var s = document.getElementById("dlSize"); if (s) { s.textContent = "· 118.9 MB"; }
-      var m = document.getElementById("mSize"); if (m) { m.textContent = "118.9 MB"; }
-    });
-
-  /* ---------- 版本记录 ---------- */
-  fetch(LIST, { cache: "no-store" })
-    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-    .then(function (list) {
-      var box = document.getElementById("relList");
-      if (!box) { return; }
-      var items = (list || []).filter(function (r) { return !r.draft; }).slice(0, 6);
-      if (!items.length) { return; }
-      box.innerHTML = "";
-      items.forEach(function (r) {
-        var apk = (r.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
-        var row = document.createElement("div");
-        row.className = "rel-row";
-        var left = document.createElement("div");
-        var tag = document.createElement("strong");
-        tag.textContent = r.name || r.tag_name;
-        var meta = document.createElement("span");
-        meta.className = "rel-meta";
-        meta.textContent = ymd(r.published_at) +
-          (apk ? " · " + mb(apk.size) + " · 下载 " + apk.download_count + " 次" : " · 无安装包");
-        if (apk && apk.digest) {
-          var dg = document.createElement("code");
-          dg.className = "fp";
-          dg.textContent = apk.digest.replace(/^sha256:/, "");
-          meta.appendChild(document.createElement("br"));
-          meta.appendChild(dg);
-        }
-        left.appendChild(tag);
-        left.appendChild(meta);
-        row.appendChild(left);
-        if (apk) {
-          var a = document.createElement("a");
-          a.href = apk.browser_download_url;
-          a.textContent = "下载";
-          a.className = "rel-dl";
-          row.appendChild(a);
-        }
-        box.appendChild(row);
-      });
-    })
-    .catch(function () {
-      var box = document.getElementById("relList");
-      if (box) {
-        box.innerHTML = '<p class="aside">版本列表读取失败（离线或被限流），' +
-          '请直接看 <a href="' + LIST + '">GitHub Releases</a>。</p>';
-      }
-    });
 
   /* ---------- 图片加载效果：纸感骨架 + 淡入 ---------- */
   function markLoaded(img) {

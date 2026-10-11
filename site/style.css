@@ -87,9 +87,14 @@ a:hover { color: var(--moss-bright); }
 .topbar nav a { color: var(--ink-soft); text-decoration: none; }
 .topbar nav a:hover { color: var(--moss); }
 .topbar nav .ghost {
+  display: inline-flex; align-items: center; gap: 6px; text-decoration: none;
   color: var(--moss); border: 1px solid var(--moss); border-radius: 999px;
-  padding: 3px 12px; opacity: .85;
+  padding: 4px 13px; opacity: .9;
 }
+.topbar nav .ghost:hover { background: var(--sage); opacity: 1; }
+.topbar nav .ghost .gh { width: 15px; height: 15px; flex: none; }
+.topbar nav .afdian { border-color: var(--line); color: var(--ink-soft); }
+.topbar nav .afdian:hover { color: var(--moss); }
 
 /* ---------- 版心 ---------- */
 main { max-width: 960px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 32px) 72px; }
@@ -98,7 +103,30 @@ h2 { font-size: clamp(20px, 3.4vw, 26px); margin: 0 0 20px; display: flex; align
 h2 .rule { display: inline-block; width: 28px; height: 3px; background: var(--amber); border-radius: 2px; flex: none; }
 
 /* ---------- Hero ---------- */
-.hero { padding-top: clamp(28px, 6vw, 64px); }
+.hero { padding-top: clamp(24px, 5vw, 56px); position: relative; }
+/* 纸面压印：品牌字样淡淡印在纸底上 */
+.hero::before {
+  content: "拾鸟 WhatsBird";
+  position: absolute; top: clamp(4px, 2vw, 32px); right: -2%;
+  font-family: Georgia, "Songti SC", "Noto Serif SC", serif;
+  font-size: clamp(52px, 10vw, 124px); line-height: 1;
+  color: var(--ink); opacity: .055; white-space: nowrap;
+  pointer-events: none; user-select: none; z-index: 0;
+}
+.hero-text { position: relative; z-index: 1; }
+
+.hero-brand {
+  display: inline-flex; align-items: center; gap: 11px;
+  background: var(--card); border: 1px solid var(--line);
+  border-radius: 999px; padding: 6px 20px 6px 6px; margin-bottom: 18px;
+  box-shadow: var(--shadow);
+}
+.hero-brand img {
+  width: 46px; height: 46px; border-radius: 50%; flex: none;
+  box-shadow: 0 2px 8px rgba(31, 42, 34, .18);
+}
+.hero-brand span { font-size: 19px; font-weight: 800; letter-spacing: .02em; }
+.hero-brand span .sci { color: var(--moss); font-size: 18px; }
 
 .eyebrow { margin: 0 0 14px; font-size: 13px; letter-spacing: .16em; color: var(--olive); }
 h1 { font-size: clamp(29px, 5.4vw, 46px); line-height: 1.22; margin: 0 0 18px; letter-spacing: -.01em; }
@@ -127,22 +155,21 @@ h1 .sci { color: var(--moss); }
 .btn-ghost { color: var(--moss); text-decoration: none; font-weight: 600; padding: 14px 8px; border-bottom: 2px solid var(--amber); }
 .cta-hint { color: var(--ink-soft); font-size: 13.5px; margin: 14px 0 0; }
 
-/* ---------- 六宫格：版本信息 + 规格条，同一套格子 ---------- */
-.meta, .specbar {
+/* ---------- 版本信息六宫格 ---------- */
+.meta {
   display: grid; grid-template-columns: repeat(6, 1fr);
   gap: 1px; background: var(--line);
   border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
 }
 .meta { margin: 26px 0 0; }
-.specbar { margin: 40px 0 0; }
-.meta > div, .specbar > div { background: var(--card); padding: 14px 10px; text-align: center; }
-.meta b, .specbar b { display: block; font-size: 18px; font-weight: 800; color: var(--moss); line-height: 1.35; }
-.meta span, .specbar span { font-size: 12.5px; color: var(--ink-soft); }
+.meta > div { background: var(--card); padding: 14px 10px; text-align: center; }
+.meta b { display: block; font-size: 18px; font-weight: 800; color: var(--moss); line-height: 1.35; }
+.meta span { font-size: 12.5px; color: var(--ink-soft); }
 @media (max-width: 760px) {
-  .meta, .specbar { grid-template-columns: repeat(3, 1fr); }
-  .meta > div, .specbar > div { padding: 12px 6px; }
-  .meta b, .specbar b { font-size: 16px; }
-  .meta span, .specbar span { font-size: 11.5px; }
+  .meta { grid-template-columns: repeat(3, 1fr); }
+  .meta > div { padding: 12px 6px; }
+  .meta b { font-size: 16px; }
+  .meta span { font-size: 11.5px; }
 }
 
 /* ---------- 通用卡 / 两栏 ---------- */
@@ -204,9 +231,53 @@ code {
 }
 code.fp { display: inline-block; margin-top: 4px; font-size: 11.5px; }
 
+/* 桌面端：截图加白框描边 + 轻微浮动（手机端不做，避免干扰滑动） */
+@media (hover: hover) and (pointer: fine) {
+  .carousel .ph-wrap {
+    border: 1px solid var(--line);
+    box-shadow: 0 20px 44px rgba(31, 42, 34, .16), 0 3px 8px rgba(31, 42, 34, .08);
+    transition: transform .35s cubic-bezier(.22, .61, .36, 1), box-shadow .35s ease;
+  }
+  /* 拍立得白框里的细描边 */
+  .carousel .ph-wrap::after {
+    content: ""; position: absolute; inset: 7px; border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, .55); pointer-events: none; z-index: 2;
+  }
+  @media (prefers-color-scheme: dark) {
+    .carousel .ph-wrap::after { border-color: rgba(255, 255, 255, .14); }
+  }
+  .carousel .ph-wrap > img {
+    animation: floaty 7.5s ease-in-out infinite;
+    transform-origin: 50% 60%;
+  }
+  .carousel .slide:nth-child(2) .ph-wrap > img { animation-delay: -1.9s; }
+  .carousel .slide:nth-child(3) .ph-wrap > img { animation-delay: -3.8s; }
+  .carousel .slide:nth-child(4) .ph-wrap > img { animation-delay: -5.7s; }
+  .carousel .slide:hover .ph-wrap {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 64px rgba(31, 42, 34, .22), 0 4px 10px rgba(31, 42, 34, .10);
+  }
+}
+@keyframes floaty {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-7px) scale(1.015); }
+}
+
 /* ---------- 页脚 ---------- */
+.brand-lock {
+  display: flex; align-items: center; justify-content: center; gap: 16px;
+  margin: 4px auto 20px; text-align: left; max-width: 560px;
+}
+.brand-lock img {
+  width: 64px; height: 64px; border-radius: 15px; flex: none;
+  box-shadow: 0 8px 20px rgba(31, 42, 34, .18);
+}
+.brand-txt strong { display: block; font-size: 22px; letter-spacing: .01em; }
+.brand-txt strong .sci { color: var(--moss); font-size: 20px; }
+.brand-txt span { display: block; font-size: 13px; color: var(--ink-soft); line-height: 1.6; margin-top: 2px; }
+
 footer {
-  border-top: 1px solid var(--line); padding: 26px clamp(16px, 5vw, 48px) 40px;
+  border-top: 1px solid var(--line); padding: 40px clamp(16px, 5vw, 48px) 44px;
   text-align: center; color: var(--ink-soft); font-size: 13.5px;
 }
 footer p { margin: 6px 0; }
@@ -357,5 +428,6 @@ dialog#lightbox button {
   html { scroll-behavior: auto; }
   .carousel .track { transition: none; }
   .ph-wrap::before { animation: none; }
+  .carousel .ph-wrap > img { animation: none; }
   .btn-primary:hover, .nav-arrow:hover { transform: none; }
 }
