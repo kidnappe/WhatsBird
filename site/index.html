@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>拾鸟 WhatsBird · 离线拍照认鸟（Android 下载）</title>
+<meta name="description" content="拾鸟 WhatsBird：拍照认鸟的 Android 应用，识别全程离线，无账号、无云端上传、无广告。">
+<meta name="theme-color" content="#F7F4EC">
+<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<meta property="og:title" content="拾鸟 WhatsBird · 离线拍照认鸟">
+<meta property="og:description" content="举起手机对准鸟，App 告诉你它是什么。识别全程离线，照片与观测记录只留在本机。">
+<meta property="og:type" content="website">
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#top">
+    <svg class="mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <path d="M8 30c0-9 7-16 16-16 6 0 11 3 13 8 4 0 7 3 7 7 0 5-4 8-9 8H20c-7 0-12-3-12-7z"
+            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
+      <circle cx="30" cy="20" r="2" fill="currentColor"/>
+      <path d="M18 27c3 1 6 1 9 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+      <path d="M14 37v6M26 37v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <span>拾鸟 <i class="sci">WhatsBird</i></span>
+  </a>
+  <nav>
+    <a href="#ability">能力</a>
+    <a href="#install">安装</a>
+    <a href="#verify">校验</a>
+    <a href="#privacy">隐私</a>
+    <a href="#license">许可</a>
+    <a class="ghost" href="https://github.com/kidnappe/WhatsBird">源码 ↗</a>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ 下载 ============ -->
+  <section class="hero">
+    <p class="eyebrow">Android · 识别全程离线 · 无账号 · 无广告</p>
+    <h1>举起手机对准鸟<br><span class="sci">WhatsBird</span> 告诉你它是什么</h1>
+    <p class="lede">
+      相机实时帧分析，端侧 AI 当场报出中文名、学名与置信度，并按所在地区和季节重排候选。
+      照片和观测记录<strong>只写本机</strong>——飞行模式下也能用。
+    </p>
+
+    <div class="cta">
+      <a id="dlBtn" class="btn-primary" href="https://github.com/kidnappe/WhatsBird/releases/download/v1.0/WhatsBird-v1.0-arm64-v8a.apk">
+        下载 APK<span id="dlSize">· 118.9 MB</span>
+      </a>
+      <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
+    </div>
+    <p class="cta-hint">
+      直链 GitHub Release 资产；<span id="dlState">正在核对最新版…</span>
+    </p>
+
+    <dl class="meta">
+      <div><dt>版本</dt><dd id="mVer">v1.0</dd></div>
+      <div><dt>体积</dt><dd id="mSize">118.9 MB</dd></div>
+      <div><dt>系统</dt><dd>Android 8.0+</dd></div>
+      <div><dt>架构</dt><dd>arm64-v8a</dd></div>
+      <div><dt>root</dt><dd>不需要</dd></div>
+      <div><dt>发布时间</dt><dd id="mDate">2026-10-11</dd></div>
+    </dl>
+
+    <p class="note">
+      ⚠️ 只支持 64 位设备（arm64-v8a）——2016 年以后的手机基本都是。
+      32 位老机与 x86 模拟器请从<a href="https://github.com/kidnappe/WhatsBird#快速开始">源码构建</a>。
+    </p>
+  </section>
+
+  <!-- ============ 能力 ============ -->
+  <section id="ability">
+    <h2><span class="rule"></span>这一版有什么</h2>
+    <div class="cards">
+      <div class="card">
+        <h3>拍照识别</h3>
+        <p>相机实时帧分析 + 三段式推理（检测 → 框选裁剪 → 分类 Top-5），逐帧给出候选。</p>
+      </div>
+      <div class="card">
+        <h3>区域模型</h3>
+        <p>全国兜底 + 华北 / 华东 / 华中 / 华南西南 / 东北 五套区域分类器，按 GPS 自动路由，也可手动指定。</p>
+      </div>
+      <div class="card">
+        <h3>地理先验重排</h3>
+        <p>用 BirdNET geomodel 的时空分布先验对分类结果加权重排（<i class="sci">score = P<sub>图像</sub> × P<sub>先验</sub><sup>α</sup></i>）。</p>
+      </div>
+      <div class="card">
+        <h3>非鸟拒识门</h3>
+        <p>独立的拒识分类器挡住非鸟目标，抑制误检。</p>
+      </div>
+      <div class="card">
+        <h3>多鸟识别</h3>
+        <p>IoU 跟踪 + 主目标点选，群鸟场景逐只标框。</p>
+      </div>
+      <div class="card">
+        <h3>观测记录</h3>
+        <p>按日流水，可改判 / 加备注 / 删除；CSV 全量导出（SAF，不申请存储权限）。</p>
+      </div>
+      <div class="card">
+        <h3>图鉴点亮</h3>
+        <p>384 种中国鸟的收集册，含性状档案与保护状态（IUCN + 国家重点保护）。</p>
+      </div>
+      <div class="card">
+        <h3>离线逆地理</h3>
+        <p>内置行政区划边界，无网也能把经纬度解析到区县。</p>
+      </div>
+      <div class="card">
+        <h3>纸感设计</h3>
+        <p>全 app 统一的 Paper Almanac 视觉体系，五套配色 + 夜间派生。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 安装 ============ -->
+  <section id="install">
+    <h2><span class="rule"></span>怎么装</h2>
+    <ol class="steps">
+      <li>
+        <strong>手机浏览器打开本页</strong>，点上面的「下载 APK」。约 119 MB，建议连 Wi-Fi。
+      </li>
+      <li>
+        <strong>允许安装未知应用。</strong>
+        下载完浏览器会拦一下，点「允许」——授权只给浏览器或文件管理器，不是全系统。
+      </li>
+      <li>
+        <strong>装。</strong>系统安装器点「下一步 → 完成」，无 root、无其他权限申请。
+      </li>
+      <li>
+        <strong>打开。</strong>首次会要相机权限。模型权重全在包里，<strong>装完断网也能用</strong>。
+      </li>
+    </ol>
+    <p class="aside">
+      <strong>电脑上下载再传到手机？</strong>把 APK 通过数据线 / 网盘传到手机，用文件管理器点开，
+      同样需要允许「安装未知应用」。已经装过 v1.0 的话直接装新包即可升级，观测记录与图鉴进度都会保留。
+    </p>
+  </section>
+
+  <!-- ============ 校验 ============ -->
+  <section id="verify">
+    <h2><span class="rule"></span>确认你装的是我发的包</h2>
+    <p class="lede-sm">
+      119 MB 的下载走公网，值得花十秒核一下。页面上的两个指纹都来自 GitHub Release 的资产摘要，
+      随每次发版更新。
+    </p>
+
+    <div class="kv">
+      <div class="kv-row">
+        <span class="k">安装包 SHA-256</span>
+        <code id="digestFile">3f90c3c051b60909eaadc5ef9df15efe2a7801403ce0b7f4aee3fd1e9a8b5fb9</code>
+      </div>
+      <div class="kv-row">
+        <span class="k">签名证书 SHA-256</span>
+        <code>711F0F9398D2803DB4CD8C4800CB7BCB5F3AAFB3DC6F6549F9FBDA448DC68A76</code>
+      </div>
+    </div>
+    <p class="aside">
+      证书指纹是长期不变的——它等于这个 App 的「发布者身份证」。以后任何一版，
+      只要证书指纹还是这一串，签名就是同一家签的。
+    </p>
+
+    <div class="codes">
+      <pre><code>certutil -hashfile WhatsBird-v1.0-arm64-v8a.apk SHA256</code></pre>
+      <pre><code>shasum -a 256 WhatsBird-v1.0-arm64-v8a.apk</code></pre>
+    </div>
+  </section>
+
+  <!-- ============ 隐私 ============ -->
+  <section id="privacy">
+    <h2><span class="rule"></span>你的照片去哪儿了</h2>
+    <ul class="plain">
+      <li>照片与观测记录<strong>只写本机</strong>（<code>files/records/</code> + Room），没有上传接口。</li>
+      <li>定位用于地理先验与记录坐标，<strong>可关闭</strong>；无定位时先验退化为月度均值。</li>
+      <li>地址解析走内置离线区划，<strong>不走任何第三方地理服务</strong>。</li>
+      <li>导出的 CSV 由你自己选保存位置，App 不申请存储权限。</li>
+    </ul>
+  </section>
+
+  <!-- ============ 许可 ============ -->
+  <section id="license">
+    <h2><span class="rule"></span>许可</h2>
+    <ul class="plain">
+      <li><strong>源代码</strong>：<a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE">Apache License 2.0</a></li>
+      <li>
+        <strong>模型权重与数据资产</strong>：大部分同为 Apache-2.0（含商用），<strong>两项例外</strong>——
+        <code>protection.json</code> 的 IUCN 字段仅限非商业、<code>admin_county.ndjson</code> 来源条款未明确授予再分发许可。
+        完整声明见 <a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE-MODELS.md">LICENSE-MODELS.md</a>。
+      </li>
+      <li><strong>第三方组件</strong>：完整清单与商用授权结论见仓库里的 <code>docs/legal/LICENSES.md</code>。</li>
+    </ul>
+    <p class="aside">
+      这是个免费的旁路分发渠道：不经应用商店，所以没有商店审核替你把关。
+      装之前请核对上面的<strong>签名证书指纹</strong>，别从来路不明的镜像下包。
+    </p>
+  </section>
+
+  <section id="history">
+    <h2><span class="rule"></span>版本记录</h2>
+    <div id="relList" class="releases">
+      <p class="aside">正在读取 GitHub Release…</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    <a href="https://github.com/kidnappe/WhatsBird">源码</a> ·
+    <a href="https://github.com/kidnappe/WhatsBird/releases">Releases</a> ·
+    <a href="https://github.com/kidnappe/WhatsBird/issues">反馈问题</a> ·
+    <a href="https://github.com/kidnappe/WhatsBird/blob/main/LICENSE-MODELS.md">资产授权</a>
+  </p>
+  <p class="fine">
+    拾鸟 WhatsBird · Copyright 2026 The WhatsBird Authors ·
+    源码 Apache-2.0 · 本页由仓库 <code>site/</code> 目录经 GitHub Pages 托管
+  </p>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var API = "https://api.github.com/repos/kidnappe/WhatsBird/releases/latest";
+  var RELEASES = "https://api.github.com/repos/kidnappe/WhatsBird/releases";
+
+  function mb(bytes) { return (bytes / 1048576).toFixed(1) + " MB"; }
+  function ymd(iso) {
+    var d = new Date(iso);
+    return isNaN(d) ? "—" : d.toISOString().slice(0, 10);
+  }
+
+  // 页面是静态的，版本信息在运行时向 GitHub 要；失败就退回硬编码的 v1.0 兜底值。
+  fetch(API, { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (rel) {
+      var apk = (rel.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+      if (!apk) { throw new Error("no apk asset"); }
+
+      var btn = document.getElementById("dlBtn");
+      btn.href = apk.browser_download_url;
+      btn.firstChild.nodeValue = "下载 " + rel.tag_name + " APK";
+
+      document.getElementById("dlSize").textContent = "· " + mb(apk.size);
+      document.getElementById("mVer").textContent = rel.tag_name;
+      document.getElementById("mSize").textContent = mb(apk.size);
+      document.getElementById("mDate").textContent = ymd(rel.published_at);
+      document.getElementById("digestFile").textContent = (apk.digest || "").replace(/^sha256:/, "") || "—";
+      document.getElementById("dlState").textContent =
+        "已核对最新版本 " + rel.tag_name + "（" + ymd(rel.published_at) + "）";
+      return rel;
+    })
+    .catch(function () {
+      document.getElementById("dlState").textContent =
+        "当前显示的是页面内置的 v1.0；点「全部版本」看实时列表";
+    });
+
+  fetch(RELEASES, { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (list) {
+      var box = document.getElementById("relList");
+      var items = list.filter(function (r) { return !r.draft; }).slice(0, 6);
+      if (!items.length) { return; }
+      box.innerHTML = "";
+      items.forEach(function (r) {
+        var apk = (r.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+        var row = document.createElement("div");
+        row.className = "rel-row";
+        var left = document.createElement("div");
+        var tag = document.createElement("strong");
+        tag.textContent = r.name || r.tag_name;
+        var meta = document.createElement("span");
+        meta.className = "rel-meta";
+        meta.textContent = ymd(r.published_at) + (apk ? " · " + mb(apk.size) + " · 下载 " + apk.download_count + " 次" : " · 无安装包");
+        left.appendChild(tag);
+        left.appendChild(meta);
+        row.appendChild(left);
+        if (apk) {
+          var a = document.createElement("a");
+          a.href = apk.browser_download_url;
+          a.textContent = "下载";
+          a.className = "rel-dl";
+          row.appendChild(a);
+        }
+        box.appendChild(row);
+      });
+    })
+    .catch(function () {
+      document.getElementById("relList").innerHTML =
+        '<p class="aside">版本列表读取失败（离线或被限流），' +
+        '请直接看 <a href="' + RELEASES + '">GitHub Releases</a>。</p>';
+    });
+})();
+</script>
+
+</body>
+</html>

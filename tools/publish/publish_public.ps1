@@ -6,7 +6,8 @@
 
   口径见 AGENTS.md「公开 / 内部两层」：
     公开 = 根 README/LICENSE/LICENSE-MODELS.md/.gitattributes/.gitignore
-           + android/ + tools/ + docs/{design,guides,legal,project}
+           + android/ + tools/ + site/（GitHub Pages 下载页）
+           + docs/{design,guides,legal,project}
     内部 = docs/{handoff,reports,research,session,archive} + docs/README.md
            + 根 AGENTS.md（本机维护约定；公开树里的 AGENTS.md 由
              docs/AGENTS-PUBLIC.md 换名而来，见下面的「换名」步骤）
@@ -46,6 +47,7 @@ $Include = @(
     '.gitignore'
     'android'
     'tools'
+    'site'
     'docs/design'
     'docs/guides'
     'docs/legal'
@@ -221,7 +223,7 @@ try {
     $files = @(Get-ChildItem $OutDir -Recurse -File)
     $sizeMB = [math]::Round((($files | Measure-Object Length -Sum).Sum / 1MB), 1)
     Write-Host "    文件 $($files.Count) 个 / $sizeMB MB"
-    foreach ($d in @('android', 'tools', 'docs')) {
+    foreach ($d in @('android', 'tools', 'site', 'docs')) {
         $sub = Join-Path $OutDir $d
         if (Test-Path $sub) {
             $n = @(Get-ChildItem $sub -Recurse -File).Count

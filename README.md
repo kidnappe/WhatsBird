@@ -31,7 +31,9 @@
 
 ### 直接安装（普通用户）
 
-到 [Releases](https://github.com/kidnappe/WhatsBird/releases) 下载 APK，传到手机上点开安装即可。
+**下载页：<https://kidnappe.github.io/WhatsBird/>**（手机浏览器打开，点一下就能下 APK）。
+
+或者直接到 [Releases](https://github.com/kidnappe/WhatsBird/releases) 下载 APK，传到手机上点开安装即可。
 
 - **要求 64 位设备**（`arm64-v8a`）——2016 年以后的手机基本都是；32 位老机与 x86 模拟器
   请从源码构建（见下）。
@@ -93,6 +95,7 @@ android/                 Android 应用
   app/src/main/assets/   模型权重、地理先验、图鉴数据、离线区划
 docs/                    项目文档（设计规范 / 指南 / 授权 / 开发方案）
 tools/                   数据清洗、模型训练、监控台、看图器等配套工具
+site/                    下载页（GitHub Pages：仓库 Settings → Pages → main 分支 /site）
 dist/                    交付包（已 gitignore）
 ```
 
