@@ -69,11 +69,12 @@ git lfs pull
 cd android && ./gradlew compileDebugKotlin
 ```
 
-### release 按 ABI 拆包
+### release 只出 arm64-v8a 一个包
 
-`assembleRelease` 产出的是**按 ABI 拆开的两个包**（`app-arm64-v8a-release.apk` /
-`app-armeabi-v7a-release.apk`），不再有单个 `app-release.apk`：x86 / x86_64 的 TFLite
-native 库只有模拟器用得上，拆掉能省 8.7 MB。要在模拟器上跑请用 `assembleDebug`。
+`assembleRelease` 产出单个 `app-release.apk`，里面**只有 arm64-v8a 的 native 库**：
+x86 / x86_64 只有模拟器用得上、armeabi-v7a 只剩 2016 年前的老机，都不带——
+包体从 129.9 MB 降到 118.9 MB。这条限制**只加在 release 上**（`build.gradle.kts` 的
+`buildTypes.release.ndk.abiFilters`），`assembleDebug` 仍保留全部 ABI，模拟器照常调试。
 
 ### 出正式包要自己签名
 

@@ -31,16 +31,12 @@
 
 ### 直接安装（普通用户）
 
-到 [Releases](https://github.com/kidnappe/WhatsBird/releases) 下载**对应架构**的 APK，传到手机上
-点开安装即可（Android 8.0+，不需要 root）。装完就能断网用——模型全在包里。
+到 [Releases](https://github.com/kidnappe/WhatsBird/releases) 下载 APK，传到手机上点开安装即可。
 
-| 你的设备 | 下哪个 |
-|---|---|
-| 2017 年以后的手机（几乎全部） | `WhatsBird-v1.0.1-arm64-v8a.apk` |
-| 更老的 32 位手机 | `WhatsBird-v1.0.1-armeabi-v7a.apk` |
-
-拿不准就选 arm64-v8a。两个包内容完全一样，只是 TFLite 的 native 库不同——按架构拆包
-是为了不把用不上的库塞给你（每个包因此小 11–12 MB）。
+- **要求 64 位设备**（`arm64-v8a`）——2016 年以后的手机基本都是；32 位老机与 x86 模拟器
+  请从源码构建（见下）。
+- Android 8.0+，不需要 root。模型全在包里，装完就能断网用。
+- 文件：`WhatsBird-v1.0-arm64-v8a.apk`，约 119 MB。
 
 ### 从源码构建（开发者）
 

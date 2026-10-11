@@ -16,8 +16,8 @@ android {
         applicationId = "com.whatsbird"
         minSdk = 26
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 1
+        versionName = "1.0"
     }
 
     // 正式签名：只有 android/keystore.properties 存在时才启用（该文件与 .jks 都不入库，
@@ -45,21 +45,17 @@ android {
             isMinifyEnabled = false
             if (hasReleaseKey) signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+
+            // 正式包只出 arm64-v8a（2026-10-11 v1.0 起）。TFLite 的 native 库按 ABI 各来一份：
+            // x86/x86_64 只有模拟器用得上、armeabi-v7a 只剩 2016 年前的老机——都不带，
+            // 包体从 129.9MB 降到 118.9MB。**只加在 release 上**：debug 保留全部 ABI，
+            // 免得模拟器装不上。
+            ndk {
+                abiFilters += "arm64-v8a"
+            }
         }
     }
 
-    // 按 ABI 拆包（2026-10-11 v1.0.1 起）：真机只有 arm64-v8a 与 armeabi-v7a 两种，
-    // x86/x86_64 的 TFLite so 只有模拟器用得上，共 8.7MB——不出通用包就不必带。
-    // 拆出的每个包用同一把密钥签名，versionCode 由 AGP 按 ABI 自动加偏移。
-    // 模拟器用户请用 v1.0.0 那个通用包，或自己 assembleDebug。
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("arm64-v8a", "armeabi-v7a")
-            isUniversalApk = false
-        }
-    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
