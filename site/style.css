@@ -181,6 +181,51 @@ code {
 .rel-dl::after { content: " ↗"; }
 .releases .aside { border: 0; padding: 14px 18px; margin: 0; }
 
+/* ---------- 图廊 ---------- */
+.shot-main {
+  display: flex; gap: 22px; align-items: center; flex-wrap: wrap;
+  background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+  padding: 18px; box-shadow: var(--shadow); margin-bottom: 26px;
+}
+.shot-main img {
+  width: 180px; border-radius: 12px; flex: none; cursor: zoom-in;
+  border: 1px solid var(--line);
+}
+.shot-main h3 { margin: 0 0 6px; font-size: 16px; color: var(--moss); }
+.shot-main p { margin: 0; font-size: 14.5px; color: var(--ink-soft); max-width: 46em; }
+
+.gallery {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 12px; margin-top: 16px;
+}
+.gallery figure {
+  margin: 0; padding: 7px 7px 0; background: var(--card);
+  border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(31, 42, 34, .08);
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+.gallery figure:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.gallery img {
+  width: 100%; aspect-ratio: 3 / 4; object-fit: cover;
+  border-radius: 7px; display: block; cursor: zoom-in;
+}
+.gallery img[data-full] { cursor: zoom-in; }
+
+/* ---------- 大图 ---------- */
+dialog#lightbox {
+  border: 0; padding: 0; background: transparent; max-width: 92vw; max-height: 92vh;
+}
+dialog#lightbox::backdrop { background: rgba(20, 26, 21, .78); }
+dialog#lightbox img {
+  max-width: 90vw; max-height: 86vh; display: block;
+  border-radius: 10px; box-shadow: 0 24px 60px rgba(0, 0, 0, .5);
+}
+dialog#lightbox button {
+  position: absolute; top: 8px; right: 12px;
+  background: transparent; border: 0; color: #FFFDF8;
+  font-size: 30px; line-height: 1; cursor: pointer; padding: 6px 10px;
+}
+
 /* ---------- 页脚 ---------- */
 footer {
   border-top: 1px solid var(--line); padding: 26px clamp(16px, 5vw, 48px) 40px;

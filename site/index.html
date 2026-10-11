@@ -114,6 +114,41 @@
     </div>
   </section>
 
+  <!-- ============ 看看 ============ -->
+  <section id="look">
+    <h2><span class="rule"></span>它认得出什么</h2>
+
+    <div class="shot-main">
+      <img src="shots/camera.jpg" alt="WhatsBird 取景页实拍，识别进行中" data-full="shots/camera.jpg">
+      <div>
+        <h3>取景页实拍</h3>
+        <p>
+          对着鸟举起手机，候选实时刷新。画面上的黄框是检测器锁定的目标，绿框是已经记下的观测——
+          这两个仪表色只出现在取景页，不随主题配色变。
+        </p>
+      </div>
+    </div>
+
+    <p class="lede-sm">
+      下面是模型训练时见过的真实鸟照（华中区域数据集样张）。点图看大图。
+    </p>
+    <div class="gallery">
+      <figure><img src="shots/kingfisher.jpg" alt="识别样张：鸟类照片" data-full="shots/kingfisher.jpg"></figure>
+      <figure><img src="shots/magrobin.jpg" alt="识别样张：鸟类照片" data-full="shots/magrobin.jpg"></figure>
+      <figure><img src="shots/azurewing.jpg" alt="识别样张：鸟类照片" data-full="shots/azurewing.jpg"></figure>
+      <figure><img src="shots/bulbul.jpg" alt="识别样张：鸟类照片" data-full="shots/bulbul.jpg"></figure>
+      <figure><img src="shots/egret.jpg" alt="识别样张：鸟类照片" data-full="shots/egret.jpg"></figure>
+      <figure><img src="shots/nightheron.jpg" alt="识别样张：鸟类照片" data-full="shots/nightheron.jpg"></figure>
+      <figure><img src="shots/pica.jpg" alt="识别样张：鸟类照片" data-full="shots/pica.jpg"></figure>
+      <figure><img src="shots/shrike.jpg" alt="识别样张：鸟类照片" data-full="shots/shrike.jpg"></figure>
+      <figure><img src="shots/dove.jpg" alt="识别样张：鸟类照片" data-full="shots/dove.jpg"></figure>
+      <figure><img src="shots/turtledove.jpg" alt="识别样张：鸟类照片" data-full="shots/turtledove.jpg"></figure>
+      <figure><img src="shots/wagtail.jpg" alt="识别样张：鸟类照片" data-full="shots/wagtail.jpg"></figure>
+      <figure><img src="shots/finch.jpg" alt="识别样张：鸟类照片" data-full="shots/finch.jpg"></figure>
+      <figure><img src="shots/sparrow.jpg" alt="识别样张：鸟类照片" data-full="shots/sparrow.jpg"></figure>
+    </div>
+  </section>
+
   <!-- ============ 安装 ============ -->
   <section id="install">
     <h2><span class="rule"></span>怎么装</h2>
@@ -205,6 +240,11 @@
 
 </main>
 
+<dialog id="lightbox">
+  <img id="lightboxImg" alt="">
+  <button id="lightboxClose" type="button" aria-label="关闭">×</button>
+</dialog>
+
 <footer>
   <p>
     <a href="https://github.com/kidnappe/WhatsBird">源码</a> ·
@@ -254,6 +294,18 @@
       document.getElementById("dlState").textContent =
         "当前显示的是页面内置的 v1.0；点「全部版本」看实时列表";
     });
+
+  // 点图看大图（原生 <dialog>，不引第三方库）
+  var lb = document.getElementById("lightbox");
+  var lbImg = document.getElementById("lightboxImg");
+  document.querySelectorAll("[data-full]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      lbImg.src = el.getAttribute("data-full");
+      if (typeof lb.showModal === "function") { lb.showModal(); } else { lb.setAttribute("open", ""); }
+    });
+  });
+  document.getElementById("lightboxClose").addEventListener("click", function () { lb.close(); });
+  lb.addEventListener("click", function (e) { if (e.target === lb) { lb.close(); } });
 
   fetch(RELEASES, { cache: "no-store" })
     .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
