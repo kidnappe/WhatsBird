@@ -2,27 +2,24 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>拾鸟 WhatsBird · 离线拍照认鸟（Android 下载）</title>
 <meta name="description" content="拾鸟 WhatsBird：拍照认鸟的 Android 应用，识别全程离线，无账号、无云端上传、无广告。">
 <meta name="theme-color" content="#F7F4EC">
-<link rel="icon" href="mark.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icon-192.png" sizes="192x192" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
 <meta property="og:title" content="拾鸟 WhatsBird · 离线拍照认鸟">
 <meta property="og:description" content="举起手机对准鸟，App 告诉你它是什么。识别全程离线，照片与观测记录只留在本机。">
 <meta property="og:type" content="website">
+<meta property="og:image" content="https://kidnappe.github.io/WhatsBird/icon-512.png">
 </head>
 <body>
 
 <header class="topbar">
   <a class="brand" href="#top">
-    <svg class="mark" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
-      <path d="M8 30c0-9 7-16 16-16 6 0 11 3 13 8 4 0 7 3 7 7 0 5-4 8-9 8H20c-7 0-12-3-12-7z"
-            fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
-      <circle cx="30" cy="20" r="2" fill="currentColor"/>
-      <path d="M18 27c3 1 6 1 9 0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-      <path d="M14 37v6M26 37v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-    </svg>
+    <img class="appicon" src="icon-192.png" alt="" width="32" height="32">
     <span>拾鸟 <i class="sci">WhatsBird</i></span>
   </a>
   <nav>
@@ -48,9 +45,7 @@
       </a>
       <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
     </div>
-    <p class="cta-hint">
-      直链 GitHub Release 资产；<span id="dlState">正在核对最新版…</span>
-    </p>
+    <p class="cta-hint">直链 GitHub Release 资产；<span id="dlState">正在核对最新版…</span></p>
 
     <dl class="meta">
       <div><dt>版本</dt><dd id="mVer">v1.0</dd></div>
@@ -67,39 +62,63 @@
     </p>
   </section>
 
-<!-- ============ 核心体验 ============ -->
+  <!-- ============ 核心体验（多图轮换） ============ -->
   <section id="core">
-    <h2><span class="rule"></span>核心体验就这三屏</h2>
+    <h2><span class="rule"></span>核心体验就这几屏</h2>
     <p class="lede-sm">
-      装完打开就是取景器——没有首页、没有菜单、没有登录。认出来 → 记一笔 → 点亮图鉴，
-      全程离线。下面是真机截图（2026-10-12 用 adb 从手机上抓的 v1.0 版）。
+      装完打开就是取景器——没有首页、没有菜单、没有登录。认出来 → 记一笔 → 点亮图鉴，全程离线。
+      下面四张是真机截图（2026-10-12 用 adb 从手机上抓的 v1.0 版），左右滑动或点圆点切换。
     </p>
 
-    <div class="triptych">
-      <figure class="screen">
-        <img src="shots/recognition.jpg" alt="识别页真机截图：相机取景与识别结果" data-full="shots/recognition.jpg">
-        <figcaption>
-          <b>识别</b>　相机逐帧分析：检测 → 框选裁剪 → 分类 Top-5，再用时空分布先验重排。
-          全国兜底加五套区域模型按 GPS 自动路由，也能手动切。
-        </figcaption>
-      </figure>
-      <figure class="screen">
-        <img src="shots/records.jpg" alt="观测记录页真机截图：按日流水" data-full="shots/records.jpg">
-        <figcaption>
-          <b>日志</b>　按日流水，可改判 / 加备注 / 删除，CSV 全量导出。
-          记录只在本机，换手机前先导一份。
-        </figcaption>
-      </figure>
-      <figure class="screen">
-        <img src="shots/guide.jpg" alt="图鉴页真机截图：384 种中国鸟收集册" data-full="shots/guide.jpg">
-        <figcaption>
-          <b>图鉴</b>　384 种中国鸟的收集册。点亮过的才显示照片与性状档案，
-          附 IUCN 与国家重点保护状态。
-        </figcaption>
-      </figure>
+    <div class="carousel" id="carousel" tabindex="0" aria-roledescription="轮播" aria-label="App 界面截图">
+      <div class="track" id="track">
+
+        <figure class="slide" data-cap="识别">
+          <span class="ph-wrap"><img src="shots/recognition.jpg" alt="识别页真机截图：取景与识别结果" data-full="shots/recognition.jpg" width="560" height="1246"></span>
+          <figcaption>
+            <b>识别</b>　相机逐帧分析：检测 → 框选裁剪 → 分类 Top-5，再用时空分布先验重排。
+            全国兜底加五套区域模型按 GPS 自动路由，也能手动切。
+          </figcaption>
+        </figure>
+
+        <figure class="slide" data-cap="日志">
+          <span class="ph-wrap"><img src="shots/records.jpg" alt="观测记录页真机截图：按日流水" data-full="shots/records.jpg" width="560" height="1246"></span>
+          <figcaption>
+            <b>日志</b>　按日流水，可改判 / 加备注 / 删除，CSV 全量导出。
+            记录只在本机，换手机前先导一份。
+          </figcaption>
+        </figure>
+
+        <figure class="slide" data-cap="图鉴">
+          <span class="ph-wrap"><img src="shots/guide.jpg" alt="图鉴页真机截图：384 种中国鸟收集册" data-full="shots/guide.jpg" width="560" height="1246"></span>
+          <figcaption>
+            <b>图鉴</b>　384 种中国鸟的收集册。点亮过的才显示照片与性状档案，
+            附 IUCN 与国家重点保护状态。
+          </figcaption>
+        </figure>
+
+        <figure class="slide" data-cap="图鉴详情">
+          <span class="ph-wrap"><img src="shots/guide-detail.jpg" alt="图鉴详情页真机截图：物种档案与本机记录" data-full="shots/guide-detail.jpg" width="560" height="1246"></span>
+          <figcaption>
+            <b>图鉴详情</b>　点开任一物种：保护状态、目 / 科与形态测量、最近的框选图，
+            以及这条记录在本机跑出的检出分与分类置信度。
+          </figcaption>
+        </figure>
+
+      </div>
+
+      <button class="nav-arrow prev" id="prev" type="button" aria-label="上一屏">‹</button>
+      <button class="nav-arrow next" id="next" type="button" aria-label="下一屏">›</button>
+      <div class="dots" id="dots" role="tablist" aria-label="选择截图"></div>
     </div>
 
-</section>
+    <p class="aside">
+      截图里照片位放的是开放图库（iNaturalist，CC0 / CC-BY）的替代图，不是本机拍的那几张；
+      学名、保护级别、置信度这些数字没动。两件没在图上的：<strong>非鸟拒识门</strong>——
+      独立的拒识分类器挡住非鸟目标，抑制误检；<strong>离线逆地理</strong>——
+      内置行政区划边界，无网也能把经纬度解析到区县。
+    </p>
+  </section>
 
 </main>
 
@@ -107,6 +126,122 @@
   <img id="lightboxImg" alt="">
   <button id="lightboxClose" type="button" aria-label="关闭">×</button>
 </dialog>
+
+<script>
+(function () {
+  "use strict";
+  var API = "https://api.github.com/repos/kidnappe/WhatsBird/releases/latest";
+  var REDUCE = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function mb(b) { return (b / 1048576).toFixed(1) + " MB"; }
+  function ymd(iso) { var d = new Date(iso); return isNaN(d) ? "—" : d.toISOString().slice(0, 10); }
+
+  /* ---------- 版本信息：运行时取最新 release，取不到退回页面内置值 ---------- */
+  fetch(API, { cache: "no-store" })
+    .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function (rel) {
+      var apk = (rel.assets || []).filter(function (a) { return /\.apk$/i.test(a.name); })[0];
+      if (!apk) { throw new Error("no apk asset"); }
+      var btn = document.getElementById("dlBtn");
+      btn.href = apk.browser_download_url;
+      btn.firstChild.nodeValue = "下载 " + rel.tag_name + " APK";
+      document.getElementById("dlSize").textContent = "· " + mb(apk.size);
+      document.getElementById("mVer").textContent = rel.tag_name;
+      document.getElementById("mSize").textContent = mb(apk.size);
+      document.getElementById("mDate").textContent = ymd(rel.published_at);
+      document.getElementById("dlState").textContent =
+        "已核对最新版本 " + rel.tag_name + "（" + ymd(rel.published_at) + "）";
+    })
+    .catch(function () {
+      document.getElementById("dlState").textContent = "当前显示的是页面内置的 v1.0；点「全部版本」看实时列表";
+    });
+
+  /* ---------- 图片加载效果：纸感骨架 + 淡入 ---------- */
+  function markLoaded(img) {
+    var w = img.parentNode;
+    if (w && w.classList) { w.classList.add("is-loaded"); }
+    img.classList.add("is-loaded");
+  }
+  document.querySelectorAll(".ph-wrap img, .appicon").forEach(function (img) {
+    if (img.complete && img.naturalWidth > 0) { markLoaded(img); return; }
+    img.addEventListener("load", function () { markLoaded(img); });
+    img.addEventListener("error", function () { markLoaded(img); });
+  });
+
+  /* ---------- 多图轮换 ---------- */
+  var track = document.getElementById("track");
+  var slides = Array.prototype.slice.call(track.querySelectorAll(".slide"));
+  var dotsBox = document.getElementById("dots");
+  var idx = 0, timer = null, INTERVAL = 5200;
+
+  slides.forEach(function (s, i) {
+    var b = document.createElement("button");
+    b.className = "dot";
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-label", s.dataset.cap || ("第 " + (i + 1) + " 屏"));
+    b.addEventListener("click", function () { go(i); restart(); });
+    dotsBox.appendChild(b);
+  });
+  var dots = Array.prototype.slice.call(dotsBox.children);
+
+  function go(n) {
+    idx = (n + slides.length) % slides.length;
+    track.style.transform = "translateX(" + (-idx * 100) + "%)";
+    dots.forEach(function (d, i) {
+      d.classList.toggle("on", i === idx);
+      d.setAttribute("aria-selected", i === idx ? "true" : "false");
+    });
+    slides.forEach(function (s, i) { s.setAttribute("aria-hidden", i === idx ? "false" : "true"); });
+  }
+  function next() { go(idx + 1); }
+  function prev() { go(idx - 1); }
+  function stop() { if (timer) { clearInterval(timer); timer = null; } }
+  function restart() { stop(); if (!REDUCE) { timer = setInterval(next, INTERVAL); } }
+
+  document.getElementById("next").addEventListener("click", function () { next(); restart(); });
+  document.getElementById("prev").addEventListener("click", function () { prev(); restart(); });
+
+  var car = document.getElementById("carousel");
+  car.addEventListener("mouseenter", stop);
+  car.addEventListener("mouseleave", restart);
+  car.addEventListener("focusin", stop);
+  car.addEventListener("focusout", restart);
+  car.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") { next(); restart(); }
+    if (e.key === "ArrowLeft") { prev(); restart(); }
+  });
+
+  /* 触屏滑动 */
+  var x0 = null;
+  car.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; stop(); }, { passive: true });
+  car.addEventListener("touchend", function (e) {
+    if (x0 === null) { return; }
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 40) { if (dx < 0) { next(); } else { prev(); } }
+    x0 = null; restart();
+  }, { passive: true });
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { stop(); } else { restart(); }
+  });
+
+  go(0);
+  restart();
+
+  /* ---------- 点图看大图（原生 <dialog>，不引第三方库） ---------- */
+  var lb = document.getElementById("lightbox");
+  var lbImg = document.getElementById("lightboxImg");
+  document.querySelectorAll("[data-full]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      lbImg.src = el.getAttribute("data-full");
+      if (typeof lb.showModal === "function") { lb.showModal(); } else { lb.setAttribute("open", ""); }
+    });
+  });
+  document.getElementById("lightboxClose").addEventListener("click", function () { lb.close(); });
+  lb.addEventListener("click", function (e) { if (e.target === lb) { lb.close(); } });
+})();
+</script>
 
 </body>
 </html>

@@ -46,12 +46,12 @@ body{
 }
 .status{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 3px;font-size:12.5px;font-weight:600}
 .scroll{height:692px;overflow:hidden;position:relative}
-.scroll-inner{padding:8px 15px 92px}
+.scroll-inner{padding:8px 15px 124px}
 .nav{
-  position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:20;
   display:flex;gap:2px;padding:5px;border-radius:999px;
-  background:color-mix(in srgb,var(--card) 86%, transparent);
-  border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(8px);
+  background:color-mix(in srgb,var(--card) 96%, transparent);
+  border:1px solid var(--line);box-shadow:0 6px 20px rgba(30,25,15,.22);backdrop-filter:blur(8px);
 }
 .nav button{border:0;background:transparent;font:inherit;font-size:13px;color:var(--gray);padding:7px 22px;border-radius:999px;cursor:pointer}
 .nav button.on{background:var(--moss);color:#fff;font-weight:700}
