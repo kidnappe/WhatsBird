@@ -1,0 +1,151 @@
+﻿rank,scientific_name,zh,geomodel_mean,gbif_name
+1,Passer montanus,麻雀,0.928956,Passer montanus
+2,Egretta garzetta,白鹭,0.919414,Egretta garzetta
+3,Motacilla alba,白鹡鸰,0.900001,"Motacilla alba Linnaeus, 1758"
+4,Tachybaptus ruficollis,小䴙䴘,0.895878,Tachybaptus ruficollis
+5,Lanius schach,棕背伯劳,0.886276,"Lanius schach Linnaeus, 1758"
+6,Spilopelia chinensis,珠颈斑鸠,0.885697,Spilopelia chinensis
+7,Pycnonotus sinensis,白头鹎,0.881748,Pycnonotus sinensis
+8,Streptopelia orientalis,山斑鸠,0.873602,Streptopelia orientalis
+9,Gallinula chloropus,黑水鸡,0.857717,Gallinula chloropus
+10,Parus cinereus,大山雀,0.849241,"Parus cinereus Vieillot, 1818"
+11,Alcedo atthis,普通翠鸟,0.815936,Alcedo atthis
+12,Ardea alba,大白鹭,0.809398,"Ardea alba Linnaeus, 1758"
+13,Nycticorax nycticorax,夜鹭,0.807955,Nycticorax nycticorax
+14,Pica serica,喜鹊,0.803619,"Pica serica Gould, 1845"
+15,Ardea cinerea,苍鹭,0.802135,"Ardea cinerea Linnaeus, 1758"
+16,Hirundo rustica,家燕,0.763024,"Hirundo rustica Linnaeus, 1758"
+17,Acridotheres cristatellus,八哥,0.753993,Acridotheres cristatellus
+18,Anas zonorhyncha,斑嘴鸭,0.745379,"Anas zonorhyncha Swinhoe, 1866"
+19,Suthora webbiana,棕头鸦雀,0.725422,"Suthora webbiana Gould, 1852"
+20,Turdus mandarinus,乌鸫,0.719373,"Turdus mandarinus Bonaparte, 1850"
+21,Fulica atra,白骨顶,0.671695,"Fulica atra Linnaeus, 1758"
+22,Prinia inornata,纯色山鹪莺,0.666004,"Prinia inornata Sykes, 1832"
+23,Anas platyrhynchos,绿头鸭,0.659935,"Anas platyrhynchos Linnaeus, 1758"
+24,Falco tinnunculus,红隼,0.657439,"Falco tinnunculus Linnaeus, 1758"
+25,Tringa ochropus,白腰草鹬,0.644949,"Tringa ochropus Linnaeus, 1758"
+26,Chloris sinica,金翅雀,0.644456,Chloris sinica
+27,Phasianus colchicus,环颈雉,0.642136,"Phasianus colchicus Linnaeus, 1758"
+28,Spodiopsar cineraceus,灰椋鸟,0.641111,Spodiopsar cineraceus
+29,Actitis hypoleucos,矶鹬,0.623497,Actitis hypoleucos
+30,Ardeola bacchus,池鹭,0.621495,Ardeola bacchus
+31,Upupa epops,戴胜,0.617416,"Upupa epops Linnaeus, 1758"
+32,Copsychus saularis,鹊鸲,0.606686,Copsychus saularis
+33,Tringa nebularia,青脚鹬,0.605356,Tringa nebularia
+34,Phoenicurus auroreus,北红尾鸲,0.590584,Phoenicurus auroreus
+35,Motacilla cinerea,灰鹡鸰,0.59056,"Motacilla cinerea Tunstall, 1771"
+36,Spodiopsar sericeus,丝光椋鸟,0.58314,Spodiopsar sericeus
+37,Columba livia,原鸽,0.571824,"Columba livia J.F.Gmelin, 1789"
+38,Eophona migratoria,黑尾蜡嘴雀,0.55972,"Eophona migratoria Hartert, 1903"
+39,Cyanopica cyanus,灰喜鹊,0.555337,Cyanopica cyanus
+40,Podiceps cristatus,凤头䴙䴘,0.54922,Podiceps cristatus
+41,Zosterops simplex,暗绿绣眼鸟,0.546322,"Zosterops simplex Swinhoe, 1861"
+42,Phalacrocorax carbo,普通鸬鹚,0.545665,Phalacrocorax carbo
+43,Ardea coromanda,牛背鹭,0.539297,Bubulcus ibis
+44,Cecropis daurica,金腰燕,0.529465,Cecropis daurica
+45,Aegithalos concinnus,红头长尾山雀,0.517327,Aegithalos concinnus
+46,Thinornis dubius,金眶鸻,0.509936,"Charadrius dubius Scopoli, 1786"
+47,Himantopus himantopus,黑翅长脚鹬,0.500643,Himantopus himantopus
+48,Spizixos semitorques,领雀嘴鹎,0.487974,"Spizixos semitorques Swinhoe, 1861"
+49,Anas crecca,绿翅鸭,0.486449,"Anas crecca Linnaeus, 1758"
+50,Anthus hodgsoni,树鹨,0.477624,"Anthus hodgsoni Richmond, 1907"
+51,Ardea intermedia,中白鹭,0.451894,"Ardea intermedia Wagler, 1829"
+52,Lonchura punctulata,斑文鸟,0.442511,Lonchura punctulata
+53,Chroicocephalus ridibundus,红嘴鸥,0.432126,Chroicocephalus ridibundus
+54,Elanus caeruleus,黑翅鸢,0.419271,Elanus caeruleus
+55,Dendrocopos major,大斑啄木鸟,0.418343,Dendrocopos major
+56,Yungipicus canicapillus,星头啄木鸟,0.415897,Yungipicus canicapillus
+57,Cisticola juncidis,棕扇尾莺,0.415736,Cisticola juncidis
+58,Emberiza spodocephala,灰头鹀,0.413124,"Emberiza spodocephala Pallas, 1776"
+59,Horornis fortipes,强脚树莺,0.407437,"Horornis fortipes Hodgson, 1845"
+60,Gallus gallus,红原鸡,0.40557,Gallus gallus
+61,Milvus migrans,黑鸢,0.405483,Milvus migrans
+62,Gallinago gallinago,扇尾沙锥,0.39952,Gallinago gallinago
+63,Amaurornis phoenicurus,白胸苦恶鸟,0.395325,Amaurornis phoenicurus
+64,Picus canus,灰头绿啄木鸟,0.393327,"Picus canus J.F.Gmelin, 1788"
+65,Emberiza pusilla,小鹀,0.390264,"Emberiza pusilla Pallas, 1776"
+66,Hypsipetes leucocephalus,黑短脚鹎,0.389278,Hypsipetes leucocephalus
+67,Lonchura striata,白腰文鸟,0.38849,Lonchura striata
+68,Dicrurus macrocercus,黑卷尾,0.38574,"Dicrurus macrocercus Vieillot, 1817"
+69,Tringa glareola,林鹬,0.371114,"Tringa glareola Linnaeus, 1758"
+70,Lanius cristatus,红尾伯劳,0.368121,"Lanius cristatus Linnaeus, 1758"
+71,Phylloscopus inornatus,黄眉柳莺,0.36274,Phylloscopus inornatus
+72,Gracupica nigricollis,黑领椋鸟,0.361348,Gracupica nigricollis
+73,Aegithalos glaucogularis,银喉长尾山雀,0.359052,Aegithalos glaucogularis
+74,Anarhynchus alexandrinus,环颈鸻,0.356967,Anarhynchus alexandrinus
+75,Falco peregrinus,游隼,0.356923,"Falco peregrinus Tunstall, 1771"
+76,Tringa erythropus,鹤鹬,0.355658,Tringa erythropus
+77,Pterorhinus perspicillatus,黑脸噪鹛,0.351481,Pterorhinus perspicillatus
+78,Ceryle rudis,斑鱼狗,0.351244,Ceryle rudis
+79,Vanellus cinereus,灰头麦鸡,0.350828,Vanellus cinereus
+80,Garrulus glandarius,松鸦,0.348642,Garrulus glandarius
+81,Dendrocitta formosae,灰树鹊,0.344446,"Dendrocitta formosae Swinhoe, 1863"
+82,Mareca strepera,赤膀鸭,0.340231,Mareca strepera
+83,Buteo japonicus,普通鵟,0.339238,"Buteo japonicus Temminck & Schlegel, 1844"
+84,Phylloscopus proregulus,黄腰柳莺,0.330715,Phylloscopus proregulus
+85,Phoenicurus fuliginosus,红尾水鸲,0.328087,"Phoenicurus fuliginosus Vigors, 1831"
+86,Spatula clypeata,琵嘴鸭,0.326461,Spatula clypeata
+87,Chlidonias hybrida,灰翅浮鸥,0.322697,Chlidonias hybrida
+88,Tarsiger cyanurus,红胁蓝尾鸲,0.320675,Tarsiger cyanurus
+89,Accipiter nisus,雀鹰,0.316876,Accipiter nisus
+90,Mareca penelope,赤颈鸭,0.310913,Mareca penelope
+91,Fringilla montifringilla,燕雀,0.310731,"Fringilla montifringilla Linnaeus, 1758"
+92,Recurvirostra avosetta,反嘴鹬,0.308296,"Recurvirostra avosetta Linnaeus, 1758"
+93,Corvus macrorhynchos,大嘴乌鸦,0.304876,"Corvus macrorhynchos Wagler, 1827"
+94,Phylloscopus fuscatus,褐柳莺,0.303391,Phylloscopus fuscatus
+95,Platalea leucorodia,白琵鹭,0.294396,"Platalea leucorodia Linnaeus, 1758"
+96,Anas acuta,针尾鸭,0.293029,"Anas acuta Linnaeus, 1758"
+97,Motacilla tschutschensis,黄鹡鸰,0.285698,"Motacilla tschutschensis Gmelin, 1789"
+98,Mareca falcata,罗纹鸭,0.283992,Mareca falcata
+99,Aythya fuligula,凤头潜鸭,0.279177,Aythya fuligula
+100,Aythya ferina,红头潜鸭,0.279001,Aythya ferina
+101,Lophospiza trivirgata,凤头鹰,0.276737,Accipiter trivirgatus
+102,Calidris alpina,黑腹滨鹬,0.275752,Calidris alpina
+103,Saxicola stejnegeri,东亚石䳭,0.273986,Saxicola stejnegeri
+104,Abroscopus albogularis,棕脸鹟莺,0.26006,Abroscopus albogularis
+105,Emberiza elegans,黄喉鹀,0.25945,"Emberiza elegans Temminck, 1836"
+106,Tringa stagnatilis,泽鹬,0.255819,Tringa stagnatilis
+107,Bambusicola thoracicus,灰胸竹鸡,0.252401,Bambusicola thoracicus
+108,Prinia flaviventris,黄腹山鹪莺,0.25044,Prinia flaviventris
+109,Alauda gulgula,小云雀,0.248881,"Alauda gulgula Franklin, 1831"
+110,Botaurus sinensis,黄苇鳽,0.245886,Ixobrychus sinensis
+111,Turdus eunomus,斑鸫,0.242802,"Turdus eunomus Temminck, 1831"
+112,Pandion haliaetus,鹗,0.238936,Pandion haliaetus
+113,Hemixos castanonotus,栗背短脚鹎,0.22963,"Hemixos castanonotus Swinhoe, 1870"
+114,Aix galericulata,鸳鸯,0.227136,Aix galericulata
+115,Myophonus caeruleus,紫啸鸫,0.226074,Myophonus caeruleus
+116,Butorides striata,绿鹭,0.222757,Butorides striata
+117,Cyanoderma ruficeps,红头穗鹛,0.222631,Cyanoderma ruficeps
+118,Circus cyaneus,白尾鹞,0.219439,Circus cyaneus
+119,Monticola solitarius,蓝矶鸫,0.218698,Monticola solitarius
+120,Tadorna ferruginea,赤麻鸭,0.218476,Tadorna ferruginea
+121,Cuculus canorus,大杜鹃,0.21741,"Cuculus canorus Linnaeus, 1758"
+122,Emberiza cioides,三道眉草鹀,0.213274,"Emberiza cioides J.F.Brandt, 1843"
+123,Acrocephalus orientalis,东方大苇莺,0.212443,Acrocephalus orientalis
+124,Ardea purpurea,草鹭,0.210042,"Ardea purpurea Linnaeus, 1766"
+125,Passer cinnamomeus,山麻雀,0.209938,Passer cinnamomeus
+126,Circus spilonotus,白腹鹞,0.208455,"Circus spilonotus Kaup, 1847"
+127,Anthus richardi,田鹨,0.207769,"Anthus richardi Vieillot, 1818"
+128,Anthus japonicus,黄腹鹨,0.207691,Anthus rubescens
+129,Vanellus vanellus,凤头麦鸡,0.207421,Vanellus vanellus
+130,Picumnus innominatus,斑姬啄木鸟,0.206601,"Picumnus innominatus Burton, 1836"
+131,Pterorhinus sannio,白颊噪鹛,0.206027,Pterorhinus sannio
+132,Periparus venustulus,黄腹山雀,0.2026,Periparus venustulus
+133,Numenius arquata,白腰杓鹬,0.202253,Numenius arquata
+134,Oriolus chinensis,黑枕黄鹂,0.201125,"Oriolus chinensis Linnaeus, 1766"
+135,Tringa totanus,红脚鹬,0.200529,Tringa totanus
+136,Streptopelia tranquebarica,火斑鸠,0.2005,Streptopelia tranquebarica
+137,Pluvialis squatarola,灰鸻,0.199138,Pluvialis squatarola
+138,Sterna hirundo,普通燕鸥,0.195277,"Sterna hirundo Linnaeus, 1758"
+139,Aythya nyroca,白眼潜鸭,0.194749,Aythya nyroca
+140,Pomatorhinus ruficollis,棕颈钩嘴鹛,0.193984,"Pomatorhinus ruficollis Hodgson, 1836"
+141,Alauda arvensis,云雀,0.190556,"Alauda arvensis Linnaeus, 1758"
+142,Calidris ruficollis,红颈滨鹬,0.190446,Calidris ruficollis
+143,Emberiza rustica,田鹀,0.188439,"Emberiza rustica Pallas, 1776"
+144,Turdus hortulorum,灰背鸫,0.187864,"Turdus hortulorum P.L.Sclater, 1863"
+145,Limosa limosa,黑尾塍鹬,0.186433,Limosa limosa
+146,Eudynamys scolopaceus,噪鹃,0.18607,Eudynamys scolopaceus
+147,Ixos mcclellandii,绿翅短脚鹎,0.184858,Ixos mcclellandii
+148,Halcyon smyrnensis,白胸翡翠,0.184382,Halcyon smyrnensis
+149,Turdus pallidus,白腹鸫,0.177531,"Turdus pallidus Gmelin, 1789"
+150,Apus nipalensis,小白腰雨燕,0.176075,Apus nipalensis

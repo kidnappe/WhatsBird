@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="46%" r="70%">
+      <stop offset="0%" stop-color="#1A2E22"/>
+      <stop offset="100%" stop-color="#0C1710"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 深林夜绿底 -->
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <!-- 左上角琥珀问号（WhatsBird? 的点题符号） -->
+  <path d="M152 200 C140 130 240 100 278 150 C306 188 268 216 240 240 C218 258 210 272 210 300"
+        fill="none" stroke="#FFD60A" stroke-width="56" stroke-linecap="round"/>
+  <circle cx="210" cy="372" r="32" fill="#FFD60A"/>
+
+  <!-- 长尾：白条 + 黑中轴，向右下斜出 -->
+  <polygon points="700,540 934,616 924,652 690,610" fill="#F7F5EF"/>
+  <line x1="706" y1="572" x2="920" y2="636" stroke="#2B2B30" stroke-width="18" stroke-linecap="round"/>
+
+  <!-- 白色糯米团子主体（头身一体的圆） -->
+  <circle cx="500" cy="520" r="270" fill="#F7F5EF"/>
+
+  <!-- 翅膀合拢线（淡灰弧） -->
+  <path d="M296 600 Q330 706 428 748" fill="none" stroke="#DDD9CE" stroke-width="18" stroke-linecap="round"/>
+  <path d="M704 600 Q670 706 572 748" fill="none" stroke="#DDD9CE" stroke-width="18" stroke-linecap="round"/>
+
+  <!-- 腮红 -->
+  <ellipse cx="356" cy="536" rx="42" ry="25" fill="#F3B9B9" opacity="0.75"/>
+  <ellipse cx="644" cy="536" rx="42" ry="25" fill="#F3B9B9" opacity="0.75"/>
+
+  <!-- 豆豆眼 + 小三角喙 -->
+  <circle cx="418" cy="466" r="31" fill="#1E1E20"/>
+  <circle cx="582" cy="466" r="31" fill="#1E1E20"/>
+  <path d="M500 540 L482 506 Q500 494 518 506 Z" fill="#6B5D4F"/>
+
+  <!-- 黑色细腿小爪 -->
+  <g stroke="#2B2B30" stroke-width="15" stroke-linecap="round" fill="none">
+    <path d="M448 782 V846 m0 0 l-24 14 m24 -14 l24 14 m-24 -14 v16"/>
+    <path d="M552 782 V846 m0 0 l-24 14 m24 -14 l24 14 m-24 -14 v16"/>
+  </g>
+
+  <!-- 榛枝与花穗（暖棕 + 琥珀芽苞） -->
+  <line x1="242" y1="868" x2="790" y2="850" stroke="#8A6A4F" stroke-width="22" stroke-linecap="round"/>
+  <ellipse cx="700" cy="820" rx="20" ry="34" fill="#D8B24C" transform="rotate(24 700 820)"/>
+  <ellipse cx="300" cy="838" rx="18" ry="30" fill="#D8B24C" transform="rotate(-20 300 838)"/>
+</svg>

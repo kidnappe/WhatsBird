@@ -1,0 +1,55 @@
+__pycache__/
+
+.shots/
+
+# 监控台事件日志（运行期产物，供事故复盘，不入库）
+dashboard_events.log
+dashboard_events.log.1
+tools/dashboard_console.log*
+*.err
+
+# 先验查表：tools/distill_prior_table.py 的产物（默认落 assets/prior/），再拷进 android assets。
+# 可一条命令重蒸，不入库（docs/handoff/root/RERANK-DEVICE.md）
+assets/prior/
+
+# 打包/中间产物
+custom
+
+# IOC 官方名录 xlsx（7.2MB，公开可下载，见 docs/guides/IOC-GUIDE.md 的下载 URL）
+tools/ioc/*.xlsx
+
+# 第三方名录 / 论文原件：与上面 IOC xlsx 同理——**只放本机，不入库**。
+# 这些是别人的出版物（三有名录 PDF、国家保护名录 doc、中国鸟类名录 xls、
+# 期刊补充材料 xlsx），公开仓库里重新分发属于侵权。需要时按各工具文档里的
+# 来源 URL 自行下载。
+#   ⚠️ 保留入库的是脚本从原件抽出的"物种名 + 保护级别"等**事实性小表**
+#   （tools/bird_protection/raw/*.csv），它们体积小、可复现、不含原件的表达。
+tools/bird_protection/raw/*.pdf
+tools/bird_protection/raw/*.doc
+tools/bird_protection/raw/*.docx
+tools/bird_protection/raw/*.xls
+tools/bird_protection/raw/*.xlsx
+tools/dataset_traits/*.xlsx
+
+# ⚠️ 2026-10-11 补：**zip 包装绕过了上面那条 *.xlsx 规则**。
+#   tools/dataset_traits/2021201.zip 解包后就是同一份期刊补充数据原件
+#   （Chinesebirdsdata.xlsx，王彦平等 2021《生物多样性》DOI 10.17520/biods.2021201），
+#   等于把别人的原件换个壳再分发。同目录的 .xlsx 早就不入库，这里把壳也堵上。
+#   （2026-10-11 发布前审计发现：它已被跟踪，会随公开树发出去。）
+tools/dataset_traits/*.zip
+
+# 交付包与压缩产物：GB 级归档不进 git（detb 训练包 1.2GB 等）。
+# 需要某次交付包时从磁盘/zip 取，不从 git 恢复。
+dist/*.zip
+dist/*.7z
+
+# dist/ 整目录不收（2026-10-11 开源整理）：
+#   dist/yolox_repo 1.5GB、dist/observebird_detb_train_pack 1.3GB 是训练工作目录，
+#   属外部产物而非仓库内容。**已跟踪的文件不受本规则影响**——要把它们移出索引，
+#   需另外执行 `git rm -r --cached dist/`（只移出索引，不删磁盘文件，不改写历史）。
+dist/
+
+# 仓库根 data/：诊断脚本的运行期产物（逐样本分数 JSON 等），不入库。
+# 与 `E:\code\code tools\data\`（管线运行目录）无关，别混淆。
+# 例：tools/reject_gate_crop_check/ 的拒识门逐条打分（可重跑重生成）。
+/data/

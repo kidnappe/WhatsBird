@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="46%" r="68%">
+      <stop offset="0%" stop-color="#182B1F"/>
+      <stop offset="100%" stop-color="#0C1710"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 深林夜绿底 + 极微弱径向光晕 -->
+  <rect width="1024" height="1024" fill="url(#glow)"/>
+
+  <!-- 琥珀黄对焦角括号（笔画 44 ≈ 4% 画布宽） -->
+  <g stroke="#FFD60A" stroke-width="44" fill="none" stroke-linecap="butt">
+    <path d="M240 380 V240 H380"/>
+    <path d="M644 240 H784 V380"/>
+    <path d="M240 644 V784 H380"/>
+    <path d="M644 784 H784 V644"/>
+  </g>
+  <!-- 锁定角点（右上角"已识别"小圆点） -->
+  <circle cx="716" cy="308" r="30" fill="#FFD60A"/>
+
+  <!-- 豆绿歌鸟：一笔画轮廓（仰头 + 短喙 + 尖尾 + 圆腹） -->
+  <path fill="#B1CA85" d="M280 432
+    L338 390
+    C346 328 432 298 496 344
+    C552 383 616 432 694 446
+    L750 452
+    L700 528
+    C668 610 596 672 500 684
+    C438 692 386 648 358 570
+    C350 540 344 496 336 466
+    Z"/>
+  <!-- 翅膀：深一号豆绿，收在轮廓内 -->
+  <path fill="#8FAF6D" d="M480 455
+    C560 425 640 455 672 510
+    C620 548 530 552 478 522
+    C462 500 466 470 480 455 Z"/>
+  <!-- 眼睛：背景色镂空点 -->
+  <circle cx="428" cy="388" r="15" fill="#0C1710"/>
+</svg>

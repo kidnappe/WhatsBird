@@ -1,0 +1,21 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+# 模型权重与地理先验：**已入库**（2026-10-11）。走 Git LFS（见根 .gitattributes）。
+# 血统已结案——六个分类器是 MobileNetV4 + ImageNet 预训练 backbone 独立训练的，
+# 与 model_v1base.pth（ConvNeXt）无权重传递，排除 NC 污染。证据见 LICENSE-MODELS.md §1。
+# 重新生成路径仍保留：模型由 tools/copy_models_to_android.py 从训练产物拷入，
+# 先验由 tools/distill_prior_table.py 蒸馏（缺表时 PriorReranker 降级不重排，logcat 心跳 prior=off）。
+# app/src/main/assets/models/*.tflite   ← 故意不忽略
+# app/src/main/assets/prior/*.json      ← 故意不忽略
+# 离线行政区划：**已入库**（2026-10-11 决策）。
+# 来源 DataV.GeoAtlas，其服务条款未明确授予再分发许可；这是一次**知情决策**——
+# 7.62MB 走 Git LFS，换取 clone 即用（否则离线逆地理要跑一次
+# tools/admin_geo/start_generate.bat）。详见 LICENSE-MODELS.md 的资产清单。
+# 需要重新生成时仍可跑那个 bat（区划年度调整时用）。
+# app/src/main/assets/geo/*.ndjson   ← 故意不忽略

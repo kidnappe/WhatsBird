@@ -1,0 +1,23 @@
+{
+  "_comment": "ObserveBird 区域划分 v2（2026-10-04 用户确认）。bbox 顺序 = 纬度min 纬度max 经度min 经度max，与 build_dataset_gbif.py --bbox 参数一致。命令模板见 PLAN.md「区域划分 v2」。西北/青藏暂未纳入规划。",
+  "huabei": {
+    "bbox": [36, 43, 110, 120],
+    "note": "京津冀晋蒙；含本次已扩展数据（断点续传 --per-species 300 --max-pages 6）"
+  },
+  "dongbei": {
+    "bbox": [39, 55, 119, 135],
+    "note": "黑吉辽"
+  },
+  "huazhong": {
+    "bbox": [31, 37, 105, 117],
+    "note": "豫鄂湘（含河南全境，用户确认新增）"
+  },
+  "huadong": {
+    "bbox": [27, 35, 117, 123],
+    "note": "鲁苏皖浙赣闽"
+  },
+  "huanan_sw": {
+    "bbox": [20, 31, 97, 117],
+    "note": "粤桂琼云贵川渝"
+  }
+}

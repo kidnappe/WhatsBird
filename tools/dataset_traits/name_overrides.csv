@@ -1,0 +1,5 @@
+action,query_name,gbif_name,evidence
+map,Phoenicuropsis frontalis,Phoenicurus frontalis,属被拆：GBIF 仍用 Phoenicurus；GBIF 中国记录 5821 条
+map,Phyllergates cucullatus,Orthotomus cuculatus,属被并回 Orthotomus；GBIF 中国记录 9 条
+map,Luscinia phoenicuroides,Hodgsonius phoenicuroides,属名不同；枚举全部同名候选后按目/科判定（Muscicapidae，非 Laniidae 的棕尾伯劳）；GBIF 中国记录 1822 条
+exclude,Garrulax owstoni,,"GBIF 没有种级身份：只有亚种 Garrulax canorus owstoni (key=5844639)。名单里已有它的上级种「画眉 Garrulax canorus」，两者并存会造成标签冲突（亚种记录 ⊆ 种记录）。且实测下载器本来也取不到它的 key（只给到属级）。排除影响≈0：用户拍海南画眉时模型会给「画眉」，分类学上站得住。"

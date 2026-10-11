@@ -1,0 +1,46 @@
+labels_sci,csv_sci,evidence
+Actinodura cyanouroptera,Siva cyanouroptera,属名变更；中文名「蓝翅希鹛」在性状表唯一命中
+Alcippe davidi,Alcippe morrisonia,拆分前口径；灰眶雀鹛已拆为 davidi/hueti/morrisonia 三种；性状取拆分前广义种（体型近似）
+Alcippe hueti,Alcippe morrisonia,拆分前口径；淡眉雀鹛与灰眶雀鹛同为 morrisonia 拆分产物；性状取拆分前广义种
+Anarhynchus alexandrinus,Charadrius alexandrinus,属名变更；中文名「环颈鸻」唯一命中
+Anarhynchus leschenaultii,Charadrius leschenaultii,属名变更；中文名「铁嘴沙鸻」唯一命中
+Anser cygnoides,Anser cygnoid,拼写差异（cygnoid/cygnoides）；同一物种「鸿雁」
+Anthus japonicus,Anthus rubescens,拆分前口径；黄腹鹨自美洲鹨 rubescens 拆出；性状取拆分前广义种
+Ardea coromanda,Bubulcus ibis,拆分前口径；东方牛背鹭自牛背鹭 ibis 拆出；性状取拆分前广义种
+Astur gentilis,Accipiter gentilis,属名变更（鹰属回并 Accipiter）；中文名「苍鹰」唯一命中
+Botaurus sinensis,Ixobrychus sinensis,属名变更 + 中文名变更（黄苇鳽/黄斑苇鳽）；同一物种
+Calidris pygmaea,Calidris pygmeus,种名性别一致拼写（pygmaea/pygmeus）；同一物种「勺嘴鹬」
+Caprimulgus jotaka,Caprimulgus indicus,拆分前口径；普通夜鹰自 indicus 拆出；性状取拆分前广义种
+Coloeus dauuricus,Corvus dauuricus,属名变更（Coloeus 并回 Corvus）；中文名「达乌里寒鸦」唯一命中
+Copsychus malabaricus,Kittacincla malabarica,属名变更；中文名「白腰鹊鸲」唯一命中
+Corvus torquatus,Corvus pectoralis,学名更换（torquatus 已被占用）；中文名「白颈鸦」唯一命中
+Ianthocincla maxima,Garrulax maximus,属名变更（噪鹛属回并 Garrulax）；中文名「大噪鹛」唯一命中
+Leucogeranus leucogeranus,Grus leucogeranus,属名变更；中文名「白鹤」唯一命中
+Lophospiza trivirgata,Accipiter trivirgatus,属名变更；中文名「凤头鹰」唯一命中
+Nucifraga hemispila,Nucifraga caryocatactes,拆分前口径；南方星鸦自星鸦拆出；性状取拆分前广义种
+Paradoxornis gularis,Psittiparus gularis,属名变更；中文名「灰头鸦雀」唯一命中
+Parayuhina diademata,Yuhina diademata,属名变更（Parayuhina 并回 Yuhina）；中文名「白领凤鹛」唯一命中
+Pericrocotus speciosus,Pericrocotus flammeus,拆分前口径；赤红山椒鸟自 flammeus 拆出；性状取拆分前广义种
+Periparus venustulus,Pardaliparus venustulus,属名变更；中文名「黄腹山雀」唯一命中
+Phoenicurus fuliginosus,Rhyacornis fuliginosa,属名变更 + 性别一致；中文名「红尾水鸲」唯一命中
+Phoenicurus leucocephalus,Chaimarrornis leucocephalus,属名变更；中文名「白顶溪鸲」唯一命中
+Phylloscopus castaniceps,Seicercus castaniceps,属名变更；中文名「栗头鹟莺」唯一命中
+Pica bottanensis,Pica pica,拆分前口径；青藏喜鹊自喜鹊 pica 拆出；性状取拆分前广义种
+Pica serica,Pica pica,拆分前口径；喜鹊（东亚）自 pica 拆出；性状取拆分前广义种
+Porphyrio poliocephalus,Porphyrio porphyrio,拆分前口径；紫水鸡自 porphyrio 拆出；性状取拆分前广义种
+Pterorhinus berthemyi,Garrulax berthemyi,属名变更；中文名「棕噪鹛」唯一命中
+Pterorhinus chinensis,Garrulax chinensis,属名变更；中文名「黑喉噪鹛」唯一命中
+Pterorhinus davidi,Garrulax davidi,属名变更；中文名「山噪鹛」唯一命中
+Pterorhinus lanceolatus,Babax lanceolatus,属名变更；中文名「矛纹草鹛」唯一命中
+Pterorhinus pectoralis,Garrulax pectoralis,属名变更；中文名「黑领噪鹛」唯一命中
+Pterorhinus perspicillatus,Garrulax perspicillatus,属名变更；中文名「黑脸噪鹛」唯一命中
+Pterorhinus sannio,Garrulax sannio,属名变更；中文名「白颊噪鹛」唯一命中
+Rubigula flaviventris,Pycnonotus melanicterus,拆分前口径；黑冠黄鹎学名由 melanicterus 改为 flaviventris；性状取该行
+Saxicola stejnegeri,Saxicola maurus,拆分前口径；东亚石䳭自黑喉石䳭 maurus 复合种拆出；性状取拆分前广义种
+Spilopelia chinensis,Streptopelia chinensis,属名变更；中文名「珠颈斑鸠」唯一命中
+Suthora alphonsiana,Sinosuthora alphonsiana,属名变更；中文名「灰喉鸦雀」唯一命中
+Suthora webbiana,Sinosuthora webbiana,属名变更；中文名「棕头鸦雀」唯一命中
+Thinornis dubius,Charadrius dubius,属名变更；中文名「金眶鸻」唯一命中
+Yungipicus canicapillus,Dendrocopos canicapillus,属名变更；中文名「星头啄木鸟」唯一命中
+Yungipicus kizuki,Dendrocopos kizuki,属名变更；中文名「小星头啄木鸟」唯一命中
+Zosterops simplex,Zosterops japonicus,拆分前口径；暗绿绣眼鸟学名由 japonicus 改为 simplex；性状取该行
