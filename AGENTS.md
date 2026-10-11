@@ -69,6 +69,12 @@ git lfs pull
 cd android && ./gradlew compileDebugKotlin
 ```
 
+### release 按 ABI 拆包
+
+`assembleRelease` 产出的是**按 ABI 拆开的两个包**（`app-arm64-v8a-release.apk` /
+`app-armeabi-v7a-release.apk`），不再有单个 `app-release.apk`：x86 / x86_64 的 TFLite
+native 库只有模拟器用得上，拆掉能省 8.7 MB。要在模拟器上跑请用 `assembleDebug`。
+
 ### 出正式包要自己签名
 
 仓库里**没有**正式签名密钥（`android/keystore.properties` 与 `.jks` 都不入库）。所以：
