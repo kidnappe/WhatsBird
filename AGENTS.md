@@ -12,6 +12,21 @@
 Top-5 → 再用 **BirdNET geomodel** 的时空分布先验重排。区域分类器有全国兜底
 加华北 / 华东 / 华中 / 华南西南 / 东北五套，按 GPS 自动路由。
 
+## 历史与命名（看代码前先读）
+
+项目在 2026-10-09 更名并改过包名，所以仓库里会同时出现两套名字——**它们是同一个项目**：
+
+| 你看到的 | 是什么 |
+|---|---|
+| **拾鸟 WhatsBird** / `com.whatsbird` | 现名，现行包名 |
+| **ObserveBird** / `com.observebird` | 旧名与旧包名，只应出现在历史记录里 |
+
+- [`docs/guides/MIGRATION-20261009.md`](guides/MIGRATION-20261009.md) **按设计保留旧名**——
+  它记录的正是这次改包名，别顺手"改干净"。
+- `tools/` 里的脚本带**开发机绝对路径**（`E:` 盘上一个叫 `observebird` 的目录——项目旧名），
+  换机器跑要先改成你自己的路径。它是目录名，不是产品名。
+- 包名是 `com.whatsbird`，**不要改**（原因见下面「代码约定」）。
+
 ## 仓库结构
 
 ```
@@ -43,7 +58,7 @@ gradlew.bat assembleDebug
 
 ```bash
 git lfs install
-git clone <repo-url>
+git clone https://github.com/kidnappe/WhatsBird.git
 # 已克隆但拿到的是指针文件：
 git lfs pull
 ```
@@ -53,6 +68,24 @@ git lfs pull
 ```bash
 cd android && ./gradlew compileDebugKotlin
 ```
+
+### 出正式包要自己签名
+
+仓库里**没有**正式签名密钥（`android/keystore.properties` 与 `.jks` 都不入库）。所以：
+
+- `assembleDebug` 随便跑，得到 debug 签名包；
+- `assembleRelease` 得到的是**未签名**包——这是预期行为，不是 bug。
+
+要出可发布的正式包，自己生成一个密钥库，然后在 `android/keystore.properties` 里填：
+
+```properties
+storeFile=/绝对路径/your-release.jks
+storePassword=…
+keyAlias=…
+keyPassword=…
+```
+
+Gradle 检测到该文件就会自动给 release 签名；文件不存在则退回未签名。
 
 ## 代码约定
 

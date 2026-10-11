@@ -53,3 +53,10 @@ dist/
 # 与 `E:\code\code tools\data\`（管线运行目录）无关，别混淆。
 # 例：tools/reject_gate_crop_check/ 的拒识门逐条打分（可重跑重生成）。
 /data/
+
+# 正式签名密钥（2026-10-11 首次公开发版 v1.0.0 时新建）：**永远不要入库**。
+# 密钥库本体在 dist/keystore/（dist/ 整目录不收），口令在同目录 keystore-password.txt；
+# android/keystore.properties 是 Gradle 读的指针文件。三者缺一就无法签出可覆盖安装的升级包。
+*.jks
+*.keystore
+android/keystore.properties

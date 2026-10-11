@@ -5,12 +5,6 @@
 拾鸟面向中国的观鸟场景：举起手机对准鸟，App 告诉你它是什么。没有账号、没有云端上传、
 没有广告——飞行模式下也能用。
 
-> ℹ️ 项目旧名 **ObserveBird**（包名 `com.observebird`），2026-10-09 更名并改包名为
-> **拾鸟 WhatsBird**（`com.whatsbird`）。公开文档已全文更名，只有
-> [`docs/guides/MIGRATION-20261009.md`](docs/guides/MIGRATION-20261009.md) 按设计保留旧名——
-> 它记录的正是这次改包名。代码与脚本里出现的 `E:\code\observebird\` 是**开发机的目录名**，
-> 不是产品名。
-
 ## 核心能力
 
 | 能力 | 说明 |
@@ -35,9 +29,16 @@
 
 ## 快速开始
 
+### 直接安装（普通用户）
+
+到 [Releases](https://github.com/kidnappe/WhatsBird/releases) 下载最新 APK，传到手机上点开安装
+即可（Android 8.0+，不需要 root）。装完就能断网用——模型全在包里。
+
+### 从源码构建（开发者）
+
 ```bash
-git clone <repo-url>
-cd <repo>/android
+git clone https://github.com/kidnappe/WhatsBird.git
+cd WhatsBird/android
 
 # Windows
 gradlew.bat assembleDebug

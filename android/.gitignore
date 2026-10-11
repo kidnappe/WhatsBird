@@ -1,6 +1,10 @@
 .gradle/
 build/
 local.properties
+# 正式签名密钥的指针文件（2026-10-11 首次公开发版时新建）：
+# 内容含 storeFile/storePassword/keyAlias/keyPassword，**永远不要入库**。
+# 文件不存在时 assembleRelease 产出未签名包（公开仓库的默认情形）。
+keystore.properties
 .idea/
 *.iml
 captures/
