@@ -57,10 +57,10 @@
         <a id="dlBtn" class="btn-primary" href="https://github.com/kidnappe/WhatsBird/releases/download/v1.0/WhatsBird-v1.0-arm64-v8a.apk">
           下载 APK<span id="dlSize">· 读取中</span>
         </a>
-        <a id="dlMirror" class="btn-mirror" aria-disabled="true" data-href="">镜像下载 · 蓝奏云<span>地址待填</span></a>
+        <a id="dlMirror" class="btn-mirror" aria-disabled="true" data-href="">镜像下载 · 蓝奏云<span>提取码 9c6p</span></a>
         <a class="btn-ghost" href="https://github.com/kidnappe/WhatsBird/releases/latest">全部版本 ↗</a>
       </div>
-      <p class="cta-hint" id="dlHint">正在核对 GitHub 上的最新版本…</p>
+      <p class="cta-hint"><a href="https://github.com/kidnappe/WhatsBird/releases/latest">GitHub 直链</a>：版本永远最新，国内下载速度不稳，时快时慢；<a id="mirrorLink" href="https://zhouxuan.lanzoue.com/b0j1szfsh" target="_blank" rel="noopener">蓝奏云镜像</a>：国内直连速度稳、下载快，但要等同步才更新（通常几分钟到一天）。</p>
 
       <div class="meta" aria-label="版本信息">
         <div><b id="mVer">v1.0</b><span>版本</span></div>
@@ -241,6 +241,7 @@
   /* 蓝奏云镜像地址：拿到分享链接后，填进这一行就行，页面上的镜像按钮会自动启用 */
   /* 蓝奏云提取码：9c6p */
   var MIRROR_URL = "https://zhouxuan.lanzoue.com/b0j1szfsh";
+  var MIRROR_CODE = "9c6p";
 
   function mb(b) { return (b / 1048576).toFixed(1) + " MB"; }
   function ymd(iso) { var d = new Date(iso); return isNaN(d) ? "—" : d.toISOString().slice(0, 10); }
@@ -266,10 +267,9 @@
     document.getElementById("mVer").textContent = r.tag_name;
     document.getElementById("mSize").textContent = mb(apk.size);
     document.getElementById("mDate").textContent = ymd(r.published_at);
-    document.getElementById("dlHint").innerHTML = fromCache
-      ? "网络暂时读不到，先用上次记录的 " + r.tag_name + "（" + ymd(r.published_at) + "）。"
-      : "GitHub 直链：版本永远最新，缺点是国内速度不稳；" +
-        '<a id="mirrorLink" href="' + MIRROR_URL + '" target="_blank" rel="noopener">蓝奏云镜像</a>：国内直连快，但更新要等同步。';
+    document.getElementById("mVer").title = fromCache
+      ? "这次没连上 GitHub，显示的是上次读到的 " + r.tag_name + "（" + ymd(r.published_at) + "）"
+      : "已连上 GitHub，读取的是最新 release";
     return true;
   }
 
@@ -329,8 +329,8 @@
     })
     .catch(function () {
       if (cached) { return; }              // 已经用缓存铺过了
-      document.getElementById("dlHint").textContent =
-        "暂时读不到 GitHub 版本信息，下面是页面内置的 v1.0；点「全部版本」看实时列表。";
+      document.getElementById("mVer").title =
+        "没连上 GitHub，这是页面内置的 v1.0；点「全部版本」看实时列表";
       var s = document.getElementById("dlSize"); if (s) { s.textContent = "· 118.9 MB"; }
       var m = document.getElementById("mSize"); if (m) { m.textContent = "118.9 MB"; }
     });
@@ -341,7 +341,7 @@
     if (MIRROR_URL) {
       el.href = MIRROR_URL;
       el.removeAttribute("aria-disabled");
-      el.querySelector("span").textContent = "国内直连更快";
+      el.querySelector("span").textContent = "提取码 " + MIRROR_CODE;
     }
   })();
 
