@@ -98,7 +98,12 @@ Gradle 检测到该文件就会自动给 release 签名；文件不存在则退�
 
 - Kotlin + Jetpack Compose（Material 3），包名 `com.whatsbird`。**不要改包名**——
   改包名会让用户的 Room 库和照片路径全部失效。
-- 最低 Android 8.0（API 26），targetSdk 35，纯 CPU 推理，int8 量化。
+- 最低 Android 8.0（API 26），targetSdk 35，纯 CPU 推理。量化口径分两种：
+  **检测器是 int8 全整数量化**，**区域分类器是 fp16 权重 + fp32 输入输出**
+  （`android/models/README.md` 有逐图对照数据）。改任一侧都别把两者的结论互相外推。
+- 权重有两个位置，别搞混：`android/app/src/main/assets/models/` 是**真进 APK 的**，
+  `android/models/` 是**只存不装**的存档（fp32 原件 + 离线检测器），
+  后者在 Gradle 工程根下但不在任何 source set 里。
 - 界面注释里常见的 `docs/design/DESIGN.md §x.y` 是设计依据。**改行为时同步改
   那份文档**，别让注释指向已经不存在的小节。
 - 视觉体系是自研的「纸感收集册（Paper Almanac）」，规范全在

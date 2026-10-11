@@ -38,7 +38,9 @@
 - **要求 64 位设备**（`arm64-v8a`）——2016 年以后的手机基本都是；32 位老机与 x86 模拟器
   请从源码构建（见下）。
 - Android 8.0+，不需要 root。模型全在包里，装完就能断网用。
-- 文件：`WhatsBird-v1.0-arm64-v8a.apk`，约 119 MB。
+- 文件：`WhatsBird-vX.Y-arm64-v8a.apk`，约 **70 MB**
+  （v1.0 曾是 119 MB；2026-10-13 起区域分类器改用 fp16 权重，见
+  [`android/models/README.md`](android/models/README.md)）。
 
 ### 从源码构建（开发者）
 
@@ -56,7 +58,7 @@ gradlew.bat assembleDebug
 
 ### 模型资产（Git LFS）
 
-模型权重与部分生成型数据资产约 **114MB**（17 个文件），通过 **Git LFS** 分发。
+模型权重与部分生成型数据资产约 **151MB**（25 个文件），通过 **Git LFS** 分发。
 克隆前请先装好 [Git LFS](https://git-lfs.com/)：
 
 ```bash
@@ -71,7 +73,12 @@ git lfs pull
 ```
 
 涉及的资产：`assets/models/*.tflite`（区域分类器 / 检测器 / 拒识门）、
-`assets/prior/*.json`（地理先验查表）、`assets/geo/*.ndjson`（离线行政区划）。
+`android/models/**/*.tflite`（分类器的 float32 原件与两个离线检测器，**不进 APK**，见
+[`android/models/README.md`](android/models/README.md)）、`assets/prior/*.json`（地理先验查表）、
+`assets/geo/*.ndjson`（离线行政区划）。
+
+> ⚠️ App 本体只带 fp16 权重的分类器（release 包 70.1 MB）；
+> float32 原件一并随仓库分发，供复现与离线基线使用。
 
 > ⚠️ **这些资产不是全部 Apache-2.0。** 有两项附带额外限制，商用前请读
 > [`LICENSE-MODELS.md`](LICENSE-MODELS.md) 开头那张表：

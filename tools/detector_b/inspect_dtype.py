@@ -5,7 +5,9 @@ import collections
 import os
 
 for p, tag in [
-    (r"E:\code\observebird\android\app\src\main\assets\models\yolox_s_512.tflite", "现役s512"),
+    # 2026-10-13：这份 s512 int8 已从 App assets 移出（APK 瘦身，详见 android/models/README.md），
+    # 逐位相同的副本在数据盘 detectors 下，改从那里读。
+    (r"E:\code\code tools\detectors\yolox\tflite_s512_int8\yolox_s_512_int8.tflite", "退役s512"),
     (r"E:\code\code tools\data\detector_b\ckpt_sweep\tflite\alt_512\yolox_bird_512_ep35_qdq_dynamic_range_quant.tflite", "新drq512"),
 ]:
     it = Interpreter(model_path=p, num_threads=1)

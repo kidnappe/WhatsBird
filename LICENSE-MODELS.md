@@ -29,7 +29,9 @@ Apache-2.0 授权，全文见 [`LICENSE`](LICENSE)。
 
 | 路径 | 内容 | 来源 | 许可 |
 |---|---|---|---|
-| `android/app/src/main/assets/models/*.tflite` | 区域分类器（全国 v2 + 华北 / 华东 / 华中 / 华南西南 / 东北）、拒识门、YOLOX 检测器双档、基线 SSD-MobileNet | 本项目自训 / 上游 Apache-2.0（§1） | ✅ Apache-2.0 |
+| `android/app/src/main/assets/models/*.tflite` | 区域分类器（全国 v2 + 华北 / 华东 / 华中 / 华南西南 / 东北）、拒识门、YOLOX 检测器双档 | 本项目自训 / 上游 Apache-2.0（§1） | ✅ Apache-2.0 |
+| `android/models/fp32/*.tflite` | 上面七个分类器的 **float32 原件**（不进 APK，仓库存档，见 `android/models/README.md`） | 同上，与 assets 里那份同源同权重 | ✅ Apache-2.0 |
+| `android/models/offline-detectors/*.tflite` | YOLOX-s COCO 80 类 int8（已退役）、SSD-MobileNet v1 基线；**App 运行时不加载** | 上游 Apache-2.0 | ✅ Apache-2.0 |
 | `android/app/src/main/assets/models/labels_*.txt` | 物种名录（学名 + 中文名） | 事实性名称，不受著作权保护 | ✅ 无限制 |
 | `android/app/src/main/assets/prior/*.json` | 地理先验查表（由 BirdNET geomodel 蒸馏裁剪） | 上游 Apache-2.0 | ✅ Apache-2.0 |
 | `android/app/src/main/assets/geo/admin_county.ndjson` | 离线行政区划边界（7.6 MB） | DataV.GeoAtlas | ⚠️ 见 §2 |

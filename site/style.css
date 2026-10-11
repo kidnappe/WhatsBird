@@ -40,7 +40,14 @@
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; scroll-padding-top: 84px; }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 84px;
+  /* 手机端禁掉捏合缩放与横向回弹，避免缩到页面边界外露白边 */
+  touch-action: manipulation;
+  overscroll-behavior-x: none;
+  -webkit-text-size-adjust: 100%;
+}
 
 body {
   margin: 0;
@@ -128,11 +135,14 @@ h1 .sci { color: var(--moss); }
   border-left: 3px solid var(--line); padding-left: 14px; margin: 22px 0 0;
 }
 
-/* ---------- 四屏：桌面并排，手机才轮播 ---------- */
+/* ---------- 四屏：桌面并排，只有触屏手机才轮播 ---------- */
 .carousel { position: relative; margin-top: 18px; outline: none; }
 .carousel:focus-visible { box-shadow: 0 0 0 3px var(--amber); border-radius: 20px; }
 .carousel .track {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+}
+@media (min-width: 1024px) {
+  .carousel .track { grid-template-columns: repeat(4, 1fr); }
 }
 .carousel .slide { margin: 0; display: flex; flex-direction: column; align-items: center; }
 
@@ -168,11 +178,11 @@ h1 .sci { color: var(--moss); }
   color: var(--moss); font-size: 15px; margin-right: 2px;
 }
 
-/* 桌面端不需要轮播控件 */
+/* 桌面端不出现任何轮播控件 */
 .nav-arrow, .dots { display: none; }
 
-/* ---------- 窄屏：切成轮播 ---------- */
-@media (max-width: 900px) {
+/* ---------- 触屏手机：切成轮播 ---------- */
+@media (max-width: 900px) and ((pointer: coarse) or (hover: none)) {
   .carousel .track {
     display: flex; gap: 0;
     transition: transform .55s cubic-bezier(.22, .61, .36, 1);
@@ -181,6 +191,12 @@ h1 .sci { color: var(--moss); }
   .carousel .slide { flex: 0 0 100%; }
   .carousel .slide[aria-hidden="true"] { pointer-events: none; }
   .ph-wrap { max-width: 340px; }
+
+  /* 触控反馈：禁掉双击缩放与点击高亮，点控件不再触发页面缩放 */
+  .nav-arrow, .dots .dot {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
 
   .nav-arrow {
     display: block; position: absolute; top: 34%; z-index: 2;
@@ -192,6 +208,8 @@ h1 .sci { color: var(--moss); }
   .nav-arrow:hover { transform: scale(1.06); background: var(--sage); }
   .nav-arrow.prev { left: 0; }
   .nav-arrow.next { right: 0; }
+  .nav-arrow:focus { outline: none; }
+  .nav-arrow:focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
 
   .dots { display: flex; justify-content: center; gap: 9px; margin-top: 18px; }
   .dots .dot {
@@ -199,6 +217,8 @@ h1 .sci { color: var(--moss); }
     background: var(--line); transition: background .2s ease, width .2s ease;
   }
   .dots .dot.on { background: var(--moss); width: 42px; }
+  .dots .dot:focus { outline: none; }
+  .dots .dot:focus-visible { outline: 2px solid var(--moss); outline-offset: 2px; }
 }
 
 /* ---------- 大图 ---------- */

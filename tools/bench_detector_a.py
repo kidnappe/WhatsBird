@@ -32,7 +32,9 @@ TOOLS = r"E:\code\code tools"
 COCO_DIR = os.path.join(TOOLS, "data", "coco")
 HUABEI_DIR = os.path.join(TOOLS, "data", "huabei", "images")
 OUT_DIR = os.path.join(TOOLS, "data", "detector_a")
-SSD_PATH = r"E:\code\observebird\android\app\src\main\assets\models\ssd_mobilenet_v1_1_fp32_300x300.tflite"
+# 2026-10-13：SSD 基线已从 App assets 移出（APK 瘦身，详见 android/models/README.md），
+# 逐位相同的副本在数据盘 detectors 下。
+SSD_PATH = r"E:\code\code tools\detectors\ssd_mobilenet_v1_1_fp32_300x300.tflite"
 YOLOX_DIR = os.path.join(TOOLS, "detectors", "yolox")
 
 SSD_BIRD_ID = 15        # ModelRegistry.BIRD_CLASS_ID（⚠️ 与 labelmap 行号差 1，PC 实测）

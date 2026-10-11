@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>拾鸟 WhatsBird · 离线拍照认鸟（Android 下载）</title>
 <meta name="description" content="拾鸟 WhatsBird：拍照认鸟的 Android 应用，识别全程离线，无账号、无云端上传、无广告。">
 <meta name="theme-color" content="#F7F4EC">
@@ -23,7 +23,6 @@
     <span>拾鸟 <i class="sci">WhatsBird</i></span>
   </a>
   <nav>
-    <a href="#core">体验</a>
     <a class="ghost" href="https://github.com/kidnappe/WhatsBird">源码 ↗</a>
   </nav>
 </header>
@@ -157,11 +156,12 @@
     img.addEventListener("error", function () { markLoaded(img); });
   });
 
-  /* ---------- 多图：桌面四屏并排，手机才轮播 ---------- */
+  /* ---------- 四屏：桌面并排，只有触屏手机才轮播 ---------- */
+  var PHONE = "(max-width: 900px) and ((pointer: coarse) or (hover: none))";
   var track = document.getElementById("track");
   var slides = Array.prototype.slice.call(track.querySelectorAll(".slide"));
   var dotsBox = document.getElementById("dots");
-  var mq = window.matchMedia("(max-width: 900px)");
+  var mq = window.matchMedia(PHONE);
   var idx = 0, timer = null, INTERVAL = 5200;
   var carouseling = function () { return mq.matches; };
 
@@ -171,7 +171,6 @@
     b.type = "button";
     b.setAttribute("role", "tab");
     b.setAttribute("aria-label", s.dataset.cap || ("第 " + (i + 1) + " 屏"));
-    b.addEventListener("click", function () { go(i); restart(); });
     dotsBox.appendChild(b);
   });
   var dots = Array.prototype.slice.call(dotsBox.children);
@@ -199,8 +198,18 @@
     if (carouseling() && !REDUCE) { timer = setInterval(next, INTERVAL); }
   }
 
-  document.getElementById("next").addEventListener("click", function () { next(); restart(); });
-  document.getElementById("prev").addEventListener("click", function () { prev(); restart(); });
+  // 点轮播控件时别让焦点把页面拽上去（手机端连点两下就往上滑，就是这个）
+  function tap(el, fn) {
+    el.addEventListener("click", function (e) {
+      e.preventDefault();
+      fn();
+      if (document.activeElement === el) { el.blur(); }
+      restart();
+    });
+  }
+  tap(document.getElementById("next"), next);
+  tap(document.getElementById("prev"), prev);
+  dots.forEach(function (d, i) { tap(d, function () { go(i); }); });
 
   var car = document.getElementById("carousel");
   car.addEventListener("mouseenter", stop);
