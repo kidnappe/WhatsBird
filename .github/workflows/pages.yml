@@ -1,0 +1,59 @@
+# 下载页部署（GitHub Pages）
+#
+# 页面在 site/ 下，工作流把它整个目录作为 Pages 制品发出去。
+# 为什么不用「从分支部署」：GitHub 的 Pages 只接受仓库根目录或 /docs，
+# 任意子目录（如 /site）在设置页和 REST API 两头都已被砍掉，
+# 所以改用 Actions —— 唯一能保住 site/ 目录结构的官方路子。
+#
+# 页面内容不随发版变化：版本号 / 体积 / SHA-256 是页面在浏览器里
+# 向 api.github.com 取最新 release 的，所以改 APK 版本不需要碰这个工作流。
+name: Deploy download page to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - '.github/workflows/pages.yml'
+  # 手动重发：Actions 页面的 Run workflow
+  workflow_dispatch:
+
+permissions:
+  contents: read   # checkout
+  pages: write     # 部署
+  id-token: write  # Pages 的 OIDC 令牌
+
+# 同名环境串行化：并发推送时取消上一轮，避免两个部署互相踩
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Deploy site/ to Pages
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        id: configure
+        uses: actions/configure-pages@v5
+        with:
+          # Pages 万一被关掉也能自愈（需要 GITHUB_TOKEN 带 pages 写权限）
+          enablement: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './site'
+          # .nojekyll 对 Actions 部署不是必需（不经 Jekyll），
+          # 但保留它，将来切回分支部署时能直接生效。
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

@@ -7,6 +7,7 @@
   口径见 AGENTS.md「公开 / 内部两层」：
     公开 = 根 README/LICENSE/LICENSE-MODELS.md/.gitattributes/.gitignore
            + android/ + tools/ + site/（GitHub Pages 下载页）
+           + .github/workflows/（只有 pages.yml）
            + docs/{design,guides,legal,project}
     内部 = docs/{handoff,reports,research,session,archive} + docs/README.md
            + 根 AGENTS.md（本机维护约定；公开树里的 AGENTS.md 由
@@ -48,6 +49,7 @@ $Include = @(
     'android'
     'tools'
     'site'
+    '.github/workflows'   # 下载页的 Pages 部署工作流（只导出这一个子目录）
     'docs/design'
     'docs/guides'
     'docs/legal'
