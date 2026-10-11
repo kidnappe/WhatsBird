@@ -1,4 +1,4 @@
-﻿/* 拾鸟 WhatsBird 下载页 —— 视觉沿用 App 的 Paper Almanac 体系（见 docs/design/DESIGN.md §2.2）。
+/* 拾鸟 WhatsBird 下载页 —— 视觉沿用 App 的 Paper Almanac 体系（见 docs/design/DESIGN.md §2.2）。
    token：纸底 #F7F4EC / 苔绿 #3A5540 / 琥珀 #DDA45A / 墨绿 #1F2A22 */
 
 :root {
@@ -97,18 +97,8 @@ section { padding: 52px 0 8px; }
 h2 { font-size: clamp(20px, 3.4vw, 26px); margin: 0 0 20px; display: flex; align-items: center; gap: 14px; }
 h2 .rule { display: inline-block; width: 28px; height: 3px; background: var(--amber); border-radius: 2px; flex: none; }
 
-/* ---------- Hero：桌面左文右机 ---------- */
-.hero {
-  padding-top: clamp(28px, 6vw, 64px);
-  display: grid; gap: 32px; align-items: start;
-}
-@media (min-width: 900px) {
-  .hero { grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); gap: 48px; }
-}
-.hero-shot { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-.hero-shot .ph-wrap { max-width: 260px; transform: rotate(-1.2deg); }
-.hero-shot .ph-wrap:hover { transform: rotate(0deg); transition: transform .2s ease; }
-.hero-cap { font-size: 12px; color: var(--ink-soft); }
+/* ---------- Hero ---------- */
+.hero { padding-top: clamp(28px, 6vw, 64px); }
 
 .eyebrow { margin: 0 0 14px; font-size: 13px; letter-spacing: .16em; color: var(--olive); }
 h1 { font-size: clamp(29px, 5.4vw, 46px); line-height: 1.22; margin: 0 0 18px; letter-spacing: -.01em; }
@@ -137,15 +127,21 @@ h1 .sci { color: var(--moss); }
 .btn-ghost { color: var(--moss); text-decoration: none; font-weight: 600; padding: 14px 8px; border-bottom: 2px solid var(--amber); }
 .cta-hint { color: var(--ink-soft); font-size: 13.5px; margin: 14px 0 0; }
 
-/* ---------- 规格条 ---------- */
+/* ---------- 规格条：恒定六格，手机 3×2 ---------- */
 .specbar {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  display: grid; grid-template-columns: repeat(6, 1fr);
   gap: 1px; margin: 40px 0 0; background: var(--line);
   border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
 }
-.specbar > div { background: var(--card); padding: 14px 16px; text-align: center; }
+.specbar > div { background: var(--card); padding: 14px 10px; text-align: center; }
 .specbar b { display: block; font-size: 24px; font-weight: 800; color: var(--moss); line-height: 1.3; }
 .specbar span { font-size: 12.5px; color: var(--ink-soft); }
+@media (max-width: 760px) {
+  .specbar { grid-template-columns: repeat(3, 1fr); }
+  .specbar > div { padding: 12px 6px; }
+  .specbar b { font-size: 21px; }
+  .specbar span { font-size: 11.5px; }
+}
 
 /* ---------- 通用卡 / 两栏 ---------- */
 .card { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); }
