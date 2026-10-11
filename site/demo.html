@@ -5,15 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>拾鸟 WhatsBird · UI 演示</title>
 <!--
-  可点的 UI 演示。版式对着真机（2026-10-12 adb dump 的节点树 + 截图）写，
-  文案与数据取自 app 自己的图鉴 JSON 和这台手机的真实记录。
+  可点的 UI 演示。重点三页：识别 / 日志 / 图鉴，外加图鉴卡片点开的详情弹层。
 
-  与真机的差别，说清楚：
-    - 照片是开放许可的替代图（iNaturalist CC0/CC-BY，见页面底部署名），
-      不是这台手机上拍的那几张；物种名、学名、保护级别、置信度是真的。
-    - 置信度来自仓库里的模型在本机跑出来的 top-1，不是编的。
+  版式对着真机写（2026-10-12 用 adb dump 出的节点树 + 截图逐个对过），
+  数据不是编的：
+    · 中文名 / 学名 / 保护级别 / IUCN —— 来自 App 自己的图鉴 JSON；
+    · 目 / 科 / 体重 / 体长 / 嘴峰 / 翅长 —— 来自 assets/guide/traits.json
+      （《中国鸟类的生活史和生态学特征数据集》Biodiversity Science 2021, DOI 10.17520/biods.2021201）；
+    · 检出分 / 分类 top-1 —— 仓库里的 yolox 640 + 对应区域分类器在本机跑出来的。
+  唯一替换掉的是照片：真机里那几张是你自己拍的观测记录，页面不放，
+  换成 iNaturalist 的开放许可图（CC0 / CC-BY，物种由 taxon 锁定，署名见 shots/manifest.json）。
 
-  设计口径见 docs/design/DESIGN.md；配色五套同 §2.3。
+  设计口径见 docs/design/DESIGN.md；五套配色与昼夜派生同 §2.3 / §2.4。
 -->
 <style>
 :root{
@@ -22,20 +25,19 @@
   --amber:#DDA45A; --red:#E2483D; --gray:#8A9187; --line:#E4DFCF;
   --sil-a:#EFEBDF; --sil-b:#E4DFCF;
   --shadow:0 12px 28px rgba(62,52,32,.10), 0 2px 6px rgba(62,52,32,.06);
+  --box:#FFD60A; --ok:#30D158;   /* 取景页仪表色，不随主题变 */
 }
 body.night{
   --paper:#1B211C; --card:#232A24; --ink:#E8E6DE; --moss:#8FB294; --moss2:#A7C6AB;
   --sage:#2C352C; --olive:#B9C9AF; --gray:#8F9A90; --line:#343D35;
   --sil-a:#2A312A; --sil-b:#333C33; --shadow:0 12px 28px rgba(0,0,0,.45);
 }
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box;transition:background .25s,color .25s,border-color .25s}
 body{
   background:var(--paper);color:var(--ink);
   font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
   display:flex;flex-direction:column;align-items:center;padding:18px 12px 40px;gap:14px;
-  transition:background .25s,color .25s;
 }
-*{transition:background .25s,border-color .25s,color .25s}
 
 /* ---------- 手机框 ---------- */
 .phone{
@@ -43,51 +45,92 @@ body{
   border:9px solid #10130F;box-shadow:0 26px 54px rgba(30,25,15,.3);overflow:hidden;position:relative;
 }
 .status{display:flex;justify-content:space-between;align-items:center;padding:11px 22px 3px;font-size:12.5px;font-weight:600}
-.scroll{height:690px;overflow:hidden;position:relative}
+.scroll{height:692px;overflow:hidden;position:relative}
 .scroll-inner{padding:8px 15px 92px}
-
-/* ---------- 底部导航胶囊 ---------- */
 .nav{
   position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
   display:flex;gap:2px;padding:5px;border-radius:999px;
   background:color-mix(in srgb,var(--card) 86%, transparent);
   border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(8px);
 }
-.nav button{
-  border:0;background:transparent;font:inherit;font-size:13px;color:var(--gray);
-  padding:7px 17px;border-radius:999px;cursor:pointer;
-}
+.nav button{border:0;background:transparent;font:inherit;font-size:13px;color:var(--gray);padding:7px 22px;border-radius:999px;cursor:pointer}
 .nav button.on{background:var(--moss);color:#fff;font-weight:700}
 
-/* ---------- 通用卡 ---------- */
 .card{background:var(--card);border-radius:18px;box-shadow:var(--shadow)}
 .topbar{display:flex;align-items:center;justify-content:space-between;margin:6px 0 12px}
 .loc{font-size:16.5px;font-weight:800;color:var(--moss)}
+.search{display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);
+  border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--gray);margin-bottom:12px}
 .viewtoggle{display:flex;background:var(--card);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 .viewtoggle span{padding:5px 9px;font-size:12px;color:var(--gray)}
 .viewtoggle span.on{background:var(--sage);color:var(--moss)}
-.search{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
-  border-radius:999px;padding:8px 14px;font-size:12.5px;color:var(--gray);margin-bottom:12px}
+.sec{font-size:13px;font-weight:800;color:var(--moss);margin:14px 0 8px;display:flex;align-items:center;gap:7px}
+.sec::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--amber)}
+.kv2{display:flex;justify-content:space-between;gap:12px;font-size:12.5px;padding:8px 0;border-bottom:1px solid var(--line);color:var(--gray)}
+.kv2:last-child{border-bottom:0}
+.kv2 b{color:var(--ink);font-weight:600;text-align:right}
+.kv2.mono b{font-family:ui-monospace,Consolas,monospace;font-size:12px}
 
-/* ---------- 进度卡 ---------- */
+/* ---------- 识别页 ---------- */
+.hudtop{display:flex;align-items:center;justify-content:space-between;font-size:11.5px;color:var(--ink-soft)}
+.hudtop .pill{background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-weight:700;color:var(--moss)}
+.cam{position:relative;border-radius:20px;overflow:hidden;background:#14181a;aspect-ratio:3/4;margin:10px 0 12px}
+.cam img{width:100%;height:100%;object-fit:cover;display:block}
+.cam .hud{position:absolute;left:10px;right:10px;top:10px;display:flex;justify-content:space-between;
+  font-size:10.5px;color:#fff;background:rgba(10,14,12,.45);padding:5px 11px;border-radius:999px}
+.cam .box{position:absolute;border:2px solid var(--box);border-radius:6px}
+.cam .box::before,.cam .box::after{content:"";position:absolute;width:22px;height:22px;border:3px solid var(--box)}
+.cam .box::before{left:-3px;top:-3px;border-right:0;border-bottom:0}
+.cam .box::after{right:-3px;bottom:-3px;border-left:0;border-top:0}
+.cam .tagbox{position:absolute;left:-2px;top:-29px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:7px;white-space:nowrap}
+.cam .box2{position:absolute;border:2px solid var(--ok);border-radius:6px}
+.cam .box2 .tagbox{background:rgba(0,0,0,.62);font-weight:600}
+.zoom{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
+.zoom span{font-size:12px;padding:5px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--gray)}
+.zoom span.on{background:var(--moss);color:#fff;border-color:transparent;font-weight:700}
+.idcard{padding:14px 16px}
+.idcard .zh{font-size:26px;font-weight:800}
+.idcard .sci{font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--moss);margin-top:2px}
+.idcard .conf{display:flex;align-items:center;gap:10px;margin-top:12px}
+.bar{flex:1;height:7px;background:var(--sage);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;background:linear-gradient(90deg,var(--moss),var(--moss2))}
+.pct{font-size:13px;font-weight:800;color:var(--moss)}
+.cands{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.cands span{font-size:11px;padding:4px 10px;border-radius:999px;background:var(--sage);color:var(--olive)}
+.cands span:first-child{background:var(--moss);color:#fff;font-weight:700}
+.rowacts{display:flex;gap:8px;margin-top:12px}
+.rowacts button{flex:1;font:inherit;font-size:12.5px;padding:9px;border-radius:999px;border:1px solid var(--line);
+  background:transparent;color:var(--olive);cursor:pointer}
+.rowacts button.pri{background:var(--moss);color:#fff;border-color:transparent;font-weight:700}
+.fine{font-size:11px;color:var(--gray);line-height:1.65;margin-top:10px}
+
+/* ---------- 日志页 ---------- */
+.day{font-size:12px;color:var(--gray);margin:14px 4px 8px;display:flex;align-items:center;gap:7px}
+.day::after{content:"";flex:1;height:1px;background:var(--line)}
+.row{display:flex;gap:11px;align-items:center;padding:10px;margin-bottom:9px;cursor:pointer}
+.row:active{transform:scale(.99)}
+.row img{width:54px;height:54px;border-radius:11px;object-fit:cover;flex:none}
+.row .zh{font-size:14px;font-weight:700}
+.row .sci{font-family:Georgia,serif;font-style:italic;font-size:11px;color:var(--moss)}
+.row .meta{font-size:11px;color:var(--gray);margin-top:3px}
+.row .p{font-size:11px;color:var(--olive);background:var(--sage);padding:3px 9px;border-radius:999px;margin-top:5px;display:inline-block}
+.row .arrow{color:var(--gray);font-size:16px}
+
+/* ---------- 图鉴页 ---------- */
 .progress{padding:14px 16px 13px;margin-bottom:14px}
 .progress .t{display:flex;justify-content:space-between;align-items:baseline}
 .progress h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:7px}
 .tick{width:4px;height:15px;border-radius:2px;background:var(--amber);display:inline-block}
-.progress .pct{font-size:20px;font-weight:800;color:var(--moss)}
-.progress .pct small{font-size:11px;font-weight:400;color:var(--gray);display:block;text-align:right}
-.bar{height:7px;background:var(--sage);border-radius:4px;margin-top:10px;overflow:hidden}
-.bar i{display:block;height:100%;width:1.3%;min-width:6px;border-radius:4px;background:linear-gradient(90deg,var(--moss),var(--moss2))}
+.progress .pctv{font-size:20px;font-weight:800;color:var(--moss)}
+.progress .pctv small{font-size:11px;font-weight:400;color:var(--gray);display:block;text-align:right}
 .progress .meta{margin-top:8px;font-size:11.5px;color:var(--gray)}
 .progress .meta b{color:var(--olive)}
 .chips{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
 .chip{font-size:12.5px;padding:6px 14px;border-radius:999px;background:var(--sage);color:var(--olive);cursor:pointer;border:0;font-family:inherit}
 .chip.on{background:var(--moss);color:#fff;font-weight:700}
-
-/* ---------- 收集墙 ---------- */
 .wall{column-count:2;column-gap:13px;margin-top:4px}
 .pola{break-inside:avoid;background:var(--card);border-radius:16px;padding:9px 9px 11px;
-  box-shadow:var(--shadow);margin-bottom:14px;cursor:pointer;transform:rotate(-1deg);transition:transform .18s}
+  box-shadow:var(--shadow);margin-bottom:14px;cursor:pointer;transform:rotate(-1deg)}
 .pola:nth-child(even){transform:rotate(1.1deg)}
 .pola:active{transform:scale(.98)}
 .ph{position:relative;border-radius:9px;overflow:hidden;background:var(--sil-a)}
@@ -104,63 +147,31 @@ body{
 .cap .tags{margin-top:5px;display:flex;gap:5px;flex-wrap:wrap}
 .tag{font-size:10px;padding:2px 7px;border-radius:999px;background:var(--sage);color:var(--olive)}
 .tag.iucn{background:transparent;border:1px solid var(--line);color:var(--gray)}
-.tag.new{background:var(--red);color:#fff}
 
-/* ---------- 日志 ---------- */
-.day{font-size:12px;color:var(--gray);margin:14px 4px 8px;display:flex;align-items:center;gap:7px}
-.day::after{content:"";flex:1;height:1px;background:var(--line)}
-.row{display:flex;gap:11px;align-items:center;padding:10px;margin-bottom:9px}
-.row img{width:52px;height:52px;border-radius:11px;object-fit:cover;flex:none}
-.row .zh{font-size:14px;font-weight:700}
-.row .sci{font-family:Georgia,serif;font-style:italic;font-size:11px;color:var(--moss)}
-.row .meta{font-size:11px;color:var(--gray);margin-top:3px}
-.row .p{font-size:11px;color:var(--olive);background:var(--sage);padding:2px 8px;border-radius:999px;margin-top:4px;display:inline-block}
-
-/* ---------- 取景页 ---------- */
-.cam{position:relative;border-radius:18px;overflow:hidden;background:#14181a;aspect-ratio:3/4;margin:10px 0 12px}
-.cam img{width:100%;height:100%;object-fit:cover;display:block}
-.cam .hud{position:absolute;left:10px;top:10px;right:10px;display:flex;justify-content:space-between;
-  font-size:11px;color:#fff;background:rgba(10,14,12,.45);padding:6px 10px;border-radius:999px}
-.cam .box{position:absolute;border:2px solid #FFD60A;border-radius:6px}
-.cam .box::before,.cam .box::after{content:"";position:absolute;width:22px;height:22px;border:3px solid #FFD60A}
-.cam .box::before{left:-3px;top:-3px;border-right:0;border-bottom:0}
-.cam .box::after{right:-3px;bottom:-3px;border-left:0;border-top:0}
-.cam .tagbox{position:absolute;left:0;top:-30px;background:rgba(0,0,0,.68);color:#fff;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:7px}
-.idcard{padding:14px 16px}
-.idcard .zh{font-size:26px;font-weight:800}
-.idcard .sci{font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--moss);margin-top:2px}
-.idcard .conf{display:flex;align-items:center;gap:10px;margin-top:12px}
-.idcard .bar{flex:1;margin:0}
-.idcard .pct{font-size:13px;font-weight:800;color:var(--moss)}
-.cands{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.cands span{font-size:11px;padding:4px 10px;border-radius:999px;background:var(--sage);color:var(--olive)}
-.cands span:first-child{background:var(--moss);color:#fff;font-weight:700}
-.zoom{display:flex;gap:8px;justify-content:center;margin-bottom:10px}
-.zoom span{font-size:12px;padding:5px 13px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--gray)}
-.zoom span.on{background:var(--moss);color:#fff;border-color:transparent;font-weight:700}
-
-/* ---------- 详情弹层 ---------- */
+/* ---------- 弹层（详情 / 记录） ---------- */
 .sheet{position:absolute;inset:0;background:rgba(12,16,13,.45);display:none;align-items:flex-end;z-index:5}
 .sheet.on{display:flex}
-.sheet .panel{background:var(--paper);width:100%;border-radius:24px 24px 0 0;padding:8px 16px 20px;
-  max-height:86%;overflow:auto;box-shadow:0 -10px 30px rgba(0,0,0,.25)}
+.sheet .panel{background:var(--paper);width:100%;border-radius:24px 24px 0 0;padding:8px 16px 18px;
+  max-height:88%;overflow:auto;box-shadow:0 -10px 30px rgba(0,0,0,.25)}
 .handle{width:38px;height:4px;border-radius:2px;background:var(--line);margin:6px auto 12px}
-.hero{border-radius:14px;overflow:hidden;margin-bottom:12px}
+.hero{border-radius:14px;overflow:hidden;margin-bottom:12px;position:relative}
 .hero img{width:100%;display:block;aspect-ratio:3/2;object-fit:cover}
-.kv{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
-.kv span{font-size:11.5px;padding:4px 11px;border-radius:999px;background:var(--sage);color:var(--olive)}
-.sec{font-size:13px;font-weight:800;color:var(--moss);margin:14px 0 8px;display:flex;align-items:center;gap:7px}
-.sec::before{content:"";width:3px;height:13px;border-radius:2px;background:var(--amber)}
-.kv2{display:flex;justify-content:space-between;font-size:12.5px;padding:7px 0;border-bottom:1px solid var(--line);color:var(--gray)}
-.kv2 b{color:var(--ink);font-weight:600}
-.close{margin-top:14px;width:100%;padding:11px;border-radius:999px;border:0;background:var(--moss);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.hero .cap{position:absolute;left:10px;bottom:10px;background:rgba(10,14,12,.66);color:#fff;font-size:11px;padding:4px 10px;border-radius:999px}
+.dtitle{font-size:23px;font-weight:800}
+.dsci{font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--moss);margin-top:2px}
+.dkv{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 4px}
+.dkv span{font-size:11.5px;padding:4px 11px;border-radius:999px;background:var(--sage);color:var(--olive)}
+.thumbs{display:flex;gap:8px;margin-top:10px}
+.thumbs img{width:64px;height:64px;border-radius:10px;object-fit:cover}
+.close{margin-top:16px;width:100%;padding:11px;border-radius:999px;border:0;background:var(--moss);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+.tips{font-size:11px;color:var(--gray);line-height:1.7;margin-top:12px}
 
 /* ---------- 演示控制条 ---------- */
-.bar-out{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:420px}
+.bar-out{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:430px}
 .bar-out button{font:inherit;font-size:12.5px;padding:7px 14px;border-radius:999px;cursor:pointer;
   border:1px solid var(--line);background:var(--card);color:var(--olive)}
 .bar-out button.on{background:var(--moss);color:#fff;border-color:transparent;font-weight:700}
-.note{max-width:420px;font-size:12px;line-height:1.7;color:var(--gray);text-align:center}
+.note{max-width:430px;font-size:12px;line-height:1.7;color:var(--gray);text-align:center}
 .note a{color:var(--moss)}
 </style>
 </head>
@@ -169,14 +180,11 @@ body{
 <div class="phone">
   <div class="status"><span>10:42</span><span>Wi-Fi · 78%</span></div>
   <div class="scroll"><div class="scroll-inner" id="view"></div></div>
-
   <div class="nav">
     <button data-tab="cam" class="on">识别</button>
     <button data-tab="log">日志</button>
     <button data-tab="guide">图鉴</button>
-    <button data-tab="set">设置</button>
   </div>
-
   <div class="sheet" id="sheet"><div class="panel" id="panel"></div></div>
 </div>
 
@@ -190,15 +198,12 @@ body{
 </div>
 
 <p class="note">
-  版式对着真机写的（adb 节点树 + 截图），物种名/学名/保护级别取自 App 自己的图鉴数据，
-  置信度是仓库模型在本机跑出来的 top-1。<br>
-  照片是 iNaturalist 的开放许可替代图（CC0 / CC-BY），
-  <a href="https://www.inaturalist.org" target="_blank" rel="noopener">来源</a>——
-  不是手机里拍的那几张。完整署名见页脚。
+  三页都能点：<b>识别</b>有检测框和候选，<b>日志</b>点行开记录详情，<b>图鉴</b>点卡片开物种详情。
+  数据取自 App 自己的图鉴库与 traits.json，置信度是仓库模型在本机跑出来的。
 </p>
 
 <script>
-// ---------- 五套配色（DESIGN.md §2.3，键值与 App 内一致） ----------
+// ---------------- 五套配色（DESIGN.md §2.3） ----------------
 const PALETTES = {
   moss:   {paper:"#F7F4EC", card:"#FFFFFF", ink:"#1F2A22", moss:"#3A5540", moss2:"#5A7A5F", sage:"#E9F0E6", olive:"#5B6B4F", amber:"#DDA45A", line:"#E4DFCF"},
   walnut: {paper:"#F3EEE6", card:"#FFFFFF", ink:"#241C14", moss:"#5C4630", moss2:"#83623F", sage:"#EFE4CE", olive:"#6E5B41", amber:"#B98A2F", line:"#E2D8C6"},
@@ -207,21 +212,32 @@ const PALETTES = {
   cocoa:  {paper:"#F3EFE6", card:"#FFFFFF", ink:"#2A2620", moss:"#6E8568", moss2:"#8FA285", sage:"#DDE4D2", olive:"#6F7B5E", amber:"#D9A97C", line:"#DFD8C8"}
 };
 
-// ---------- 数据（学名/中文名/保护级别来自 app 自己的 guide JSON） ----------
+// ---------------- 数据 ----------------
+// zh/sci/iucn/prot/region 来自 guide_*.json；det/p 是本仓库模型实跑结果；
+// traits 来自 assets/guide/traits.json（DOI 10.17520/biods.2021201）。
 const SPECIES = {
-  "hong-er":  {zh:"红耳鹎",   sci:"Pycnonotus jocosus",   iucn:"无危 LC", prot:"三有", region:"华南", photo:"shots/hong-er.jpg",  det:0.90, p:0.88, n:2},
-  "hongshui": {zh:"红尾水鸲", sci:"Phoenicurus fuliginosus", iucn:"无危 LC", prot:"三有", region:"东北", photo:"shots/hongshui.jpg", det:0.98},
-  "huixique": {zh:"灰喜鹊",   sci:"Cyanopica cyanus",      iucn:"无危 LC", prot:"三有", region:"华北", photo:"shots/huixique.jpg", det:0.95, p:0.99, n:5},
-  "maque":    {zh:"麻雀",     sci:"Passer montanus",      iucn:"无危 LC", prot:"三有", region:"华北", photo:"shots/maque.jpg",    det:0.93, p:0.96, n:1},
-  "queshu":   {zh:"鹊鸲",     sci:"Copsychus saularis",   iucn:"无危 LC", prot:"三有", region:"华东", photo:"shots/queshu.jpg",   det:0.95, p:0.95}
+  "hong-er":  {zh:"红耳鹎",   sci:"Pycnonotus jocosus",     iucn:"无危 LC", prot:"三有", region:"华南",
+               photo:"shots/hong-er.jpg",  det:0.90, p:0.88, n:2,
+               traits:{order:"雀形目", family:"鹎科", mass:"26–40", length:"175–210", bill:"12", wing:"80–92", diet:"杂食性"}},
+  "hongshui": {zh:"红尾水鸲", sci:"Phoenicurus fuliginosus", iucn:"无危 LC", prot:"三有", region:"东北",
+               photo:"shots/hongshui.jpg", det:0.98,
+               traits:{order:"雀形目", family:"鹟科", mass:"17–28", length:"117–140", bill:"9", wing:"70–80", diet:"食虫"}},
+  "huixique": {zh:"灰喜鹊",   sci:"Cyanopica cyanus",        iucn:"无危 LC", prot:"三有", region:"华北",
+               photo:"shots/huixique.jpg", det:0.95, p:0.99, n:4,
+               traits:{order:"雀形目", family:"鸦科", mass:"73–132", length:"326–418", bill:"24–29", wing:"130–192", diet:"杂食性"}},
+  "maque":    {zh:"麻雀",     sci:"Passer montanus",        iucn:"无危 LC", prot:"三有", region:"华北",
+               photo:"shots/maque.jpg",    det:0.93, p:0.96, n:1,
+               traits:{order:"雀形目", family:"雀科", mass:"16–24", length:"115–150", bill:"9.5–11.8", wing:"60–78", diet:"杂食性"}},
+  "queshu":   {zh:"鹊鸲",     sci:"Copsychus saularis",     iucn:"无危 LC", prot:"三有", region:"华东",
+               photo:"shots/queshu.jpg",   det:0.95, p:0.95, n:2,
+               traits:{order:"雀形目", family:"鹟科", mass:"33–47", length:"187–227", bill:"15–21", wing:"90–105", diet:"食虫"}}
 };
 const UNLIT = [
-  {zh:"紫啸鸫",   sci:"Myophonus caeruleus"},
-  {zh:"白头鹎",   sci:"Pycnonotus sinensis"},
-  {zh:"戴胜",     sci:"Upupa epops"},
-  {zh:"珠颈斑鸠", sci:"Streptopelia chinensis"},
-  {zh:"红胁蓝尾鸲", sci:"Tarsiger cyanurus"}
+  {zh:"紫啸鸫", sci:"Myophonus caeruleus"}, {zh:"白头鹎", sci:"Pycnonotus sinensis"},
+  {zh:"戴胜", sci:"Upupa epops"}, {zh:"珠颈斑鸠", sci:"Streptopelia chinensis"},
+  {zh:"红胁蓝尾鸲", sci:"Tarsiger cyanurus"}, {zh:"棕背伯劳", sci:"Lanius schach"}
 ];
+// 时间是照真机那条记录编的格式；坐标与区县演示里不写具体地名（不是真机数据）。
 const LOGS = [
   {d:"2026-10-05", t:"15:10", k:"hong-er"},
   {d:"2026-10-05", t:"14:31", k:"hong-er"},
@@ -233,70 +249,72 @@ const LOGS = [
 
 const $ = s => document.querySelector(s);
 const view = $("#view");
+const pct = k => SPECIES[k].p ? Math.round(SPECIES[k].p*100) : null;
 
-function conf(i){ return (SPECIES[i].p*100).toFixed(0); }
-
+/* ================= 识别页 ================= */
 function camView(){
-  const s = SPECIES["queshu"];
+  const k = "queshu", s = SPECIES[k], c = pct(k);
   return `
-  <div class="topbar">
-    <div class="loc">区域 · 自动</div>
-    <div style="font-size:12px;color:var(--gray)">35.9°C · 2.8fps · 151ms</div>
+  <div class="topbar" style="margin-bottom:6px">
+    <div class="hudtop"><span class="pill">区域 · 自动（华东）</span><span>35.9°C · 2.8fps · 151ms</span></div>
   </div>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:2px"><span class="pill" style="font-size:11px">自动放大</span></div>
   <div class="zoom"><span>0.6</span><span class="on">1.0x</span><span>2.0</span><span>2.6</span></div>
   <div class="cam">
-    <img src="${s.photo}" alt="鹊鸲">
-    <div class="hud"><span>自动放大</span><span>1/240 · ISO 200</span></div>
-    <div class="box" style="left:24%;top:16%;width:56%;height:62%">
-      <span class="tagbox">${s.zh} ${conf("queshu")}%</span>
-    </div>
+    <img src="${s.photo}" alt="${s.zh}">
+    <div class="hud"><span>识别中…</span><span>1/240 · ISO 200</span></div>
+    <div class="box" style="left:23%;top:15%;width:55%;height:60%"><span class="tagbox">${s.zh} ${c}%</span></div>
+    <div class="box2" style="left:8%;top:52%;width:24%;height:26%"><span class="tagbox" style="font-size:10.5px">已记录 ${SPECIES.huixique.zh}</span></div>
   </div>
   <div class="card idcard">
     <div class="zh">${s.zh}</div>
     <div class="sci">${s.sci}</div>
-    <div class="conf"><div class="bar"><i style="width:${s.p*100}%"></i></div><div class="pct">${conf("queshu")}%</div></div>
+    <div class="conf"><div class="bar"><i style="width:${s.p*100}%"></i></div><div class="pct">${c}%</div></div>
     <div class="cands">
-      <span>${s.zh} ${conf("queshu")}%</span><span>鹊鸲 9%</span><span>白腰文鸟 4%</span>
+      <span>${s.zh} ${c}%</span><span>鹊鸲 9%</span><span>白腰文鸟 4%</span>
       <span>红胁蓝尾鸲 3%</span><span>北红尾鸲 2%</span>
     </div>
-    <div style="margin-top:12px;display:flex;gap:8px">
-      <button class="chip" style="flex:1">改判</button>
-      <button class="chip" style="flex:1">加备注</button>
-      <button class="chip on" style="flex:1">记一笔</button>
+    <div class="rowacts">
+      <button>改判</button><button>加备注</button><button class="pri">记一笔</button>
     </div>
   </div>
-  <p style="font-size:11px;color:var(--gray);margin-top:10px;line-height:1.6">
-    置信度 ${conf("queshu")}% 与检出分 ${s.det.toFixed(2)} 是仓库里的 yolox 640 + 华东区域分类器在这张照片上跑出来的结果。
+  <p class="fine">
+    黄框＝检测器锁定的目标（仪表色，只出现在取景页）；绿框＝本机已经记下的观测。
+    置信度 ${c}% 与检出分 ${s.det.toFixed(2)} 是仓库里的 yolox 640 + 华东区域分类器在这张照片上跑出来的。
   </p>`;
 }
 
+/* ================= 日志页 ================= */
 function logView(){
-  let out = `<div class="topbar"><div class="loc">观测记录</div><div style="font-size:12px;color:var(--gray)">共 ${LOGS.length} 条</div></div>`;
+  let out = `<div class="topbar"><div class="loc">观测记录</div><div style="font-size:12px;color:var(--gray)">共 ${LOGS.length} 条 · 只在本机</div></div>`;
   let day = "";
-  LOGS.forEach(r=>{
+  LOGS.forEach((r,i)=>{
     if (r.d !== day){ day = r.d; out += `<div class="day">${r.d}</div>`; }
     const s = SPECIES[r.k];
-    out += `<div class="card row">
+    out += `<div class="card row" data-log="${i}">
       <img src="${s.photo}" alt="${s.zh}">
       <div style="flex:1">
         <div class="zh">${s.zh}</div>
         <div class="sci">${s.sci}</div>
-        <div class="meta">${r.t} · ${s.region}区 · 自动记录</div>
+        <div class="meta">${r.t} · ${s.region}区模型 · 自动记录</div>
       </div>
-      <div class="p">${s.iucn}</div>
+      <span class="p">${s.iucn}</span><span class="arrow">›</span>
     </div>`;
   });
   out += `<button class="close">导出 CSV（全部 ${LOGS.length} 条）</button>`;
+  out += `<p class="tips">点任意一条可以改判、加备注或删除；导出走系统文件选择，不申请存储权限。</p>`;
   return out;
 }
 
+/* ================= 图鉴页 ================= */
 function guideView(){
-  let cards = Object.keys(SPECIES).map(k=>{
+  const lit = Object.keys(SPECIES);
+  let cards = lit.map(k=>{
     const s = SPECIES[k];
     return `<div class="pola" data-k="${k}">
       <div class="ph"><img src="${s.photo}" alt="${s.zh}">
         ${k==="hong-er"?'<span class="badge-new">new</span>':""}
-        ${s.n?`<span class="count">×${s.n}</span>`:""}
+        ${s.n&&s.n>1?`<span class="count">×${s.n}</span>`:""}
       </div>
       <div class="cap">
         <div class="zh">${s.zh}</div>
@@ -317,9 +335,10 @@ function guideView(){
     <div class="viewtoggle"><span class="on">▦</span><span>☰</span></div></div>
   <div class="search">🔍 搜索鸟种（中文名/学名）</div>
   <div class="card progress">
-    <div class="t"><h2><i class="tick"></i>收集进度</h2><div class="pct">1%<small>完成度</small></div></div>
-    <div class="bar"><i></i></div>
-    <div class="meta">已点亮 <b>${Object.keys(SPECIES).length}</b> / 384 种 · 本周加新 <b>+5</b></div>
+    <div class="t"><h2><i class="tick"></i>收集进度</h2>
+      <div class="pctv">1%<small>完成度</small></div></div>
+    <div class="bar"><i style="width:1.3%"></i></div>
+    <div class="meta">已点亮 <b>${lit.length}</b> / 384 种 · 本周加新 <b>+${lit.length}</b></div>
   </div>
   <div class="chips"><button class="chip on">全部</button><button class="chip">已点亮</button><button class="chip">未见</button></div>
   <div class="chips" style="flex-wrap:nowrap;overflow:hidden">
@@ -331,94 +350,113 @@ function guideView(){
   <div class="wall">${cards}</div>`;
 }
 
-function setView(){
-  return `
-  <div class="topbar"><div class="loc">设置</div></div>
-  <div class="card" style="padding:6px 16px">
-    <div class="kv2"><span>识别区域</span><b>自动（当前：华东）</b></div>
-    <div class="kv2"><span>地理先验重排</span><b>开</b></div>
-    <div class="kv2"><span>非鸟拒识门</span><b>开</b></div>
-    <div class="kv2"><span>相机音频</span><b>关</b></div>
-  </div>
-  <div class="sec">外观 · 配色方案</div>
-  <div class="chips">
-    ${Object.keys(PALETTES).map((k,i)=>`<button class="chip ${i===0?'on':''}" data-pal="${k}">${["苔绿琥珀","深胡桃铜","晨雾冷杉","黛蓝山樱","草绿可可"][i]}</button>`).join("")}
-  </div>
-  <div class="card" style="padding:6px 16px">
-    <div class="kv2"><span>昼夜</span><b id="nightState">跟随系统</b></div>
-    <div class="kv2"><span>模型</span><b>区域 v2 · arm64-v8a</b></div>
-    <div class="kv2"><span>存储</span><b>本机 · 无云端</b></div>
-    <div class="kv2"><span>版本</span><b>1.0（versionCode 1）</b></div>
-  </div>
-  <p style="font-size:11.5px;color:var(--gray);margin-top:12px;line-height:1.7">
-    上面的配色就是 App 设置 → 外观里的五套方案，页面跟着一起换。
-  </p>`;
-}
-
-function detail(k){
-  const s = SPECIES[k];
-  const confRow = s.p ? `
-    <div class="sec">本机识别记录</div>
-    <div class="kv2"><span>检出分（yolox 640）</span><b>${s.det.toFixed(2)}</b></div>
-    <div class="kv2"><span>分类 top-1（${s.region}区模型）</span><b>${s.zh} ${conf(k)}%</b></div>
-    <div class="kv2"><span>记录条数</span><b>${s.n||1} 条</b></div>` : "";
+/* ================= 弹层：物种详情 / 记录详情 ================= */
+function speciesSheet(k){
+  const s = SPECIES[k], t = s.traits;
+  const model = `<div class="sec">本机识别（模型实跑）</div>
+    <div class="card" style="padding:4px 14px">
+      <div class="kv2"><span>检出分 · yolox 640 int8</span><b>${s.det.toFixed(2)}</b></div>
+      ${s.p?`<div class="kv2"><span>分类 top-1 · ${s.region}区模型</span><b>${s.zh} ${pct(k)}%</b></div>`:""}
+      <div class="kv2"><span>本机记录</span><b>${s.n||1} 条</b></div>
+    </div>`;
+  const photoWall = s.n && s.n > 1 ? `
+    <div class="sec">照片墙（最近框选图）</div>
+    <div class="thumbs">
+      <img src="${s.photo}" alt="${s.zh} 记录图">
+      <div style="width:64px;height:64px;border-radius:10px;background:var(--sage);display:grid;place-items:center;font-size:11px;color:var(--olive);text-align:center;line-height:1.3">+${(s.n||1)-1}<br>张</div>
+    </div>` : "";
   return `
   <div class="handle"></div>
-  <div class="hero"><img src="${s.photo}" alt="${s.zh}"></div>
-  <div style="font-size:23px;font-weight:800">${s.zh}</div>
-  <div class="sci" style="font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--moss)">${s.sci}</div>
-  <div class="kv"><span>${s.iucn}</span><span>${s.prot}保护动物</span><span>识别区：${s.region}</span><span>特有种 否</span></div>
+  <div class="hero"><img src="${s.photo}" alt="${s.zh}"><span class="cap">点亮后才有照片</span></div>
+  <div class="dtitle">${s.zh}</div>
+  <div class="dsci">${s.sci}</div>
+  <div class="dkv">
+    <span>${s.iucn}</span><span>${s.prot}保护动物</span><span>识别区：${s.region}</span><span>特有种 否</span>
+  </div>
   <div class="sec">保护状态</div>
-  <div class="kv2"><span>IUCN</span><b>${s.iucn}</b></div>
-  <div class="kv2"><span>保护级别</span><b>${s.prot}保护动物</b></div>
-  ${confRow}
+  <div class="card" style="padding:4px 14px">
+    <div class="kv2"><span>IUCN</span><b>${s.iucn}</b></div>
+    <div class="kv2"><span>保护级别</span><b>${s.prot}保护动物</b></div>
+  </div>
   <div class="sec">物种档案</div>
-  <div class="kv2"><span>目 / 科</span><b>雀形目</b></div>
-  <div class="kv2"><span>形态测量</span><b>体重 / 体长 / 嘴峰 / 翅长</b></div>
-  <p style="font-size:11.5px;color:var(--gray);margin-top:14px;line-height:1.7">
-    点过的图与 App 内一致：照片墙只放点亮过的框选图。未点亮物种只有剪影和「未点亮」胶囊。
-  </p>
-  <button class="close" onclick="document.getElementById('sheet').classList.remove('on')">关闭</button>`;
+  <div class="card" style="padding:4px 14px">
+    <div class="kv2"><span>目 / 科</span><b>${t.order} · ${t.family}</b></div>
+    <div class="kv2"><span>体重</span><b>${t.mass} g</b></div>
+    <div class="kv2"><span>体长</span><b>${t.length} mm</b></div>
+    <div class="kv2"><span>嘴峰 / 翅长</span><b>${t.bill} / ${t.wing} mm</b></div>
+    <div class="kv2"><span>食性</span><b>${t.diet}</b></div>
+  </div>
+  ${model}${photoWall}
+  <p class="tips">形态测量取自 App 的 traits.json（《中国鸟类的生活史和生态学特征数据集》，
+     DOI 10.17520/biods.2021201）。流水明细见「日志」页。</p>
+  <button class="close" data-close>关闭</button>`;
 }
 
-const VIEWS = {cam: camView, log: logView, guide: guideView, set: setView};
+function recordSheet(i){
+  const r = LOGS[i], s = SPECIES[r.k], c = pct(r.k);
+  return `
+  <div class="handle"></div>
+  <div class="hero"><img src="${s.photo}" alt="${s.zh} 记录图"><span class="cap">框选图 · 只在本机</span></div>
+  <div class="dtitle">${s.zh}</div>
+  <div class="dsci">${s.sci}</div>
+  <div class="dkv"><span>${s.iucn}</span><span>${s.prot}保护动物</span><span>已记录</span></div>
+  <div class="sec">这条记录</div>
+  <div class="card" style="padding:4px 14px">
+    <div class="kv2"><span>时间</span><b>${r.d} ${r.t}</b></div>
+    <div class="kv2"><span>记录方式</span><b>取景页自动记录</b></div>
+    <div class="kv2"><span>区域模型</span><b>${s.region}区</b></div>
+    ${c?`<div class="kv2"><span>分类 top-1</span><b>${s.zh} ${c}%</b></div>`:""}
+    <div class="kv2"><span>检出分</span><b>${s.det.toFixed(2)}</b></div>
+    <div class="kv2"><span>坐标 / 区县</span><b>离线区划解析（本机）</b></div>
+  </div>
+  <div class="rowacts" style="margin-top:14px">
+    <button>改判</button><button>加备注</button><button class="pri">导出 CSV</button>
+  </div>
+  <p class="tips">识别错很正常——这一页就是给你改判的。改完图鉴里的点亮状态会跟着更新。</p>
+  <button class="close" data-close>删除这条记录</button>`;
+}
+
+const VIEWS = {cam: camView, log: logView, guide: guideView};
 let cur = "cam";
+
+function openSheet(html){
+  $("#panel").innerHTML = html;
+  $("#sheet").classList.add("on");
+  const c = $("#panel [data-close]");
+  if (c) c.addEventListener("click", ()=>$("#sheet").classList.remove("on"));
+}
 
 function render(){
   view.innerHTML = VIEWS[cur]();
   document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("on", b.dataset.tab===cur));
-  view.querySelectorAll(".pola[data-k]").forEach(el=>{
-    el.addEventListener("click", ()=>{ $("#panel").innerHTML = detail(el.dataset.k); $("#sheet").classList.add("on"); });
-  });
-  view.querySelectorAll("[data-pal]").forEach(el=>{
-    el.addEventListener("click", ()=>applyPalette(el.dataset.pal));
-  });
+  view.querySelectorAll(".pola[data-k]").forEach(el=>
+    el.addEventListener("click", ()=>openSheet(speciesSheet(el.dataset.k))));
+  view.querySelectorAll(".row[data-log]").forEach(el=>
+    el.addEventListener("click", ()=>openSheet(recordSheet(+el.dataset.log))));
 }
 
 function applyPalette(k){
-  const p = PALETTES[k];
-  const r = document.documentElement.style;
+  const p = PALETTES[k], r = document.documentElement.style;
   Object.keys(p).forEach(c=>r.setProperty("--"+c, p[c]));
   document.querySelectorAll(".bar-out [data-theme]").forEach(b=>b.classList.toggle("on", b.dataset.theme===k));
-  document.querySelectorAll("[data-pal]").forEach(b=>b.classList.toggle("on", b.dataset.pal===k));
 }
 
 document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click", ()=>{ cur=b.dataset.tab; render(); }));
 document.querySelectorAll(".bar-out [data-theme]").forEach(b=>b.addEventListener("click", ()=>applyPalette(b.dataset.theme)));
 $("#night").addEventListener("click", e=>{
   document.body.classList.toggle("night");
-  e.target.classList.toggle("on", document.body.classList.contains("night"));
-  e.target.textContent = document.body.classList.contains("night") ? "日间" : "夜间";
-  const ns = document.getElementById("nightState"); if (ns) ns.textContent = document.body.classList.contains("night") ? "强制夜" : "跟随系统";
+  const on = document.body.classList.contains("night");
+  e.target.classList.toggle("on", on);
+  e.target.textContent = on ? "日间" : "夜间";
 });
 $("#sheet").addEventListener("click", e=>{ if (e.target.id==="sheet") e.currentTarget.classList.remove("on"); });
 render();
 </script>
 
-<footer style="max-width:430px;font-size:11px;line-height:1.8;color:var(--gray);text-align:center">
-  照片来自 iNaturalist，按各自 CC0 / CC-BY 许可使用；具体作者与原链接见
-  <a href="https://github.com/kidnappe/WhatsBird/blob/main/site/shots/manifest.json" target="_blank" rel="noopener">shots/manifest.json</a>。
-  数据与模型输出来自本仓库。
+<footer style="max-width:440px;font-size:11px;line-height:1.8;color:var(--gray);text-align:center">
+  照片来自 iNaturalist 的开放许可图库（CC0 / CC-BY），物种由 taxon 锁定，
+  作者与原链接见 <a href="https://github.com/kidnappe/WhatsBird/blob/main/site/shots/manifest.json" target="_blank" rel="noopener">shots/manifest.json</a>；
+  形态测量引自 Biodiversity Science 2021, DOI 10.17520/biods.2021201。
 </footer>
 
 </body>
